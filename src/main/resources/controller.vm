@@ -1,0 +1,50 @@
+@RestController
+public class ${controller.name} {
+
+    @Autowired ${controller.repository.name} repository;
+
+    @GetMapping("/{$controller.class.name}")
+    public List<{$controller.class.name}> GetAll(){
+        return repository.findAll();
+    }
+    @GetMapping("/{$controller.classname.name}/{id}")
+    public {$controller.classname.name} Get(@Pathvariable int id){
+        Optional<{$controller.classname.name}> res = repository.find(id);
+        if(res.isPresent())
+            return res.get();
+        return null;
+    }
+    @DeleteMapping("/{$controller.classname.name}/{id}")
+    public void Delete(@PathVariable int id) {
+        repository.deleteById(id);
+    }
+
+    //TODO update to need
+    @PostMapping("/{$controller.classname.name}")
+    public ResponseEntity<{$controller.classname.name}> Create(@RequestBody {$controller.classname.name} subject) {
+        subject.setPasswort(passwordEncoder.encode(subject.getPasswort()));
+        Benutzer savedSubject = repository.save(subject);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedSubject.getId()).toUri();
+        return ResponseEntity.created(location).body(savedSubject);
+    }
+
+    //TODO update to need
+    @PutMapping("/{$controller.classname.name}/{id}")
+    public ResponseEntity<{$controller.classname.name}> Update(@RequestBody {$controller.classname.name} subject, @PathVariable int id) {
+        Optional<{$controller.classname.name}> res = repository.findById(id);
+            if (!res.isPresent())
+            return ResponseEntity.notFound().build();
+
+            if (!subject.getPasswort().equals(res.get().getPasswort())) {
+            subject.setPasswort(passwordEncoder.encode(subject.getPasswort()));
+            }
+            subject.setId(id);
+            repository.save(subject);
+
+            return ResponseEntity.noContent().build();
+    }
+
+    //##### ${controller.name} CUSTOM_CRUD USER_GENERATED_CODE_START
+
+    //##### ${controller.name} CUSTOM_CRUD USER_GENERATED_CODE_END
+}

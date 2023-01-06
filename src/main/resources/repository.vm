@@ -1,0 +1,7 @@
+public interface ${repository.name} extends JpaRepository<{$repository.user.name}, {$repository.user.type}>{
+
+    #foreach($method in $repository.methods)
+    {$repository.user.name} ${$repository.method.name}({$repository.method.type} {$repository.method.name});
+    #end
+
+}
