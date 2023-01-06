@@ -1,4 +1,10 @@
 ##############################
+## Project specific
+##############################
+generated-application.zip
+generated-application/
+
+##############################
 ## Java
 ##############################
 .mtj.tmp/
