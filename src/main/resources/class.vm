@@ -3,19 +3,18 @@ package ${packagename};
 
 public $classInfo.name  {
 
-
 #foreach ($attribute in $classInfo.attributes)
     private $attribute.type $attribute.name;
 #end
 
 #foreach($method in $classInfo.methods)
-    private $method.type $method.name($method.attribute.name) {
+    private ${method.type} ${method.name}({$method.attribute.type} {$method.attribute.name})} {
         //##### $package.name $classInfo.name $method.name USER_GENERATED_CODE_START
 
         //##### $package.name $classInfo.name $method.name USER_GENERATED_CODE_END
     }
 #end
-#foreach( $attribute in $classInfo.attributes)
+#foreach($attribute in $classInfo.attributes)
     public ${attribute.type} get${attribute.getGetterAndSetterField()}() {
         return this.${attribute.name};
     }
