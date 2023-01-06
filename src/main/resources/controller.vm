@@ -1,37 +1,57 @@
+package ${targetPackagePath};
+
+import java.net.URI;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import ${entitiesPackagePath};
+import ${repositoriesPackagePath};
+
 @RestController
-public class ${controller.name} {
+public class ${controller.getControllerName()} {
 
-    @Autowired ${controller.repository.name} repository;
+    @Autowired ${controller.getRepositoryName()} repository;
 
-    @GetMapping("/{$controller.class.name}")
-    public List<{$controller.class.name}> GetAll(){
+    @GetMapping("/${controller.getURLPath()}")
+    public List<${controller.getEntityName()}> GetAll(){
         return repository.findAll();
     }
-    @GetMapping("/{$controller.classname.name}/{id}")
-    public {$controller.classname.name} Get(@Pathvariable int id){
-        Optional<{$controller.classname.name}> res = repository.find(id);
+
+    @GetMapping("/${controller.getURLPath()}/{${controller.getIdentificationVariable()}}")
+    public ${controller.getEntityName()} get(@PathVariable int ${controller.getIdentificationVariable()}) {
+        Optional<${controller.getEntityName()}> res = repository.find(id);
         if(res.isPresent())
             return res.get();
         return null;
     }
-    @DeleteMapping("/{$controller.classname.name}/{id}")
-    public void Delete(@PathVariable int id) {
+
+    @DeleteMapping("/${controller.getURLPath()}/{${controller.getIdentificationVariable()}}")
+    public void delete(@PathVariable int ${controller.getIdentificationVariable()}) {
         repository.deleteById(id);
     }
 
-    //TODO update to need
-    @PostMapping("/{$controller.classname.name}")
-    public ResponseEntity<{$controller.classname.name}> Create(@RequestBody {$controller.classname.name} subject) {
+    @PostMapping("/${controller.getURLPath()}")
+    public ResponseEntity<${controller.getEntityName()}> Create(@RequestBody ${controller.getEntityName()} subject) {
         subject.setPasswort(passwordEncoder.encode(subject.getPasswort()));
         Benutzer savedSubject = repository.save(subject);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedSubject.getId()).toUri();
         return ResponseEntity.created(location).body(savedSubject);
     }
 
-    //TODO update to need
-    @PutMapping("/{$controller.classname.name}/{id}")
-    public ResponseEntity<{$controller.classname.name}> Update(@RequestBody {$controller.classname.name} subject, @PathVariable int id) {
-        Optional<{$controller.classname.name}> res = repository.findById(id);
+    @PutMapping("/${controller.getURLPath()}/{${controller.getIdentificationVariable()}}")
+    public ResponseEntity<${controller.getEntityName()}> Update(@RequestBody ${controller.getEntityName()} subject, @PathVariable int ${controller.getIdentificationVariable()}) {
+        Optional<${controller.getEntityName()}> res = repository.findById(id);
             if (!res.isPresent())
             return ResponseEntity.notFound().build();
 
@@ -44,7 +64,4 @@ public class ${controller.name} {
             return ResponseEntity.noContent().build();
     }
 
-    //##### ${controller.name} CUSTOM_CRUD USER_GENERATED_CODE_START
-
-    //##### ${controller.name} CUSTOM_CRUD USER_GENERATED_CODE_END
 }

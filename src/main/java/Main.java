@@ -11,5 +11,6 @@ public class Main {
         initializeProject.unzipFile(nameOfZip, nameOfZip.substring(0, nameOfZip.length() - 3));
 
         TemplateResolver templateResolver = new TemplateResolver();
+        templateResolver.createControllerFiles();
     }
 }
