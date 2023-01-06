@@ -4,7 +4,7 @@ public interface ${repository.name} extends JpaRepository<{$repository.user.name
     {$repository.user.name} ${$repository.method.name}({$repository.method.type} {$repository.method.name});
     #end
 
-    //##### $${repository.name} CUSTOM_METHODS USER_GENERATED_CODE_START
+    //##### ${repository.name} CUSTOM_METHODS USER_GENERATED_CODE_START
 
     //##### ${repository.name} CUSTOM_METHODS  USER_GENERATED_CODE_END
 }

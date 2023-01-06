@@ -8,14 +8,14 @@ public $classInfo.name  {
 
     //##### $classInfo.name ATTRIBUTES USER_GENERATED_CODE_END
     #foreach ($attribute in $classInfo.attributes)
-        #foreach ($annotations in $attribute.annotations)
+        #foreach ($annotations in ${attribute.annotations})
         @{$annotations}
         #end
-        private $attribute.type $attribute.name;
+        private ${attribute.type} ${attribute.name};
     #end
 
     #foreach($method in $classInfo.methods)
-        private ${method.type} ${method.name}({$method.attribute.type} {$method.attribute.name})} {
+        private ${method.type} ${method.name}(${method.attribute.type} ${method.attribute.name})} {
             //##### $package.name $classInfo.name $method.name USER_GENERATED_CODE_START
 
             //##### $package.name $classInfo.name $method.name USER_GENERATED_CODE_END
