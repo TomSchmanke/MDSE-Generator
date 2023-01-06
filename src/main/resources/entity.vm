@@ -1,0 +1,35 @@
+@Entity
+public $classInfo.name  {
+
+    public $classInfo.name(){
+
+    }
+    //##### $classInfo.name ATTRIBUTES USER_GENERATED_CODE_START
+
+    //##### $classInfo.name ATTRIBUTES USER_GENERATED_CODE_END
+    #foreach ($attribute in $classInfo.attributes)
+        #foreach ($annotations in $attribute.annotations)
+        @{$annotations}
+        #end
+        private $attribute.type $attribute.name;
+    #end
+
+    #foreach($method in $classInfo.methods)
+        private ${method.type} ${method.name}({$method.attribute.type} {$method.attribute.name})} {
+            //##### $package.name $classInfo.name $method.name USER_GENERATED_CODE_START
+
+            //##### $package.name $classInfo.name $method.name USER_GENERATED_CODE_END
+        }
+    #end
+    #foreach($attribute in $classInfo.attributes)
+        public ${attribute.type} get${attribute.getGetterAndSetterField()}() {
+            return this.${attribute.name};
+        }
+        public void set${attribute.getGetterAndSetterField()}(${attribute.type} ${attribute.name}) {
+            this.${attribute.name} = ${attribute.name};
+        }
+    #end
+    //##### $classInfo.name GETTER_SETTER USER_GENERATED_CODE_START
+
+    //##### $classInfo.name GETTER_SETTER USER_GENERATED_CODE_END
+}
