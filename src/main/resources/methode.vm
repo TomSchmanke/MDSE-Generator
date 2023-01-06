@@ -1,0 +1,8 @@
+#if($annotation)
+    ${annotation}(${crudPath}${crudParameter})
+#end
+${privatePublic} ${returnType} ${methodName}(${methodParameters}) {
+    #foreach( $statement in $allStatements )
+        ${statement}
+    #end
+}
