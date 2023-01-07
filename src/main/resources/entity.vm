@@ -1,35 +1,51 @@
-@Entity
-public $classInfo.name  {
+package ${targetPackagePath};
 
-    public $classInfo.name(){
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+@Entity
+public ${entity.getEntityName()}  {
+
+    @Id
+    @GeneratedValue
+    private int ${entity.getIdentificationVariable()}
+
+    #foreach ($attributeModel in $entity.getSimpleAttributes())
+    private ${attributeModel.getAttributeType()} ${attributeModel.getAttributeName()};
+
+    #end
+    #foreach ($mtoAssociation in $mtoAssociations)
+    @ManyToOne
+    @JoinColumn(name="${mtoAssociation.getFKKey()}")
+    private ${mtoAssociation.getReferencedEntity()} ${mtoAssociation.getReferencedName()};
+
+    #end
+    #foreach ($otmAssociation in $otmAssociations)
+    @OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL, mappedBy="${otmAssociation.getMappedByKey()}")
+    @JsonIgnore
+    private ${otmAssociation.getFKEntity()} ${otmAssociation.getFKName()};
+
+    #end
+
+    public ${entity.getEntityName()}() {
 
     }
-    //##### $classInfo.name ATTRIBUTES USER_GENERATED_CODE_START
 
-    //##### $classInfo.name ATTRIBUTES USER_GENERATED_CODE_END
-    #foreach ($attribute in $classInfo.attributes)
-        #foreach ($annotations in ${attribute.annotations})
-        @{$annotations}
-        #end
-        private ${attribute.type} ${attribute.name};
+    public ${entity.getEntityName()}(${entity.getAttributesForConstructorHeader()}) {
+        ${entity.getAttributesForConstructorBody()}
+    }
+
+
+    #foreach($attributeModel in $entity.getAttributeDataModels())
+        #parse("get-set.vm")
+
     #end
-
-    #foreach($method in $classInfo.methods)
-        private ${method.type} ${method.name}(${method.attribute.type} ${method.attribute.name})} {
-            //##### $package.name $classInfo.name $method.name USER_GENERATED_CODE_START
-
-            //##### $package.name $classInfo.name $method.name USER_GENERATED_CODE_END
-        }
-    #end
-    #foreach($attribute in $classInfo.attributes)
-        public ${attribute.type} get${attribute.getGetterAndSetterField()}() {
-            return this.${attribute.name};
-        }
-        public void set${attribute.getGetterAndSetterField()}(${attribute.type} ${attribute.name}) {
-            this.${attribute.name} = ${attribute.name};
-        }
-    #end
-    //##### $classInfo.name GETTER_SETTER USER_GENERATED_CODE_START
-
-    //##### $classInfo.name GETTER_SETTER USER_GENERATED_CODE_END
 }

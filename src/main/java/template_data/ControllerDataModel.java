@@ -7,7 +7,7 @@ public record ControllerDataModel(String entityName, String identificationVariab
     }
 
     public String getIdentificationVariable() {
-        return entityName;
+        return identificationVariable;
     }
 
     public String getControllerName() {
