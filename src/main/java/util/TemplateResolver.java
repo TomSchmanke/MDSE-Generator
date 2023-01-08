@@ -1,3 +1,5 @@
+package util;
+
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import template_data.AssociationsDataModel;

@@ -1,3 +1,5 @@
+package util;
+
 import de.arinir.XMI2MDSDMetamodellConverter.XMI2MDSDMetamodellConverter.Converter;
 import de.arinir.mdsd.metamodell.MDSDMetamodell.UMLClassDiagramm;
 
@@ -20,7 +22,7 @@ public class XMLConverter {
      * @throws IOException Thrown when path is not valid.
      */
     public UMLClassDiagramm processXMLUMLFile(String path) throws IOException {
-        try (InputStream s = Main.class.getResourceAsStream(path)) {
+        try (InputStream s = XMLConverter.class.getResourceAsStream(path)) {
             Converter converter = new Converter();
             return converter.convert(s);
         }

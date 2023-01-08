@@ -1,6 +1,9 @@
 import de.arinir.mdsd.metamodell.MDSDMetamodell.UMLClassDiagramm;
 
 import template_data.*;
+import util.InitializeProject;
+import util.TemplateResolver;
+import util.XMLConverter;
 
 import java.io.IOException;
 import java.util.ArrayList;
