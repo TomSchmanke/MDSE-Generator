@@ -1,17 +1,20 @@
 package template_data;
 
-public record AttributeDataModel(String attributeName, String attributeType, Multiplicity attributeMultiplicity) {
+import de.arinir.mdsd.metamodell.MDSDMetamodell.DataType;
+import de.arinir.mdsd.metamodell.MDSDMetamodell.VisibilityET;
+
+public record AttributeDataModel(String attributeName, DataType attributeType, VisibilityET visibility) {
 
     public String getAttributeName() {
         return attributeName;
     }
 
-    public String getAttributeType() {
+    public DataType getAttributeType() {
         return attributeType;
     }
 
-    public Multiplicity getAttributeMultiplicity() {
-        return attributeMultiplicity;
+    public VisibilityET getAttributeVisibility() {
+        return visibility;
     }
 
     public String getTypeAndName() {

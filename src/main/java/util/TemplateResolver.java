@@ -4,6 +4,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import template_data.AssociationsDataModel;
 import template_data.ControllerDataModel;
+import template_data.DataModel;
 import template_data.EntityDataModel;
 
 import java.io.FileWriter;
@@ -67,6 +68,12 @@ public class TemplateResolver {
 
     public void createRepositoryFiles() {
         // TODO
+    }
+
+    public void setDataModel(DataModel datamodel) {
+        this.controllerDataModels = datamodel.getControllerDataModels();
+        this.entityDataModels = datamodel.getEntityDataModels();
+        this.associationsDataModels = datamodel.getAssociationsDataModels();
     }
 
     public void setControllerDataModels(List<ControllerDataModel> controllerDataModels) {

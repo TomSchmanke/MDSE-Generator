@@ -1,6 +1,8 @@
 package template_data;
 
-public record AssociationsDataModel(String fkEntity, String fkName, Multiplicity fkMultiplicity, String referencedEntity, String referencedName, Multiplicity referencedMultiplicity) {
+import de.arinir.mdsd.metamodell.MDSDMetamodell.MultiplicityT;
+
+public record AssociationsDataModel(String fkEntity, String fkName, MultiplicityT fkMultiplicity, String referencedEntity, String referencedName, MultiplicityT referencedMultiplicity) {
 
     public String getFKEntity() {
         return fkEntity;
