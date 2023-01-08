@@ -3,31 +3,31 @@ package template_data;
 import java.util.List;
 
 public class DataModel {
-    private List<ControllerDataModel> controllerDataModels;
-    private List<EntityDataModel> entityDataModels;
-    private List<AssociationsDataModel> associationsDataModels;
+    private List<ControllerModel> controllerModels;
+    private List<EntityModel> entityModels;
+    private List<AssociationsModel> associationsModels;
 
-    public List<ControllerDataModel> getControllerDataModels() {
-        return controllerDataModels;
+    public List<ControllerModel> getControllerDataModels() {
+        return controllerModels;
     }
 
-    public void setControllerDataModels(List<ControllerDataModel> controllerDataModels) {
-        this.controllerDataModels = controllerDataModels;
+    public void setControllerDataModels(List<ControllerModel> controllerModels) {
+        this.controllerModels = controllerModels;
     }
 
-    public List<EntityDataModel> getEntityDataModels() {
-        return entityDataModels;
+    public List<EntityModel> getEntityDataModels() {
+        return entityModels;
     }
 
-    public void setEntityDataModels(List<EntityDataModel> entityDataModels) {
-        this.entityDataModels = entityDataModels;
+    public void setEntityDataModels(List<EntityModel> entityModels) {
+        this.entityModels = entityModels;
     }
 
-    public List<AssociationsDataModel> getAssociationsDataModels() {
-        return associationsDataModels;
+    public List<AssociationsModel> getAssociationsDataModels() {
+        return associationsModels;
     }
 
-    public void setAssociationsDataModels(List<AssociationsDataModel> associationsDataModels) {
-        this.associationsDataModels = associationsDataModels;
+    public void setAssociationsDataModels(List<AssociationsModel> associationsModels) {
+        this.associationsModels = associationsModels;
     }
 }

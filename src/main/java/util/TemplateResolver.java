@@ -2,10 +2,10 @@ package util;
 
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
-import template_data.AssociationsDataModel;
-import template_data.ControllerDataModel;
+import template_data.AssociationsModel;
+import template_data.ControllerModel;
 import template_data.DataModel;
-import template_data.EntityDataModel;
+import template_data.EntityModel;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -16,9 +16,9 @@ public class TemplateResolver {
 
     private final VelocityEngine velocityEngine;
 
-    private List<ControllerDataModel> controllerDataModels;
-    private List<EntityDataModel> entityDataModels;
-    private List<AssociationsDataModel> associationsDataModels;
+    private List<ControllerModel> controllerModels;
+    private List<EntityModel> entityModels;
+    private List<AssociationsModel> associationsModels;
 
     public TemplateResolver() {
         velocityEngine = new VelocityEngine();
@@ -40,29 +40,29 @@ public class TemplateResolver {
     }
 
     public void createControllerFiles() {
-        for (ControllerDataModel controllerDataModel: controllerDataModels) {
+        for (ControllerModel controllerModel : controllerModels) {
             VelocityContext velocityContext = new VelocityContext();
             velocityContext.put("targetPackagePath" , "TODO");
             velocityContext.put("entitiesPackagePath" , "TODO");
             velocityContext.put("repositoriesPackagePath" , "TODO");
-            velocityContext.put("controller", controllerDataModel);
+            velocityContext.put("controller", controllerModel);
 
-            resolveTemplate(velocityContext, "controller.vm", controllerDataModel.getEntityName() + "Controller.java");
+            resolveTemplate(velocityContext, "controller.vm", controllerModel.getEntityName() + "Controller.java");
         }
     }
 
     public void createEntityFiles() {
-        for (EntityDataModel entityDataModel: entityDataModels) {
+        for (EntityModel entityModel : entityModels) {
             VelocityContext velocityContext = new VelocityContext();
             velocityContext.put("targetPackagePath" , "TODO");
-            velocityContext.put("entity", entityDataModel);
+            velocityContext.put("entity", entityModel);
 
-            List<AssociationsDataModel> filteredMTOAssociationsForEntity = associationsDataModels.stream().filter(associationsDataModel -> Objects.equals(associationsDataModel.fkEntity(), entityDataModel.getEntityName())).toList();
-            List<AssociationsDataModel> filteredOTMAssociationsForEntity = associationsDataModels.stream().filter(associationsDataModel -> Objects.equals(associationsDataModel.referencedEntity(), entityDataModel.getEntityName())).toList();
+            List<AssociationsModel> filteredMTOAssociationsForEntity = associationsModels.stream().filter(associationsModel -> Objects.equals(associationsModel.fkEntity(), entityModel.getEntityName())).toList();
+            List<AssociationsModel> filteredOTMAssociationsForEntity = associationsModels.stream().filter(associationsModel -> Objects.equals(associationsModel.referencedEntity(), entityModel.getEntityName())).toList();
             velocityContext.put("mtoAssociations", filteredMTOAssociationsForEntity);
             velocityContext.put("otmAssociations", filteredOTMAssociationsForEntity);
 
-            resolveTemplate(velocityContext, "entity.vm", entityDataModel.entityName() + ".java");
+            resolveTemplate(velocityContext, "entity.vm", entityModel.entityName() + ".java");
         }
     }
 
@@ -71,21 +71,21 @@ public class TemplateResolver {
     }
 
     public void setDataModel(DataModel datamodel) {
-        this.controllerDataModels = datamodel.getControllerDataModels();
-        this.entityDataModels = datamodel.getEntityDataModels();
-        this.associationsDataModels = datamodel.getAssociationsDataModels();
+        this.controllerModels = datamodel.getControllerDataModels();
+        this.entityModels = datamodel.getEntityDataModels();
+        this.associationsModels = datamodel.getAssociationsDataModels();
     }
 
-    public void setControllerDataModels(List<ControllerDataModel> controllerDataModels) {
-        this.controllerDataModels = controllerDataModels;
+    public void setControllerDataModels(List<ControllerModel> controllerModels) {
+        this.controllerModels = controllerModels;
     }
 
-    public void setEntityDataModels(List<EntityDataModel> entityDataModels) {
-        this.entityDataModels = entityDataModels;
+    public void setEntityDataModels(List<EntityModel> entityModels) {
+        this.entityModels = entityModels;
     }
 
-    public void setAssociationsDataModels(List<AssociationsDataModel> associationsDataModels) {
-        this.associationsDataModels = associationsDataModels;
+    public void setAssociationsDataModels(List<AssociationsModel> associationsModels) {
+        this.associationsModels = associationsModels;
     }
 
 }

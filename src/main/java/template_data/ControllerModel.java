@@ -1,6 +1,6 @@
 package template_data;
 
-public record ControllerDataModel(String entityName, String identificationVariable) {
+public record ControllerModel(String entityName, String identificationVariable) {
 
     public String getEntityName() {
         return entityName;

@@ -3,7 +3,7 @@ package template_data;
 import de.arinir.mdsd.metamodell.MDSDMetamodell.DataType;
 import de.arinir.mdsd.metamodell.MDSDMetamodell.VisibilityET;
 
-public record AttributeDataModel(String attributeName, DataType attributeType, VisibilityET visibility) {
+public record AttributeModel(String attributeName, DataType attributeType, VisibilityET visibility) {
 
     public String getAttributeName() {
         return attributeName;
