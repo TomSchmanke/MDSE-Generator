@@ -21,6 +21,14 @@
         <maven.compiler.release>17</maven.compiler.release>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>project.local</id>
+            <name>project</name>
+            <url>file:${project.basedir}/lib</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -34,9 +42,15 @@
         </dependency>
 
         <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+
+        <dependency>
             <groupId>de.arinir.XMI2MDSDMetamodellConverter</groupId>
             <artifactId>XMI2MDSDMetamodellConverter</artifactId>
-            <version>0.0.1</version>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -74,29 +88,6 @@
                     <showWarnings>true</showWarnings>
                     <compilerVersion>17</compilerVersion>
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-                <version>2.5.1</version>
-                <configuration>
-                    <groupId>de.arinir.XMI2MDSDMetamodellConverter</groupId>
-                    <artifactId>XMI2MDSDMetamodellConverter</artifactId>
-                    <version>0.0.1</version>
-                    <packaging>jar</packaging>
-                    <file>${basedir}/lib/XMI2MDSDMetamodellConverter-0.0.1.jar</file>
-                    <generatePom>true</generatePom>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>install-jar-lib</id>
-                        <goals>
-                            <goal>install-file</goal>
-                        </goals>
-                        <phase>install</phase>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
