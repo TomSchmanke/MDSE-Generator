@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class InitializeProject {
+public class ProjectInitializer {
 
     private static final String SPRING_INIT_BASE_URL = "https://start.spring.io/starter.zip";
 
