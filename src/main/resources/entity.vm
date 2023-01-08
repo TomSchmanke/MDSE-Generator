@@ -1,0 +1,51 @@
+package ${targetPackagePath};
+
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+@Entity
+public ${entity.getEntityName()}  {
+
+    @Id
+    @GeneratedValue
+    private int ${entity.getIdentificationVariable()}
+
+    #foreach ($attributeModel in $entity.getSimpleAttributes())
+    private ${attributeModel.getAttributeType()} ${attributeModel.getAttributeName()};
+
+    #end
+    #foreach ($mtoAssociation in $mtoAssociations)
+    @ManyToOne
+    @JoinColumn(name="${mtoAssociation.getFKKey()}")
+    private ${mtoAssociation.getReferencedEntity()} ${mtoAssociation.getReferencedName()};
+
+    #end
+    #foreach ($otmAssociation in $otmAssociations)
+    @OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL, mappedBy="${otmAssociation.getMappedByKey()}")
+    @JsonIgnore
+    private ${otmAssociation.getFKEntity()} ${otmAssociation.getFKName()};
+
+    #end
+
+    public ${entity.getEntityName()}() {
+
+    }
+
+    public ${entity.getEntityName()}(${entity.getAttributesForConstructorHeader()}) {
+        ${entity.getAttributesForConstructorBody()}
+    }
+
+
+    #foreach($attributeModel in $entity.getAttributeDataModels())
+        #parse("get-set.vm")
+
+    #end
+}

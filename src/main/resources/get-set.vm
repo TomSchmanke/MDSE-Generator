@@ -1,0 +1,18 @@
+#if($attributeModel.getAttributeMultiplicity() == "SINGLE")
+    public ${attributeModel.getAttributeType()} get${attributeModel.getAttributeName()}() {
+        return this.${attributeModel.getAttributeName()};
+    }
+
+    public void set${attributeModel.getAttributeName()}(${attributeModel.getAttributeType()} ${attributeModel.getAttributeName()}) {
+        this.${attributeModel.getAttributeName()} = ${attributeModel.getAttributeName()};
+    }
+#end
+#if($attributeModel.getAttributeMultiplicity() == "MULTI")
+    public List<${attributeModel.getAttributeType()}> get${attributeModel.getAttributeName()}() {
+        return this.${attributeModel.getAttributeName()};
+    }
+
+    public void set${attributeModel.getAttributeName()}(List<${attributeModel.getAttributeType()}> ${attributeModel.getAttributeName()}) {
+        this.${attributeModel.getAttributeName()} = ${attributeModel.getAttributeName()};
+    }
+#end
