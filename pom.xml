@@ -25,7 +25,7 @@
         <repository>
             <id>project.local</id>
             <name>project</name>
-            <url>file:${project.basedir}/lib</url>
+            <url>file:${project.basedir}\lib</url>
         </repository>
     </repositories>
 
@@ -50,6 +50,16 @@
         <dependency>
             <groupId>de.arinir.XMI2MDSDMetamodellConverter</groupId>
             <artifactId>XMI2MDSDMetamodellConverter</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>de.arinir.mdsd.metamodell</groupId>
+            <artifactId>MDSDMetamodell</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>de.arinir.xmiparser</groupId>
+            <artifactId>XMIParser</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
