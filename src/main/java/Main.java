@@ -7,6 +7,7 @@ import util.TemplateResolver;
 import util.XMLConverter;
 
 import java.io.IOException;
+import java.util.List;
 
 public class Main {
 
@@ -26,10 +27,12 @@ public class Main {
         DataModel dataModel = dataConverter.convertMDSDDiagramToDataModel();
 
         TemplateResolver templateResolver = new TemplateResolver();
-        templateResolver.setDataModel(dataModel);
+        List<String> generatedControllerFiles = templateResolver.createControllerFiles(dataModel.getControllerDataModels());
+        List<String> generatedEntityFiles = templateResolver.createEntityFiles(dataModel.getEntityDataModels(), dataModel.getAssociationsDataModels());
+        List<String> generatedRepositoryFiles = templateResolver.createRepositoryFiles(dataModel.getRepositoryDataModels());
 
-        templateResolver.createControllerFiles();
-        templateResolver.createEntityFiles();
-        templateResolver.createRepositoryFiles();
+        System.out.println(generatedControllerFiles);
+        System.out.println(generatedEntityFiles);
+        System.out.println(generatedRepositoryFiles);
     }
 }

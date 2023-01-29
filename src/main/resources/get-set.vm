@@ -1,3 +1,13 @@
+#**
+  Template for the creation of getter and setter methods for the entites.vm template. Expectes the following variables
+  as inputs (see template_data for more):
+    attributeModel: AttributeModel; Model containing getMethods for the needed variables
+
+  @author Tom Schmanke
+  @version 1 Initial creation of get-set.vm to capsulate the slightly complexer logic to create the needed getter and
+  setter for the entities.vm
+*#
+
 #if($attributeModel.getAttributeMultiplicity() == "SINGLE")
     public ${attributeModel.getAttributeType()} get${attributeModel.getAttributeName()}() {
         return this.${attributeModel.getAttributeName()};

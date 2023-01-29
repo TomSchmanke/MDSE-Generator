@@ -1,10 +1,22 @@
-public interface ${repository.name} extends JpaRepository<{$repository.user.name}, {$repository.user.type}>{
+#**
+  Template for the creation of JPA Repositories. Expectes the following variables as inputs (see template_data for more):
+    targetPackagePath: String; Path of the packge the file will be used
+    entitiesPackagePath: String; Path of the package of the referenced entities
+    repository: RespositoryModel; Model containing getMethods for the needed variables
 
-    #foreach($method in $repository.methods)
-    {$repository.user.name} ${$repository.method.name}({$repository.method.type} {$repository.method.name});
-    #end
+  @author Jonas Knebel
+  @version 1 Initial creation of repository.vm with basic statements based on the expected results
 
-    //##### ${repository.name} CUSTOM_METHODS USER_GENERATED_CODE_START
+  @author Tom Schmanke
+  @version 2 Rework of repository template based on the given data structure. This mainly includes import statemens,
+  loops, less template duplication, structure of variables and indentation
+*#
 
-    //##### ${repository.name} CUSTOM_METHODS  USER_GENERATED_CODE_END
+package ${targetPackagePath};
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import ${entitiesPackagePath};
+
+public interface ${repository.getRepositoryName()} extends JpaRepository<{${repository.getEntityName()}, Integer}>{
+
 }

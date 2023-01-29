@@ -6,6 +6,7 @@ public class DataModel {
     private List<ControllerModel> controllerModels;
     private List<EntityModel> entityModels;
     private List<AssociationsModel> associationsModels;
+    private List<RepositoryModel> repositoryModels;
 
     public List<ControllerModel> getControllerDataModels() {
         return controllerModels;
@@ -30,4 +31,13 @@ public class DataModel {
     public void setAssociationsDataModels(List<AssociationsModel> associationsModels) {
         this.associationsModels = associationsModels;
     }
+
+    public List<RepositoryModel> getRepositoryDataModels() {
+        return repositoryModels;
+    }
+
+    public void setRepositoryDataModels(List<RepositoryModel> repositoryModels) {
+        this.repositoryModels = repositoryModels;
+    }
+
 }

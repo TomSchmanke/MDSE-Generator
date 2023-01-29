@@ -12,6 +12,13 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+/**
+ * Class which holds methods to download a pre-configured sprint-boot project as zip file from
+ * <a href="https://start.spring.io">start.spring.io</a> and methods to unzip the downloaded file
+ *
+ * @author Tom Schmanke
+ * @version 1.0 Initial creation
+ */
 public class ProjectInitializer {
 
     private static final String SPRING_INIT_BASE_URL = "https://start.spring.io/starter.zip";

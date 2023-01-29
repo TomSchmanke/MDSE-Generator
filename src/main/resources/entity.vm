@@ -1,3 +1,18 @@
+#**
+  Template for the creation of JPA Entities. Expectes the following variables as inputs (see template_data for more):
+    targetPackagePath: String; Path of the packge the file will be used
+    entity: EntityModel; Model containing getMethods for the needed variables
+    mtoAssociations: List<AssociationsModel>; List of "many-to-one" associations
+    otmAssociations: List<AssociationsModel>; List of "one-to-many" associations
+
+ @author Jonas Knebel
+  @version 1 Initial creation of entity.vm with basic statements based on the expected results
+
+  @author Tom Schmanke
+  @version 2 Rework of entity template based on the given data structure. This mainly includes import statemens,
+  loops, less template duplication, structure of variables and indentation
+*#
+
 package ${targetPackagePath};
 
 import java.util.List;

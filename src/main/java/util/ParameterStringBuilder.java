@@ -4,7 +4,15 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
+/**
+ * Utility class which provides a method to build URL Parameter strings for http get requests based on the java.net
+ * http methods
+ *
+ * @author Tom Schmanke
+ * @version 1.0 Initial creation
+ */
 public class ParameterStringBuilder {
+
     public static String getParamsString(Map<String, String> params) {
         StringBuilder result = new StringBuilder();
 
