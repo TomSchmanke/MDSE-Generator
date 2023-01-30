@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -23,7 +24,9 @@ public class ProjectInitializer {
 
     private static final String SPRING_INIT_BASE_URL = "https://start.spring.io/starter.zip";
 
-    public String loadGeneratedFilesFromSpringInitializer() throws IOException {
+    public String loadGeneratedFilesFromSpringInitializer(String groupId, String artifactId, String name,
+                                                          String description, String javaVersion, String bootVersion,
+                                                          List<String> dependencies) throws IOException {
         URL url = new URL(SPRING_INIT_BASE_URL);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
@@ -31,15 +34,14 @@ public class ProjectInitializer {
         Map<String, String> parameters = new HashMap<>();
         parameters.put("type", "maven-project");
         parameters.put("language", "java");
-        parameters.put("bootVersion", "3.0.0");
-        parameters.put("groupId", "de.generator");
-        parameters.put("artifactId", "generated-application");
-        parameters.put("name", "generated-application");
-        parameters.put("description", "Generated basic build for Spring Boot");
-        parameters.put("packageName", "de.generator.generated-application");
+        parameters.put("bootVersion", bootVersion);
+        parameters.put("groupId", groupId);
+        parameters.put("artifactId", artifactId);
+        parameters.put("name", name);
+        parameters.put("description", description);
         parameters.put("packaging", "jar");
-        parameters.put("javaVersion", "17");
-        parameters.put("dependencies", "devtools,web,security,data-jpa");
+        parameters.put("javaVersion", javaVersion);
+        parameters.put("dependencies", String.join(",", dependencies));
 
         connection.setDoOutput(true);
         DataOutputStream out = new DataOutputStream(connection.getOutputStream());
@@ -69,7 +71,7 @@ public class ProjectInitializer {
         ZipInputStream zis = new ZipInputStream(new FileInputStream(in));
         ZipEntry zipEntry = zis.getNextEntry();
         while (zipEntry != null) {
-            File newFile = newFile(destDir, zipEntry);
+            File newFile = newFileFromZip(destDir, zipEntry);
             if (zipEntry.isDirectory()) {
                 if (!newFile.isDirectory() && !newFile.mkdirs()) {
                     throw new IOException("Failed to create directory " + newFile);
@@ -96,7 +98,7 @@ public class ProjectInitializer {
         zis.close();
     }
 
-    private File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
+    private File newFileFromZip(File destinationDir, ZipEntry zipEntry) throws IOException {
         File destFile = new File(destinationDir, zipEntry.getName());
 
         String destDirPath = destinationDir.getCanonicalPath();
@@ -107,6 +109,14 @@ public class ProjectInitializer {
         }
 
         return destFile;
+    }
+
+    public boolean newDirectoryFromPath(String destinationDir, String newDirectory) {
+        File theDir = new File(destinationDir + newDirectory);
+        if (!theDir.exists()){
+            return theDir.mkdirs();
+        }
+        return false;
     }
 
 }
