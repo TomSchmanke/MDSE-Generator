@@ -30,6 +30,7 @@ public class DataConverter {
         dataModel.setControllerDataModels(convertController());
         dataModel.setEntityDataModels(convertEntities());
         dataModel.setAssociationsDataModels(convertAssociations());
+        dataModel.setRepositoryDataModels(convertRepositories());
 
         return dataModel;
     }
@@ -72,5 +73,15 @@ public class DataConverter {
             associationsModels.add(model);
         }
         return associationsModels;
+    }
+
+    private List<RepositoryModel> convertRepositories() {
+        List<RepositoryModel> repositoryModels = new ArrayList<>();
+        for (Class c : mdsdDiagram.getClasses()) {
+            var name = c.getName();
+            var model = new RepositoryModel(name);
+            repositoryModels.add(model);
+        }
+        return repositoryModels;
     }
 }

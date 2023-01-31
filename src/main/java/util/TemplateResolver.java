@@ -105,7 +105,7 @@ public class TemplateResolver {
 
             resolveTemplate(velocityContext, "entity.vm", repositoryModel.repositoryName() + ".java");
         }
-        return repositoryModels.stream().map(repositoryModel -> repositoryModel.repositoryName() + ".java").toList();
+        return repositoryModels.stream().map(repositoryModel -> repositoryModel.repositoryName() + "Repository.java").toList();
     }
 
 }
