@@ -9,7 +9,6 @@ generated-application/
 ##############################
 .mtj.tmp/
 *.class
-*.jar
 *.war
 *.ear
 *.nar
