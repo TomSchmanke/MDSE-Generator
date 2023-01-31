@@ -40,7 +40,6 @@ public class ${controller.getControllerName()} {
     public void delete(@PathVariable int ${controller.getIdentificationVariable()}) {
         repository.deleteById(id);
     }
-
     @PostMapping("/${controller.getURLPath()}")
     public ResponseEntity<${controller.getEntityName()}> Create(@RequestBody ${controller.getEntityName()} subject) {
         subject.setPasswort(passwordEncoder.encode(subject.getPasswort()));

@@ -1,17 +1,22 @@
 import de.arinir.mdsd.metamodell.MDSDMetamodell.UMLClassDiagramm;
 
 import template_data.*;
+import util.CreateProjectStructureAsJson;
 import util.ProjectInitializer;
 import util.TemplateResolver;
 import util.XMLConverter;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class Main {
 
     public static void main(String[] args) throws IOException {
+        File file = new File ("./src/main");
+        CreateProjectStructureAsJson createProjectStructureAsJson = new CreateProjectStructureAsJson(file);
         ProjectInitializer projectInitializer = new ProjectInitializer();
         String nameOfZip = projectInitializer.loadGeneratedFilesFromSpringInitializer();
 
@@ -84,6 +89,6 @@ public class Main {
 
         XMLConverter xmlConverter = new XMLConverter();
         UMLClassDiagramm diagramm = xmlConverter.processXMLUMLFile("/Flottenmanagement.xml");
-        System.out.println(diagramm);
+        //System.out.println(diagramm);
     }
 }
