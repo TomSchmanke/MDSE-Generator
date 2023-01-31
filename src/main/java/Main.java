@@ -2,93 +2,59 @@ import de.arinir.mdsd.metamodell.MDSDMetamodell.UMLClassDiagramm;
 
 import template_data.*;
 import util.CreateProjectStructureAsJson;
+import util.DataConverter;
 import util.ProjectInitializer;
 import util.TemplateResolver;
 import util.XMLConverter;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-
 
 public class Main {
 
     public static void main(String[] args) throws IOException {
         File file = new File ("./src/main");
         CreateProjectStructureAsJson createProjectStructureAsJson = new CreateProjectStructureAsJson(file);
+
+        String groupIdPart1 = "de";
+        String groupIdPart2 = "generator";
+        String groupId = groupIdPart1 + '.' + groupIdPart2;
+        String artifactId = "generated-application";
+        String name = "generated-application";
+        String description = "Generated basic build for Spring Boot";
+        String javaVersion = "17";
+        String bootVersion = "3.0.2";
+        List<String> dependencies = Arrays.asList("devtools", "web", "security", "data-jpa");
+
+        String pathToFiles = name + "/src/main/java/" + groupIdPart1 + "/" + groupIdPart2  + "/" + artifactId.replaceAll("-", "" )  + "/";
+
         ProjectInitializer projectInitializer = new ProjectInitializer();
-        String nameOfZip = projectInitializer.loadGeneratedFilesFromSpringInitializer();
+        String nameOfZip = projectInitializer.loadGeneratedFilesFromSpringInitializer(groupId, artifactId, name,
+                description, javaVersion, bootVersion, dependencies);
 
         if(nameOfZip == null) {
             return;
         }
         projectInitializer.unzipFile(nameOfZip, nameOfZip.substring(0, nameOfZip.length() - 3));
-
-        List<ControllerDataModel> controllerDataModels = new ArrayList<>();
-        controllerDataModels.add(new ControllerDataModel("Antrag", "id"));
-        controllerDataModels.add(new ControllerDataModel("Benutzer", "id"));
-        controllerDataModels.add(new ControllerDataModel("Fahrzeug", "id"));
-        controllerDataModels.add(new ControllerDataModel("Fahrzeug", "id"));
-
-        List<EntityDataModel> entityDataModels = new ArrayList<>();
-        List<AttributeDataModel> attributeDataModel = new ArrayList<>();
-        attributeDataModel.add(new AttributeDataModel("Name", "String", Multiplicity.SINGLE));
-        attributeDataModel.add(new AttributeDataModel("Hersteller", "Hersteller", Multiplicity.SINGLE));
-        attributeDataModel.add(new AttributeDataModel("Fahrzeug", "Fahrzeug", Multiplicity.SINGLE));
-        entityDataModels.add(new EntityDataModel("Hersteller", "id", attributeDataModel));
-        attributeDataModel = new ArrayList<>();
-        attributeDataModel.add(new AttributeDataModel("Fahrgestellnummer", "String", Multiplicity.SINGLE));
-        attributeDataModel.add(new AttributeDataModel("Kennzeichen", "String", Multiplicity.SINGLE));
-        attributeDataModel.add(new AttributeDataModel("KostenJeKilometer", "CurrencyT", Multiplicity.SINGLE));
-        attributeDataModel.add(new AttributeDataModel("Typbezeichnung", "String", Multiplicity.SINGLE));
-        attributeDataModel.add(new AttributeDataModel("Fahrzeug", "Fahrzeug", Multiplicity.MULTI));
-        attributeDataModel.add(new AttributeDataModel("Hersteller", "Hersteller", Multiplicity.SINGLE));
-        attributeDataModel.add(new AttributeDataModel("VerwalteteFahrzeuge", "Fahrzeug", Multiplicity.MULTI));
-        attributeDataModel.add(new AttributeDataModel("Flottenchef", "Benutzer", Multiplicity.SINGLE));
-        attributeDataModel.add(new AttributeDataModel("WunschFahrzeug", "Fahrzeug", Multiplicity.SINGLE));
-        attributeDataModel.add(new AttributeDataModel("Antrag", "Antrag", Multiplicity.MULTI));
-        entityDataModels.add(new EntityDataModel("Fahrzeug", "id", attributeDataModel));
-        attributeDataModel = new ArrayList<>();
-        attributeDataModel.add(new AttributeDataModel("IstBearbeitet", "boolean", Multiplicity.SINGLE));
-        attributeDataModel.add(new AttributeDataModel("IstFreigegeben", "boolean", Multiplicity.SINGLE));
-        attributeDataModel.add(new AttributeDataModel("Kilometer", "float", Multiplicity.SINGLE));
-        attributeDataModel.add(new AttributeDataModel("Kosten", "CurrencyT", Multiplicity.SINGLE));
-        attributeDataModel.add(new AttributeDataModel("Ziel", "String", Multiplicity.SINGLE));
-        attributeDataModel.add(new AttributeDataModel("Antrag", "Antrag", Multiplicity.MULTI));
-        attributeDataModel.add(new AttributeDataModel("WunschFahrzeug", "Fahrzeug", Multiplicity.SINGLE));
-        attributeDataModel.add(new AttributeDataModel("Antraege", "Antrag", Multiplicity.MULTI));
-        attributeDataModel.add(new AttributeDataModel("Antragsteller", "Benutzer", Multiplicity.SINGLE));
-        attributeDataModel.add(new AttributeDataModel("BearbeiteteAntraege", "Antrag", Multiplicity.MULTI));
-        attributeDataModel.add(new AttributeDataModel("Flottenchef", "Benutzer", Multiplicity.SINGLE));
-        entityDataModels.add(new EntityDataModel("Antrag", "id", attributeDataModel));
-        attributeDataModel = new ArrayList<>();
-        attributeDataModel.add(new AttributeDataModel("Flottenchef", "Benutzer", Multiplicity.SINGLE));
-        attributeDataModel.add(new AttributeDataModel("VerwalteteFahrzeuge", "Fahrzeuge", Multiplicity.MULTI));
-        attributeDataModel.add(new AttributeDataModel("Antragsteller", "Benutzer", Multiplicity.SINGLE));
-        attributeDataModel.add(new AttributeDataModel("Antraege", "Antrag", Multiplicity.MULTI));
-        attributeDataModel.add(new AttributeDataModel("Flottenchef", "Benutzer", Multiplicity.SINGLE));
-        attributeDataModel.add(new AttributeDataModel("BearbeiteteAntraege", "Antrag", Multiplicity.MULTI));
-        entityDataModels.add(new EntityDataModel("Benutzer", "id", attributeDataModel));
-
-        List<AssociationsDataModel> associationsDataModels = new ArrayList<>();
-        associationsDataModels.add(new AssociationsDataModel("Fahrzeug", "Fahrzeug", Multiplicity.MULTI, "Hersteller", "Hersteller", Multiplicity.SINGLE));
-        associationsDataModels.add(new AssociationsDataModel("Fahrzeug", "VerwalteteFahrzeuge", Multiplicity.MULTI, "Benutzer", "Flottenchef", Multiplicity.SINGLE));
-        associationsDataModels.add(new AssociationsDataModel("Antrag", "Antrag", Multiplicity.MULTI, "Fahrzeug", "WunschFahrzeug", Multiplicity.SINGLE));
-        associationsDataModels.add(new AssociationsDataModel("Antrag", "Antraege", Multiplicity.MULTI, "Benutzer", "Antragsteller", Multiplicity.SINGLE));
-        associationsDataModels.add(new AssociationsDataModel("Antrag", "BearbeiteteAntraege", Multiplicity.MULTI, "Benutzer", "Flottenchef", Multiplicity.SINGLE));
-
-        TemplateResolver templateResolver = new TemplateResolver();
-        templateResolver.setControllerDataModels(controllerDataModels);
-        templateResolver.setEntityDataModels(entityDataModels);
-        templateResolver.setAssociationsDataModels(associationsDataModels);
-
-        templateResolver.createControllerFiles();
-        templateResolver.createEntityFiles();
-        templateResolver.createRepositoryFiles();
+        projectInitializer.newDirectoryFromPath(pathToFiles, "controllers");
+        projectInitializer.newDirectoryFromPath(pathToFiles, "entities");
+        projectInitializer.newDirectoryFromPath(pathToFiles, "repositories");
 
         XMLConverter xmlConverter = new XMLConverter();
-        UMLClassDiagramm diagramm = xmlConverter.processXMLUMLFile("/Flottenmanagement.xml");
-        //System.out.println(diagramm);
+        UMLClassDiagramm diagram = xmlConverter.processXMLUMLFile("/Flottenmanagement.xml");
+
+        DataConverter dataConverter = new DataConverter(diagram);
+        DataModel dataModel = dataConverter.convertMDSDDiagramToDataModel();
+
+        TemplateResolver templateResolver = new TemplateResolver();
+        List<String> generatedControllerFiles = templateResolver.createControllerFiles(dataModel.getControllerDataModels());
+        List<String> generatedEntityFiles = templateResolver.createEntityFiles(dataModel.getEntityDataModels(), dataModel.getAssociationsDataModels());
+        List<String> generatedRepositoryFiles = templateResolver.createRepositoryFiles(dataModel.getRepositoryDataModels());
+
+        System.out.println(generatedControllerFiles);
+        System.out.println(generatedEntityFiles);
+        System.out.println(generatedRepositoryFiles);
     }
 }

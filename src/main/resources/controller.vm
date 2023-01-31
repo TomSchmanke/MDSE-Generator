@@ -1,3 +1,18 @@
+#**
+  Template for the creation of RestControllers. Expectes the following variables as inputs (see template_data for more):
+    targetPackagePath: String; Path of the packge the file will be used
+    entitiesPackagePath: String; Path of the package of the referenced entities
+    repositoriesPackagePath: String; Path of the package of the referenced repositories
+    controller: ControllerModel; Model containing getMethods for the needed variables
+
+  @author Jonas Knebel
+  @version 1 Initial creation of controller.vm with basic statements based on the expected results
+
+  @author Tom Schmanke
+  @version 2 Rework of controller template based on the given data structure. This mainly includes import statemens,
+  loops, less template duplication, structure of variables and indentation
+*#
+
 package ${targetPackagePath};
 
 import java.net.URI;
