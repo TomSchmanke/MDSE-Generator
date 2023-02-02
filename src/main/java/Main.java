@@ -48,10 +48,15 @@ public class Main {
         DataConverter dataConverter = new DataConverter(diagram);
         DataModel dataModel = dataConverter.convertMDSDDiagramToDataModel();
 
+        String packagePath = groupId + '.' + artifactId + '.';
+        String packagePathControllers = packagePath + "controllers";
+        String packagePathEntities = packagePath + "entities";
+        String packagePathRepositories = packagePath + "repositories";
+
         TemplateResolver templateResolver = new TemplateResolver();
-        List<String> generatedControllerFiles = templateResolver.createControllerFiles(dataModel.getControllerDataModels());
-        List<String> generatedEntityFiles = templateResolver.createEntityFiles(dataModel.getEntityDataModels(), dataModel.getAssociationsDataModels());
-        List<String> generatedRepositoryFiles = templateResolver.createRepositoryFiles(dataModel.getRepositoryDataModels());
+        List<String> generatedControllerFiles = templateResolver.createControllerFiles(dataModel.getControllerDataModels(), packagePathControllers, packagePathEntities, packagePathRepositories);
+        List<String> generatedEntityFiles = templateResolver.createEntityFiles(dataModel.getEntityDataModels(), dataModel.getAssociationsDataModels(), packagePathEntities);
+        List<String> generatedRepositoryFiles = templateResolver.createRepositoryFiles(dataModel.getRepositoryDataModels(), packagePathRepositories, packagePathEntities);
 
         System.out.println(generatedControllerFiles);
         System.out.println(generatedEntityFiles);

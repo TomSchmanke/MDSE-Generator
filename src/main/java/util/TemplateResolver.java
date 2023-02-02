@@ -52,12 +52,12 @@ public class TemplateResolver {
      * of the RestController .java files
      * @return List of names of the generated files
      */
-    public List<String> createControllerFiles(List<ControllerModel> controllerModels) {
+    public List<String> createControllerFiles(List<ControllerModel> controllerModels, String targetPackagePath, String entitiesPackagePath, String repositoriesPackagePath) {
         for (ControllerModel controllerModel : controllerModels) {
             VelocityContext velocityContext = new VelocityContext();
-            velocityContext.put("targetPackagePath" , "TODO");
-            velocityContext.put("entitiesPackagePath" , "TODO");
-            velocityContext.put("repositoriesPackagePath" , "TODO");
+            velocityContext.put("targetPackagePath" , targetPackagePath);
+            velocityContext.put("entitiesPackagePath" , entitiesPackagePath + ".*");
+            velocityContext.put("repositoriesPackagePath" , repositoriesPackagePath + ".*");
             velocityContext.put("controller", controllerModel);
 
             resolveTemplate(velocityContext, "controller-base.vm", controllerModel.entityName() + "ControllerBase.java");
@@ -74,10 +74,10 @@ public class TemplateResolver {
      * of the JPA Entities .java files
      * @return List of names of the generated files
      */
-    public List<String> createEntityFiles(List<EntityModel> entityModels, List<AssociationsModel> associationsModels) {
+    public List<String> createEntityFiles(List<EntityModel> entityModels, List<AssociationsModel> associationsModels, String targetPackagePath) {
         for (EntityModel entityModel : entityModels) {
             VelocityContext velocityContext = new VelocityContext();
-            velocityContext.put("targetPackagePath" , "TODO");
+            velocityContext.put("targetPackagePath" , targetPackagePath);
             velocityContext.put("entity", entityModel);
 
             List<AssociationsModel> filteredMTOAssociationsForEntity = associationsModels.stream().filter(associationsModel -> Objects.equals(associationsModel.fkEntity(), entityModel.getEntityName())).toList();
@@ -99,11 +99,11 @@ public class TemplateResolver {
      * of the JPA Repositories .java files
      * @return List of names of the generated files
      */
-    public List<String> createRepositoryFiles(List<RepositoryModel> repositoryModels) {
+    public List<String> createRepositoryFiles(List<RepositoryModel> repositoryModels, String targetPackagePath, String entitiesPackagePath) {
         for (RepositoryModel repositoryModel : repositoryModels) {
             VelocityContext velocityContext = new VelocityContext();
-            velocityContext.put("targetPackagePath" , "TODO");
-            velocityContext.put("entitiesPackagePath" , "TODO");
+            velocityContext.put("targetPackagePath" , targetPackagePath);
+            velocityContext.put("entitiesPackagePath" , entitiesPackagePath + ".*");
             velocityContext.put("repository", repositoryModel);
 
             resolveTemplate(velocityContext, "entity-base.vm", repositoryModel.repositoryName() + "Base.java");
