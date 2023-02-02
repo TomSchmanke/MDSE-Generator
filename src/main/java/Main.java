@@ -15,8 +15,8 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        File file = new File ("./src/main");
-        CreateProjectStructureAsJson createProjectStructureAsJson = new CreateProjectStructureAsJson(file);
+        //File file = new File ("./src/main");
+        //CreateProjectStructureAsJson createProjectStructureAsJson = new CreateProjectStructureAsJson(file);
 
         String groupIdPart1 = "de";
         String groupIdPart2 = "generator";

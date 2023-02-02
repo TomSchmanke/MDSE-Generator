@@ -5,11 +5,14 @@
     repository: RespositoryModel; Model containing getMethods for the needed variables
 
   @author Jonas Knebel
-  @version 1 Initial creation of repository.vm with basic statements based on the expected results
+  @version 1 Initial creation of repository-base.vm with basic statements based on the expected results
 
   @author Tom Schmanke
   @version 2 Rework of repository template based on the given data structure. This mainly includes import statemens,
   loops, less template duplication, structure of variables and indentation
+
+  @author Tom Schmanke
+  @version 3 Transform controller template for abstract class based custom code saving
 *#
 
 package ${targetPackagePath};
@@ -17,6 +20,6 @@ package ${targetPackagePath};
 import org.springframework.data.jpa.repository.JpaRepository;
 import ${entitiesPackagePath};
 
-public interface ${repository.getRepositoryName()} extends JpaRepository<{${repository.getEntityName()}, Integer}>{
+public abstract class ${repository.getRepositoryName()}Base extends JpaRepository<{${repository.getEntityName()}, Integer}>{
 
 }

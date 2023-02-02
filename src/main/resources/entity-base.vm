@@ -5,12 +5,15 @@
     mtoAssociations: List<AssociationsModel>; List of "many-to-one" associations
     otmAssociations: List<AssociationsModel>; List of "one-to-many" associations
 
- @author Jonas Knebel
-  @version 1 Initial creation of entity.vm with basic statements based on the expected results
+  @author Jonas Knebel
+  @version 1 Initial creation of entity-base.vm with basic statements based on the expected results
 
   @author Tom Schmanke
   @version 2 Rework of entity template based on the given data structure. This mainly includes import statemens,
   loops, less template duplication, structure of variables and indentation
+
+  @author Tom Schmanke
+  @version 3 Transform controller template for abstract class based custom code saving
 *#
 
 package ${targetPackagePath};
@@ -26,8 +29,7 @@ import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@Entity
-public ${entity.getEntityName()}  {
+public abstract class ${entity.getEntityName()}Base {
 
     @Id
     @GeneratedValue

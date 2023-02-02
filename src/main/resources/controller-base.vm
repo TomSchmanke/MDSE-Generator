@@ -1,18 +1,20 @@
 #**
-  Template for the creation of RestControllers. Expectes the following variables as inputs (see template_data for more):
+  Template for the creation of RestControllerBase. Expectes the following variables as inputs (see template_data for more):
     targetPackagePath: String; Path of the packge the file will be used
     entitiesPackagePath: String; Path of the package of the referenced entities
     repositoriesPackagePath: String; Path of the package of the referenced repositories
     controller: ControllerModel; Model containing getMethods for the needed variables
 
   @author Jonas Knebel
-  @version 1 Initial creation of controller.vm with basic statements based on the expected results
+  @version 1 Initial creation of controller-base.vm with basic statements based on the expected results
 
   @author Tom Schmanke
   @version 2 Rework of controller template based on the given data structure. This mainly includes import statemens,
   loops, less template duplication, structure of variables and indentation
-*#
 
+  @author Tom Schmanke
+  @version 3 Transform controller template for abstract class based custom code saving
+*#
 package ${targetPackagePath};
 
 import java.net.URI;
@@ -27,14 +29,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import ${entitiesPackagePath};
 import ${repositoriesPackagePath};
 
-@RestController
-public class ${controller.getControllerName()} {
+public abstract class ${controller.getControllerName()}Base {
 
     @Autowired ${controller.getRepositoryName()} repository;
 
@@ -66,16 +66,16 @@ public class ${controller.getControllerName()} {
     @PutMapping("/${controller.getURLPath()}/{${controller.getIdentificationVariable()}}")
     public ResponseEntity<${controller.getEntityName()}> Update(@RequestBody ${controller.getEntityName()} subject, @PathVariable int ${controller.getIdentificationVariable()}) {
         Optional<${controller.getEntityName()}> res = repository.findById(id);
-            if (!res.isPresent())
+        if (!res.isPresent())
             return ResponseEntity.notFound().build();
 
-            if (!subject.getPasswort().equals(res.get().getPasswort())) {
+        if (!subject.getPasswort().equals(res.get().getPasswort())) {
             subject.setPasswort(passwordEncoder.encode(subject.getPasswort()));
-            }
-            subject.setId(id);
-            repository.save(subject);
+        }
+        subject.setId(id);
+        repository.save(subject);
 
-            return ResponseEntity.noContent().build();
+        return ResponseEntity.noContent().build();
     }
 
 }

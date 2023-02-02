@@ -11,6 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * Class which on initialization creates a velocity engine and context configured for the templates used to create the
@@ -44,8 +45,8 @@ public class TemplateResolver {
     }
 
     /**
-     * Method generates a list of RestController .java files based on the controller.vm template and the List of
-     * {@link ControllerModel} containing the necessary data
+     * Method generates a list of RestController .java files based on the controller-base.vm and controller-impl.vm
+     * templates and the List of {@link ControllerModel} containing the necessary data
      *
      * @param controllerModels List of {@link ControllerModel} which hold the data which will be used in the generation
      * of the RestController .java files
@@ -59,14 +60,15 @@ public class TemplateResolver {
             velocityContext.put("repositoriesPackagePath" , "TODO");
             velocityContext.put("controller", controllerModel);
 
-            resolveTemplate(velocityContext, "controller.vm", controllerModel.getEntityName() + "Controller.java");
+            resolveTemplate(velocityContext, "controller-base.vm", controllerModel.entityName() + "ControllerBase.java");
+            resolveTemplate(velocityContext, "controller-impl.vm", controllerModel.entityName() + "ControllerImpl.java");
         }
-        return controllerModels.stream().map(controllerModel -> controllerModel.getEntityName() + "Controller.java").toList();
+        return controllerModels.stream().flatMap(controllerModel -> Stream.of(controllerModel.entityName() + "ControllerBase.java", controllerModel.entityName() + "ControllerEntity.java")).toList();
     }
 
     /**
-     * Method generates a list of JPA Entities .java files based on the entity.vm template and the List of
-     * {@link EntityModel} containing the necessary data
+     * Method generates a list of JPA Entities .java files based on the entity-base.vm and entity-impl.vm templates and
+     * the List of {@link EntityModel} containing the necessary data
      *
      * @param entityModels List of {@link EntityModel} which hold the data which will be used in the generation
      * of the JPA Entities .java files
@@ -83,14 +85,15 @@ public class TemplateResolver {
             velocityContext.put("mtoAssociations", filteredMTOAssociationsForEntity);
             velocityContext.put("otmAssociations", filteredOTMAssociationsForEntity);
 
-            resolveTemplate(velocityContext, "entity.vm", entityModel.entityName() + ".java");
+            resolveTemplate(velocityContext, "entity-base.vm", entityModel.entityName() + "Base.java");
+            resolveTemplate(velocityContext, "entity-impl.vm", entityModel.entityName() + "Impl.java");
         }
-        return entityModels.stream().map(entityModel -> entityModel.entityName() + ".java").toList();
+        return entityModels.stream().flatMap(entityModel -> Stream.of(entityModel.entityName() + "Base.java", entityModel.entityName() + "Impl.java")).toList();
     }
 
     /**
-     * Method generates a list of JPA Repositories .java files based on the repository.vm template and the List of
-     * {@link RepositoryModel} containing the necessary data
+     * Method generates a list of JPA Repositories .java files based on the repository-base.vm and repository-impl.vm
+     * templates and the List of {@link RepositoryModel} containing the necessary data
      *
      * @param repositoryModels List of {@link RepositoryModel} which hold the data which will be used in the generation
      * of the JPA Repositories .java files
@@ -103,9 +106,10 @@ public class TemplateResolver {
             velocityContext.put("entitiesPackagePath" , "TODO");
             velocityContext.put("repository", repositoryModel);
 
-            resolveTemplate(velocityContext, "entity.vm", repositoryModel.repositoryName() + ".java");
+            resolveTemplate(velocityContext, "entity-base.vm", repositoryModel.repositoryName() + "Base.java");
+            resolveTemplate(velocityContext, "entity-impl.vm", repositoryModel.repositoryName() + "Impl.java");
         }
-        return repositoryModels.stream().map(repositoryModel -> repositoryModel.repositoryName() + "Repository.java").toList();
+        return repositoryModels.stream().flatMap(repositoryModel -> Stream.of(repositoryModel.repositoryName() + "Base.java", repositoryModel.repositoryName() + "Impl.java")).toList();
     }
 
 }
