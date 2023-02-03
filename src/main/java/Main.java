@@ -24,6 +24,10 @@ public class Main {
     private static final String SPRING_BOOT_VERSION = "3.0.2";
     private static final String PATH_TO_FILES = NAME + "/src/main/java/" + GROUP_ID_PART_1 + "/" + GROUP_ID_PART_2  + "/" + ARTIFACT_ID.replaceAll("-", "" )  + "/";
 
+    private static final String TARGET_PATH_CONTROLLERS = PATH_TO_FILES + "controllers";
+    private static final String TARGET_PATH_ENTITIES = PATH_TO_FILES + "entities";
+    private static final String TARGET_PATH_REPOSITORIES = PATH_TO_FILES + "repositories";
+
     public static void main(String[] args) throws IOException {
         //File file = new File ("./src/main");
         //CreateProjectStructureAsJson createProjectStructureAsJson = new CreateProjectStructureAsJson(file);
@@ -54,9 +58,9 @@ public class Main {
         String packagePathRepositories = packagePath + "repositories";
 
         TemplateResolver templateResolver = new TemplateResolver();
-        List<String> generatedControllerFiles = templateResolver.createControllerFiles(dataModel.getControllerDataModels(), packagePathControllers, packagePathEntities, packagePathRepositories);
-        List<String> generatedEntityFiles = templateResolver.createEntityFiles(dataModel.getEntityDataModels(), dataModel.getAssociationsDataModels(), packagePathEntities);
-        List<String> generatedRepositoryFiles = templateResolver.createRepositoryFiles(dataModel.getRepositoryDataModels(), packagePathRepositories, packagePathEntities);
+        List<String> generatedControllerFiles = templateResolver.createControllerFiles(dataModel.getControllerDataModels(), packagePathControllers, packagePathEntities, packagePathRepositories, TARGET_PATH_CONTROLLERS);
+        List<String> generatedEntityFiles = templateResolver.createEntityFiles(dataModel.getEntityDataModels(), dataModel.getAssociationsDataModels(), packagePathEntities, TARGET_PATH_ENTITIES);
+        List<String> generatedRepositoryFiles = templateResolver.createRepositoryFiles(dataModel.getRepositoryDataModels(), packagePathRepositories, packagePathEntities, TARGET_PATH_REPOSITORIES);
 
         System.out.println(generatedControllerFiles);
         System.out.println(generatedEntityFiles);
