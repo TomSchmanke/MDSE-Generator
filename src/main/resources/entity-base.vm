@@ -14,11 +14,15 @@
 
   @author Tom Schmanke
   @version 3 Transform controller template for abstract class based custom code saving
+
+  @author Laura Schmidt
+  @version 4 change datatype of OneToMany associations to Collection<Type>, attribute creation and visibilty
 *#
 
 package ${targetPackagePath};
 
 import java.util.List;
+import java.util.Collection;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -35,8 +39,8 @@ public abstract class ${entity.getEntityName()}Base {
     @GeneratedValue
     private int ${entity.getIdentificationVariable()}
 
-    #foreach ($attributeModel in $entity.getSimpleAttributes())
-    private ${attributeModel.getAttributeType()} ${attributeModel.getAttributeName()};
+    #foreach ($attributeModel in $entity.getAttributeDataModels())
+    ${attributeModel.getAttributeVisibility().toString().toLowerCase()} ${attributeModel.getAttributeType()} ${attributeModel.getAttributeName()};
 
     #end
     #foreach ($mtoAssociation in $mtoAssociations)
@@ -48,7 +52,7 @@ public abstract class ${entity.getEntityName()}Base {
     #foreach ($otmAssociation in $otmAssociations)
     @OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL, mappedBy="${otmAssociation.getMappedByKey()}")
     @JsonIgnore
-    private ${otmAssociation.getFKEntity()} ${otmAssociation.getFKName()};
+    private Collection<${otmAssociation.getFKEntity()}> ${otmAssociation.getFKName()};
 
     #end
 
@@ -60,9 +64,10 @@ public abstract class ${entity.getEntityName()}Base {
         ${entity.getAttributesForConstructorBody()}
     }
 
-
+    #*
     #foreach($attributeModel in $entity.getAttributeDataModels())
         #parse("get-set.vm")
 
     #end
+     *#
 }
