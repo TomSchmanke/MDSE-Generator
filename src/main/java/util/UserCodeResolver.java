@@ -1,12 +1,13 @@
 package util;
 
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.javers.core.Javers;
 import org.javers.core.JaversBuilder;
 import org.javers.core.diff.Diff;
@@ -17,7 +18,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -34,29 +34,79 @@ public class UserCodeResolver {
      * @throws IOException the io exception
      */
     public UserCodeResolver(File folder) throws IOException {
-        List<File> fileList = readStructureFromFolderAsList(folder);
+        writeStringToFile(readContentOfFilesAsString(readStructureFromFolderAsList(folder)));
+        JsonNode jsonNode = readJSONFileAsJsonNode();
+        writeUserContentInFiles(jsonNode, folder);
 
-        String fileContent = readContentOfFilesAndMapAsString(fileList);
-        //writeStringToFile(fileContent);
-        Diff s= compareStructure(convertOldProjectStructureToList(),convertNewProjectStructureToList(fileList));
-        System.out.println(s);
+
 
     }
-    private List<String> convertOldProjectStructureToList() throws IOException {
-        JsonNode jsonNode = readJSONFileAsJsonNode().get("ProjectStructure");
+
+    /**
+     * Convert old project structure to list<String>.
+     *
+     * @return the list
+     * @throws IOException the io exception
+     */
+    private List<String> convertOldProjectStructureToList(JsonNode jsonNode) throws IOException {;
         ObjectMapper mapper = new ObjectMapper();
-        String jsonNodeAsString = jsonNode.toString();
+        String jsonNodeAsString = jsonNode.get("ProjectStructure").toString();
         List<String> stringList = mapper.readValue(jsonNodeAsString,List.class);
         return stringList;
     }
 
+    /**
+     * Convert new project structure to list<String>.
+     *
+     * @param fileList the file list
+     * @return the list
+     * @throws IOException the io exception
+     */
     private List<String> convertNewProjectStructureToList(List<File> fileList) throws IOException {
         List<String> fileListAsString = new ArrayList<>();
         for(File file: fileList){
             fileListAsString.add(String.valueOf(file).replace("\\\\", "\\\\\\\\"));
-
         }
         return fileListAsString;
+    }
+
+    private void writeUserContentInFiles(JsonNode jsonNode, File folder) throws IOException {
+        List<File> fileList = readStructureFromFolderAsList(folder);
+        Diff s= compareStructure(convertOldProjectStructureToList(jsonNode),convertNewProjectStructureToList(fileList));
+        System.out.println(s);
+        Iterator<String> fieldNames = jsonNode.fieldNames();
+        while(fieldNames.hasNext()) {
+            String fieldName = fieldNames.next();
+            if(!fieldName.equals("ProjectStructure")) {
+                String filePath = fieldName;
+                Path path = Paths.get(filePath);
+                if(Files.notExists(path)){
+                    Files.createFile(path);
+                }
+
+
+
+                List<String> codeLines = new ArrayList<>();
+                for (JsonNode node :jsonNode.get(fieldName)) {
+                    System.out.println(node);
+                    if (node.isNull() || node.asText().isEmpty()) {
+                       codeLines.add("\n");
+                    } else {
+                        System.out.println(node);
+                        codeLines.add(node.asText());
+                    }
+                }
+                try (FileWriter writer = new FileWriter(filePath)) {
+                    for (String line : codeLines) {
+                        writer.write(line + System.lineSeparator());
+                    }
+
+
+                } catch (IOException e) {
+                    System.out.println("An error occurred while writing the file: " + e.getMessage());
+                }
+            }
+        }
     }
 
     /**
@@ -70,7 +120,7 @@ public class UserCodeResolver {
         List<File> filePaths = new ArrayList<>();
         String path = String.valueOf(folder);
         try (Stream<Path> paths = Files.walk(Paths.get(path))) {
-            paths.filter(Files::isRegularFile).map(Path::toFile).forEach(file -> filePaths.add(file));
+            paths.filter(Files::isRegularFile).map(Path::toFile).forEach(file ->{ if(file.toString().endsWith("Impl.java")) {filePaths.add(file);}});
         }
         return filePaths;
     }
@@ -81,7 +131,7 @@ public class UserCodeResolver {
      * @param fileList the file paths
      * @return the string
      */
-    private String readContentOfFilesAndMapAsString(List<File> fileList) throws JsonProcessingException {
+    private String readContentOfFilesAsString(List<File> fileList) throws JsonProcessingException {
         BufferedReader reader;
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode rootNode = mapper.createObjectNode();
@@ -107,7 +157,6 @@ public class UserCodeResolver {
             }
         }
         return mapper.writeValueAsString(rootNode);
-
     }
 
     /**
@@ -133,7 +182,6 @@ public class UserCodeResolver {
         ObjectMapper mapper = new ObjectMapper();
         try(FileReader fileReader = new FileReader(this.file)) {
             JsonNode jsonNode = mapper.readTree(fileReader);
-
             return jsonNode;
         }
     }
