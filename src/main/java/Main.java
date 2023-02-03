@@ -1,7 +1,7 @@
 import de.arinir.mdsd.metamodell.MDSDMetamodell.UMLClassDiagramm;
 
 import template_data.*;
-import util.CreateProjectStructureAsJson;
+import util.UserCodeResolver;
 import util.DataConverter;
 import util.ProjectInitializer;
 import util.TemplateResolver;
@@ -15,9 +15,9 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        //File file = new File ("./src/main");
-        //CreateProjectStructureAsJson createProjectStructureAsJson = new CreateProjectStructureAsJson(file);
-
+        File file = new File ("./src/main");
+        UserCodeResolver createProjectStructureAsJson = new UserCodeResolver(file);
+    /*
         String groupIdPart1 = "de";
         String groupIdPart2 = "generator";
         String groupId = groupIdPart1 + '.' + groupIdPart2;
@@ -58,8 +58,10 @@ public class Main {
         List<String> generatedEntityFiles = templateResolver.createEntityFiles(dataModel.getEntityDataModels(), dataModel.getAssociationsDataModels(), packagePathEntities);
         List<String> generatedRepositoryFiles = templateResolver.createRepositoryFiles(dataModel.getRepositoryDataModels(), packagePathRepositories, packagePathEntities);
 
+
         System.out.println(generatedControllerFiles);
         System.out.println(generatedEntityFiles);
         System.out.println(generatedRepositoryFiles);
+        * */
     }
 }
