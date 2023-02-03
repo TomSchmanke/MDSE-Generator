@@ -15,7 +15,7 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        File file = new File ("./src/main");
+        File file = new File ("./src/main/java/util");
         UserCodeResolver createProjectStructureAsJson = new UserCodeResolver(file);
     /*
         String groupIdPart1 = "de";

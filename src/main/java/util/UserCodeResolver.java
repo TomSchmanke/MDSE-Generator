@@ -34,12 +34,9 @@ public class UserCodeResolver {
      * @throws IOException the io exception
      */
     public UserCodeResolver(File folder) throws IOException {
-        writeStringToFile(readContentOfFilesAsString(readStructureFromFolderAsList(folder)));
+        //writeStringToFile(readContentOfFilesAsString(readStructureFromFolderAsList(folder)));
         JsonNode jsonNode = readJSONFileAsJsonNode();
         writeUserContentInFiles(jsonNode, folder);
-
-
-
     }
 
     /**
@@ -84,24 +81,18 @@ public class UserCodeResolver {
                     Files.createFile(path);
                 }
 
-
-
                 List<String> codeLines = new ArrayList<>();
                 for (JsonNode node :jsonNode.get(fieldName)) {
-                    System.out.println(node);
-                    if (node.isNull() || node.asText().isEmpty()) {
-                       codeLines.add("\n");
-                    } else {
-                        System.out.println(node);
+                    if (!node.isNull() && !node.asText().isEmpty()) {
                         codeLines.add(node.asText());
+                    } else {
+                        codeLines.add("");
                     }
                 }
                 try (FileWriter writer = new FileWriter(filePath)) {
                     for (String line : codeLines) {
                         writer.write(line + System.lineSeparator());
                     }
-
-
                 } catch (IOException e) {
                     System.out.println("An error occurred while writing the file: " + e.getMessage());
                 }
@@ -141,11 +132,13 @@ public class UserCodeResolver {
                 reader = new BufferedReader(new FileReader(file));
                 ArrayList<String> fileStringList = new ArrayList<>();
                 String line = reader.readLine();
+                fileStringList.add(line);
                 while (line != null) {
                     line = reader.readLine();
                     fileStringList.add(line);
                 }
                 reader.close();
+                System.out.println(fileStringList);
                 ObjectMapper objectMapper = new ObjectMapper();
                 String jsonString = objectMapper.writeValueAsString(fileStringList);
                 JsonNode jsonNode = objectMapper.readValue(jsonString, JsonNode.class);
