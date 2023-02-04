@@ -1,16 +1,7 @@
-import de.arinir.mdsd.metamodell.MDSDMetamodell.UMLClassDiagramm;
-
-import template_data.*;
-import util.UserCodeResolver;
-import util.DataConverter;
-import util.ProjectInitializer;
-import util.TemplateResolver;
-import util.XMLConverter;
+import user_code_resolver.UserCodeResolver;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 public class Main {
 
