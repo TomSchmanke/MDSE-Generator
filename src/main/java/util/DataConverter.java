@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class DataConverter {
 
-    private static final String IDENTIFICATION_VAR = "id";
+    private static final String IDENTIFICATION_VAR = "Id";
     private final UMLClassDiagramm mdsdDiagram;
 
     public DataConverter(UMLClassDiagramm mdsdDiagram) {

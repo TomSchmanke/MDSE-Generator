@@ -9,6 +9,10 @@ public record AttributeModel(String attributeName, DataType attributeType, Visib
         return attributeName;
     }
 
+    public String getAttributeNameSmall() {
+        return attributeName.substring(0, 1).toLowerCase() + attributeName.substring(1);
+    }
+
     public DataType getAttributeType() {
         return attributeType;
     }
@@ -18,10 +22,10 @@ public record AttributeModel(String attributeName, DataType attributeType, Visib
     }
 
     public String getTypeAndName() {
-        return attributeType + " " + attributeName;
+        return attributeType + " " + attributeName.substring(0, 1).toLowerCase() + attributeName.substring(1);
     }
 
     public String getConstructorAssignment() {
-        return "this." + attributeName + " = " + attributeName + ";";
+        return "this." + attributeName.substring(0, 1).toLowerCase() + attributeName.substring(1) + " = " + attributeName.substring(0, 1).toLowerCase() + attributeName.substring(1) + ";";
     }
 }

@@ -21,60 +21,57 @@
   @author Laura Schmidt
   @version 5 setter and getter generation
 *#
-
 package ${targetPackagePath};
 
-import java.util.List;
 import java.util.Collection;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-
+import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public abstract class ${entity.getEntityName()}Base {
 
     @Id
     @GeneratedValue
-    private int ${entity.getIdentificationVariable()}
+    private int ${entity.getIdentificationVariableSmall()};
 
     #foreach ($attributeModel in $entity.getAttributeDataModels())
-    ${attributeModel.getAttributeVisibility().toString().toLowerCase()} ${attributeModel.getAttributeType()} ${attributeModel.getAttributeName()};
+    ${attributeModel.getAttributeVisibility().toString().toLowerCase()} ${attributeModel.getAttributeType()} ${attributeModel.getAttributeNameSmall()};
 
     #end
     #foreach ($mtoAssociation in $mtoAssociations)
     @ManyToOne
     @JoinColumn(name="${mtoAssociation.getFKKey()}")
-    private ${mtoAssociation.getReferencedEntity()} ${mtoAssociation.getReferencedName()};
+    private ${mtoAssociation.getReferencedEntity()}Impl ${mtoAssociation.getReferencedNameSmall()};
 
     #end
     #foreach ($otmAssociation in $otmAssociations)
     @OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL, mappedBy="${otmAssociation.getMappedByKey()}")
     @JsonIgnore
-    private Collection<${otmAssociation.getFKEntity()}> ${otmAssociation.getFKName()};
+    private Collection<${otmAssociation.getFKEntity()}Impl> ${otmAssociation.getFKNameSmall()};
 
     #end
 
-    public ${entity.getEntityName()}() {
+    public ${entity.getEntityName()}Base() {
 
     }
 
-    public ${entity.getEntityName()}(${entity.getAttributesForConstructorHeader()}) {
+    public ${entity.getEntityName()}Base (${entity.getAttributesForConstructorHeader()}) {
         ${entity.getAttributesForConstructorBody()}
+    }
+
+    public int get${entity.getIdentificationVariable()}() {
+        return ${entity.getIdentificationVariableSmall()};
+    }
+
+    public void set${entity.getIdentificationVariable()}(int ${entity.getIdentificationVariableSmall()}) {
+        this.${entity.getIdentificationVariableSmall()} = ${entity.getIdentificationVariableSmall()};
     }
 
     #foreach($attributeModel in $entity.getAttributeDataModels())
         #parse("entity_templates/getter_setter_templates/get-set-attr.vm")
     #end
-
     #foreach($mtoAssociation in $mtoAssociations)
         #parse("entity_templates/getter_setter_templates/get-set-mto.vm")
     #end
-
     #foreach($otmAssociation in $otmAssociations)
         #parse("entity_templates/getter_setter_templates/get-set-otm.vm")
     #end

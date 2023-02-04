@@ -10,6 +10,10 @@ public record ControllerModel(String entityName, String identificationVariable) 
         return identificationVariable;
     }
 
+    public String getIdentificationVariableSmall() {
+        return identificationVariable.substring(0, 1).toLowerCase() + identificationVariable.substring(1);
+    }
+
     public String getControllerName() {
         return entityName.substring(0, 1).toUpperCase() + entityName.substring(1) + "Controller";
     }
