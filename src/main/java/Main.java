@@ -52,6 +52,8 @@ public class Main {
         DataConverter dataConverter = new DataConverter(diagram);
         DataModel dataModel = dataConverter.convertMDSDDiagramToDataModel();
 
+//        printDataModel(dataModel);
+
         String packagePath = GROUP_ID + '.' + ARTIFACT_ID + '.';
         String packagePathControllers = packagePath + "controllers";
         String packagePathEntities = packagePath + "entities";
@@ -65,5 +67,17 @@ public class Main {
         System.out.println(generatedControllerFiles);
         System.out.println(generatedEntityFiles);
         System.out.println(generatedRepositoryFiles);
+    }
+
+    // TODO: only for test/debug purposes, delete later
+    private static void printDataModel(DataModel dataModel) {
+        dataModel.getEntityDataModels().forEach(e -> {
+            System.out.println("Entitiy: " + e.getEntityName());
+            System.out.println("Attributes: ");
+            e.getAttributeDataModels().forEach(a -> {
+                System.out.println("    " + a.getAttributeName() + ", Type: " + a.getAttributeType());
+            });
+            System.out.println();
+        });
     }
 }

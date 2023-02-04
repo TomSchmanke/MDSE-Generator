@@ -106,10 +106,10 @@ public class TemplateResolver {
             velocityContext.put("entitiesPackagePath" , entitiesPackagePath + ".*");
             velocityContext.put("repository", repositoryModel);
 
-            resolveTemplate(velocityContext, "entity-base.vm", repositoryModel.repositoryName() + "Base.java", targetPath);
-            resolveTemplate(velocityContext, "entity-impl.vm", repositoryModel.repositoryName() + "Impl.java", targetPath);
+            resolveTemplate(velocityContext, "repository-base.vm", repositoryModel.repositoryName() + "RepositoryBase.java", targetPath);
+            resolveTemplate(velocityContext, "repository-impl.vm", repositoryModel.repositoryName() + "RepositoryImpl.java", targetPath);
         }
-        return repositoryModels.stream().flatMap(repositoryModel -> Stream.of(repositoryModel.repositoryName() + "Base.java", repositoryModel.repositoryName() + "Impl.java")).toList();
+        return repositoryModels.stream().flatMap(repositoryModel -> Stream.of(repositoryModel.repositoryName() + "RepositoryBase.java", repositoryModel.repositoryName() + "RepositoryImpl.java")).toList();
     }
 
 }
