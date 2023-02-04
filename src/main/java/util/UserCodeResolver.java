@@ -2,23 +2,32 @@ package util;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.javers.core.Javers;
 import org.javers.core.JaversBuilder;
+import org.javers.core.diff.Change;
 import org.javers.core.diff.Diff;
 import org.javers.core.diff.ListCompareAlgorithm;
+import org.javers.core.diff.changetype.PropertyChange;
+import org.javers.core.diff.changetype.ReferenceChange;
+import org.javers.core.diff.changetype.ValueChange;
+import org.javers.core.diff.changetype.container.CollectionChange;
+import org.javers.core.diff.changetype.container.ContainerElementChange;
+import org.javers.core.diff.changetype.container.ListChange;
+import org.javers.core.metamodel.annotation.Value;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Stream;
+
+import static org.javers.core.diff.changetype.PropertyChangeType.PROPERTY_VALUE_CHANGED;
 
 /**
  * The type User code resolver.
@@ -69,8 +78,10 @@ public class UserCodeResolver {
 
     private void writeUserContentInFiles(JsonNode jsonNode, File folder) throws IOException {
         List<File> fileList = readStructureFromFolderAsList(folder);
-        Diff s= compareStructure(convertOldProjectStructureToList(jsonNode),convertNewProjectStructureToList(fileList));
-        System.out.println(s);
+        Diff changes= compareStructure(convertOldProjectStructureToList(jsonNode),convertNewProjectStructureToList(fileList));
+       if (changes.hasChanges()) {
+            jsonNode = updateNamesOfImplFiles(jsonNode, changes);
+        }
         Iterator<String> fieldNames = jsonNode.fieldNames();
         while(fieldNames.hasNext()) {
             String fieldName = fieldNames.next();
@@ -98,6 +109,71 @@ public class UserCodeResolver {
                 }
             }
         }
+    }
+
+    private JsonNode updateNamesOfImplFiles(JsonNode jsonNode, Diff diff) {
+        for (Change change : diff.getChanges()) {
+            if (change instanceof ValueChange) {
+                ValueChange valueChange = (ValueChange) change;
+                System.out.println("Old Value: " + valueChange.getLeft());
+                System.out.println("New Value: " + valueChange.getRight());
+            } else if (change instanceof ReferenceChange) {
+                ReferenceChange referenceChange = (ReferenceChange) change;
+                System.out.println("Old Reference: " + referenceChange.getLeft());
+                System.out.println("New Reference: " + referenceChange.getRight());
+            } else if (change instanceof CollectionChange) {
+                CollectionChange collectionChange = (CollectionChange) change;
+                System.out.println("Affected Element: " + collectionChange.getAffectedGlobalId().value());
+                System.out.println("Change Type: " + collectionChange.getChangeType());
+                if (collectionChange.getChangeType() == PROPERTY_VALUE_CHANGED) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    ObjectNode rootNode = mapper.createObjectNode();
+                    System.out.println(collectionChange.getChanges());
+                    String oldPath = convertListElementToPath(collectionChange.getLeft().toString());
+                    String newPath = convertListElementToPath(collectionChange.getRight().toString());
+                    String[] oldPathArray = oldPath.split("\\\\");
+                    String[] newPathArray = newPath.split("\\\\");
+                    ArrayNode classNode = (ArrayNode) jsonNode.get(oldPath);
+                    Integer packageLine = 0;
+                    List<Integer> changesIntegerList = new ArrayList<>();
+                    int fileTypeStart = oldPathArray[oldPathArray.length - 1].indexOf(".");
+                    String constructorName = oldPathArray[oldPathArray.length - 1].substring(0, fileTypeStart);
+                    String newConstructorName = newPathArray[oldPathArray.length - 1].substring(0, fileTypeStart);
+                    for (JsonNode line : classNode) {
+                        if (line.textValue() != null && (line.textValue().contains("package") || line.textValue().contains(" class ") || line.textValue().contains(constructorName))) {
+                            changesIntegerList.add(packageLine);
+                        }
+                        packageLine++;
+                    }
+                    for (int index : changesIntegerList) {
+                        String lineStringValue = classNode.get(index).textValue();
+                        if (lineStringValue.contains("package")) {
+                            String newPackage = oldPathArray[oldPathArray.length - 2];
+
+                            for (int arrayIndex = oldPathArray.length - 3; arrayIndex >= 0; arrayIndex--) {
+                                System.out.println(oldPathArray[arrayIndex]);
+                                if (oldPathArray[arrayIndex].equals("java")) {
+                                    break;
+                                } else {
+                                    newPackage = oldPathArray[arrayIndex] + "." + newPackage;
+                                }
+                            }
+                            lineStringValue = "package " + newPackage + ";";
+                        } else
+                            lineStringValue.replace(constructorName, newConstructorName);
+                            JsonNode newJsonNode = mapper.convertValue(lineStringValue, JsonNode.class);
+                            classNode.set(index, newJsonNode);
+                    }
+                    return mapper.convertValue(classNode, JsonNode.class);
+                }
+            }
+
+        }
+        return jsonNode;
+    }
+
+    private String convertListElementToPath(String toString) {
+        return toString.replace("[","").replace("]", "");
     }
 
     /**
