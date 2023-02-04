@@ -1,0 +1,14 @@
+#**
+ Template for the creation of getter and setter methods of OneToMany associations for the entites.vm template.
+
+ @author Laura Schmidt
+ @version 1 add getter and setter template for OneToMany associations
+ *#
+
+    public Collection<${otmAssociation.getFKEntity()}> get${otmAssociation.getFKName()}() {
+        return this.${otmAssociation.getFKName()};
+    }
+
+    public void set${otmAssociation.getFKName()}(Collection<${otmAssociation.getFKEntity()}> ${otmAssociation.getFKName()}) {
+        this.${otmAssociation.getFKName()} = ${otmAssociation.getFKName()};
+    }

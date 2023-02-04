@@ -1,0 +1,14 @@
+#**
+  Template for the creation of getter and setter methods of ManyToOne associations for the entites.vm template.
+
+  @author Laura Schmidt
+  @version 1 add getter and setter template for ManyToOne associations
+ *#
+
+    public ${mtoAssociation.getReferencedEntity()} get${mtoAssociation.getReferencedName()}() {
+        return this.${mtoAssociation.getReferencedName()};
+    }
+
+    public void set${mtoAssociation.getReferencedName()}(${mtoAssociation.getReferencedEntity()} ${mtoAssociation.getReferencedName()}) {
+        this.${mtoAssociation.getReferencedName()} = ${mtoAssociation.getReferencedName()};
+    }
