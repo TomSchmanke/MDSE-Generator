@@ -14,33 +14,37 @@ import java.util.List;
 
 public class Main {
 
+    private static final String GROUP_ID_PART_1 = "de";
+    private static final String GROUP_ID_PART_2 = "generator";
+    private static final String GROUP_ID = GROUP_ID_PART_1 + "." + GROUP_ID_PART_2;
+    private static final String ARTIFACT_ID = "generated-application";
+    private static final String NAME = "generated-application";
+    private static final String DESCRIPTION = "Generated basic build for Spring Boot";
+    private static final String JAVA_VERSION = "17";
+    private static final String SPRING_BOOT_VERSION = "3.0.2";
+    private static final String PATH_TO_FILES = NAME + "/src/main/java/" + GROUP_ID_PART_1 + "/" + GROUP_ID_PART_2  + "/" + ARTIFACT_ID.replaceAll("-", "" )  + "/";
+
+    private static final String TARGET_PATH_CONTROLLERS = PATH_TO_FILES + "controllers";
+    private static final String TARGET_PATH_ENTITIES = PATH_TO_FILES + "entities";
+    private static final String TARGET_PATH_REPOSITORIES = PATH_TO_FILES + "repositories";
+
     public static void main(String[] args) throws IOException {
         //File file = new File ("./src/main");
         //CreateProjectStructureAsJson createProjectStructureAsJson = new CreateProjectStructureAsJson(file);
 
-        String groupIdPart1 = "de";
-        String groupIdPart2 = "generator";
-        String groupId = groupIdPart1 + '.' + groupIdPart2;
-        String artifactId = "generated-application";
-        String name = "generated-application";
-        String description = "Generated basic build for Spring Boot";
-        String javaVersion = "17";
-        String bootVersion = "3.0.2";
         List<String> dependencies = Arrays.asList("devtools", "web", "security", "data-jpa");
 
-        String pathToFiles = name + "/src/main/java/" + groupIdPart1 + "/" + groupIdPart2  + "/" + artifactId.replaceAll("-", "" )  + "/";
-
         ProjectInitializer projectInitializer = new ProjectInitializer();
-        String nameOfZip = projectInitializer.loadGeneratedFilesFromSpringInitializer(groupId, artifactId, name,
-                description, javaVersion, bootVersion, dependencies);
+        String nameOfZip = projectInitializer.loadGeneratedFilesFromSpringInitializer(GROUP_ID, ARTIFACT_ID, NAME,
+                DESCRIPTION, JAVA_VERSION, SPRING_BOOT_VERSION, dependencies);
 
         if(nameOfZip == null) {
             return;
         }
         projectInitializer.unzipFile(nameOfZip, nameOfZip.substring(0, nameOfZip.length() - 3));
-        projectInitializer.newDirectoryFromPath(pathToFiles, "controllers");
-        projectInitializer.newDirectoryFromPath(pathToFiles, "entities");
-        projectInitializer.newDirectoryFromPath(pathToFiles, "repositories");
+        projectInitializer.newDirectoryFromPath(PATH_TO_FILES, "controllers");
+        projectInitializer.newDirectoryFromPath(PATH_TO_FILES, "entities");
+        projectInitializer.newDirectoryFromPath(PATH_TO_FILES, "repositories");
 
         XMLConverter xmlConverter = new XMLConverter();
         UMLClassDiagramm diagram = xmlConverter.processXMLUMLFile("/Flottenmanagement.xml");
@@ -50,15 +54,15 @@ public class Main {
 
 //        printDataModel(dataModel);
 
-        String packagePath = groupId + '.' + artifactId + '.';
+        String packagePath = GROUP_ID + '.' + ARTIFACT_ID + '.';
         String packagePathControllers = packagePath + "controllers";
         String packagePathEntities = packagePath + "entities";
         String packagePathRepositories = packagePath + "repositories";
 
         TemplateResolver templateResolver = new TemplateResolver();
-        List<String> generatedControllerFiles = templateResolver.createControllerFiles(dataModel.getControllerDataModels(), packagePathControllers, packagePathEntities, packagePathRepositories);
-        List<String> generatedEntityFiles = templateResolver.createEntityFiles(dataModel.getEntityDataModels(), dataModel.getAssociationsDataModels(), packagePathEntities);
-        List<String> generatedRepositoryFiles = templateResolver.createRepositoryFiles(dataModel.getRepositoryDataModels(), packagePathRepositories, packagePathEntities);
+        List<String> generatedControllerFiles = templateResolver.createControllerFiles(dataModel.getControllerDataModels(), packagePathControllers, packagePathEntities, packagePathRepositories, TARGET_PATH_CONTROLLERS);
+        List<String> generatedEntityFiles = templateResolver.createEntityFiles(dataModel.getEntityDataModels(), dataModel.getAssociationsDataModels(), packagePathEntities, TARGET_PATH_ENTITIES);
+        List<String> generatedRepositoryFiles = templateResolver.createRepositoryFiles(dataModel.getRepositoryDataModels(), packagePathRepositories, packagePathEntities, TARGET_PATH_REPOSITORIES);
 
         System.out.println(generatedControllerFiles);
         System.out.println(generatedEntityFiles);
