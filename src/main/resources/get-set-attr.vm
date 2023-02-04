@@ -4,11 +4,13 @@
     attributeModel: AttributeModel; Model containing getMethods for the needed variables
 
   @author Tom Schmanke
-  @version 1 Initial creation of get-set.vm to capsulate the slightly complexer logic to create the needed getter and
+  @version 1 Initial creation of get-set-attr.vm to capsulate the slightly complexer logic to create the needed getter and
   setter for the entities.vm
+
+  @author Laura Schmidt
+  @version 2 remove multiplicity
 *#
 
-#if($attributeModel.getAttributeMultiplicity() == "SINGLE")
     public ${attributeModel.getAttributeType()} get${attributeModel.getAttributeName()}() {
         return this.${attributeModel.getAttributeName()};
     }
@@ -16,13 +18,3 @@
     public void set${attributeModel.getAttributeName()}(${attributeModel.getAttributeType()} ${attributeModel.getAttributeName()}) {
         this.${attributeModel.getAttributeName()} = ${attributeModel.getAttributeName()};
     }
-#end
-#if($attributeModel.getAttributeMultiplicity() == "MULTI")
-    public List<${attributeModel.getAttributeType()}> get${attributeModel.getAttributeName()}() {
-        return this.${attributeModel.getAttributeName()};
-    }
-
-    public void set${attributeModel.getAttributeName()}(List<${attributeModel.getAttributeType()}> ${attributeModel.getAttributeName()}) {
-        this.${attributeModel.getAttributeName()} = ${attributeModel.getAttributeName()};
-    }
-#end

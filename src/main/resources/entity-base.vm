@@ -17,6 +17,9 @@
 
   @author Laura Schmidt
   @version 4 change datatype of OneToMany associations to Collection<Type>, attribute creation and visibilty
+
+  @author Laura Schmidt
+  @version 5 setter and getter generation
 *#
 
 package ${targetPackagePath};
@@ -64,10 +67,15 @@ public abstract class ${entity.getEntityName()}Base {
         ${entity.getAttributesForConstructorBody()}
     }
 
-    #*
     #foreach($attributeModel in $entity.getAttributeDataModels())
-        #parse("get-set.vm")
-
+        #parse("get-set-attr.vm")
     #end
-     *#
+
+    #foreach($mtoAssociation in $mtoAssociations)
+        #parse("get-set-mto.vm")
+    #end
+
+    #foreach($otmAssociation in $otmAssociations)
+        #parse("get-set-otm.vm")
+    #end
 }
