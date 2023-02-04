@@ -68,14 +68,14 @@ public abstract class ${entity.getEntityName()}Base {
     }
 
     #foreach($attributeModel in $entity.getAttributeDataModels())
-        #parse("get-set-attr.vm")
+        #parse("entity_templates/getter_setter_templates/get-set-attr.vm")
     #end
 
     #foreach($mtoAssociation in $mtoAssociations)
-        #parse("get-set-mto.vm")
+        #parse("entity_templates/getter_setter_templates/get-set-mto.vm")
     #end
 
     #foreach($otmAssociation in $otmAssociations)
-        #parse("get-set-otm.vm")
+        #parse("entity_templates/getter_setter_templates/get-set-otm.vm")
     #end
 }

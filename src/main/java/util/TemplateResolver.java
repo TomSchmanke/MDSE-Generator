@@ -60,8 +60,8 @@ public class TemplateResolver {
             velocityContext.put("repositoriesPackagePath" , repositoriesPackagePath + ".*");
             velocityContext.put("controller", controllerModel);
 
-            resolveTemplate(velocityContext, "controller-base.vm", controllerModel.entityName() + "ControllerBase.java", targetPath);
-            resolveTemplate(velocityContext, "controller-impl.vm", controllerModel.entityName() + "ControllerImpl.java", targetPath);
+            resolveTemplate(velocityContext, "controller_templates/controller-base.vm", controllerModel.entityName() + "ControllerBase.java", targetPath);
+            resolveTemplate(velocityContext, "controller_templates/controller-impl.vm", controllerModel.entityName() + "ControllerImpl.java", targetPath);
         }
         return controllerModels.stream().flatMap(controllerModel -> Stream.of(controllerModel.entityName() + "ControllerBase.java", controllerModel.entityName() + "ControllerEntity.java")).toList();
     }
@@ -85,8 +85,8 @@ public class TemplateResolver {
             velocityContext.put("mtoAssociations", filteredMTOAssociationsForEntity);
             velocityContext.put("otmAssociations", filteredOTMAssociationsForEntity);
 
-            resolveTemplate(velocityContext, "entity-base.vm", entityModel.entityName() + "Base.java", targetPath);
-            resolveTemplate(velocityContext, "entity-impl.vm", entityModel.entityName() + "Impl.java", targetPath);
+            resolveTemplate(velocityContext, "entity_templates/entity-base.vm", entityModel.entityName() + "Base.java", targetPath);
+            resolveTemplate(velocityContext, "entity_templates/entity-impl.vm", entityModel.entityName() + "Impl.java", targetPath);
         }
         return entityModels.stream().flatMap(entityModel -> Stream.of(entityModel.entityName() + "Base.java", entityModel.entityName() + "Impl.java")).toList();
     }
@@ -106,8 +106,8 @@ public class TemplateResolver {
             velocityContext.put("entitiesPackagePath" , entitiesPackagePath + ".*");
             velocityContext.put("repository", repositoryModel);
 
-            resolveTemplate(velocityContext, "repository-base.vm", repositoryModel.repositoryName() + "RepositoryBase.java", targetPath);
-            resolveTemplate(velocityContext, "repository-impl.vm", repositoryModel.repositoryName() + "RepositoryImpl.java", targetPath);
+            resolveTemplate(velocityContext, "repository_templates/repository-base.vm", repositoryModel.repositoryName() + "RepositoryBase.java", targetPath);
+            resolveTemplate(velocityContext, "repository_templates/repository-impl.vm", repositoryModel.repositoryName() + "RepositoryImpl.java", targetPath);
         }
         return repositoryModels.stream().flatMap(repositoryModel -> Stream.of(repositoryModel.repositoryName() + "RepositoryBase.java", repositoryModel.repositoryName() + "RepositoryImpl.java")).toList();
     }
