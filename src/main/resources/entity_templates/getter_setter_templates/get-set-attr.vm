@@ -10,11 +10,10 @@
   @author Laura Schmidt
   @version 2 remove multiplicity
 *#
-
     public ${attributeModel.getAttributeType()} get${attributeModel.getAttributeName()}() {
-        return this.${attributeModel.getAttributeName()};
+        return this.${attributeModel.getAttributeNameCamelCase()};
     }
 
-    public void set${attributeModel.getAttributeName()}(${attributeModel.getAttributeType()} ${attributeModel.getAttributeName()}) {
-        this.${attributeModel.getAttributeName()} = ${attributeModel.getAttributeName()};
+    public void set${attributeModel.getAttributeName()}(${attributeModel.getAttributeType()} ${attributeModel.getAttributeNameCamelCase()}) {
+        this.${attributeModel.getAttributeNameCamelCase()} = ${attributeModel.getAttributeNameCamelCase()};
     }

@@ -6,13 +6,12 @@
   @author Tom Schmanke
   @version 1 Initial creation for the implementation abstract class based custom code saving
 *#
-
 package ${targetPackagePath};
 
-import javax.persistence.Entity;
+import jakarta.persistence.Entity;
 
 @Entity
-public ${entity.getEntityName()}Impl extends ${entity.getEntityName()}Base {
+public class ${entity.getEntityName()}Impl extends ${entity.getEntityName()}Base {
 
     // YOUR CODE HERE
 

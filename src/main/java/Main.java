@@ -54,7 +54,7 @@ public class Main {
 
 //        printDataModel(dataModel);
 
-        String packagePath = GROUP_ID + '.' + ARTIFACT_ID + '.';
+        String packagePath = GROUP_ID.replaceAll("-", "") + '.' + ARTIFACT_ID.replaceAll("-", "") + '.';
         String packagePathControllers = packagePath + "controllers";
         String packagePathEntities = packagePath + "entities";
         String packagePathRepositories = packagePath + "repositories";

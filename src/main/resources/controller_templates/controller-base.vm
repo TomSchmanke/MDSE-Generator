@@ -36,43 +36,37 @@ import ${repositoriesPackagePath};
 
 public abstract class ${controller.getControllerName()}Base {
 
-    @Autowired ${controller.getRepositoryName()} repository;
+    @Autowired ${controller.getRepositoryName()}Impl repository;
 
     @GetMapping("/${controller.getURLPath()}")
-    public List<${controller.getEntityName()}> GetAll(){
+    public List<${controller.getEntityName()}Impl> getAll(){
         return repository.findAll();
     }
 
-    @GetMapping("/${controller.getURLPath()}/{${controller.getIdentificationVariable()}}")
-    public ${controller.getEntityName()} get(@PathVariable int ${controller.getIdentificationVariable()}) {
-        Optional<${controller.getEntityName()}> res = repository.find(id);
-        if(res.isPresent())
-            return res.get();
-        return null;
+    @GetMapping("/${controller.getURLPath()}/{${controller.getIdentificationVariableCamelCase()}}")
+    public ${controller.getEntityName()}Impl get(@PathVariable int ${controller.getIdentificationVariableCamelCase()}) {
+        Optional<${controller.getEntityName()}Impl> res = repository.findById(${controller.getIdentificationVariableCamelCase()});
+        return res.orElse(null);
     }
 
-    @DeleteMapping("/${controller.getURLPath()}/{${controller.getIdentificationVariable()}}")
-    public void delete(@PathVariable int ${controller.getIdentificationVariable()}) {
-        repository.deleteById(id);
+    @DeleteMapping("/${controller.getURLPath()}/{${controller.getIdentificationVariableCamelCase()}}")
+    public void delete(@PathVariable int ${controller.getIdentificationVariableCamelCase()}) {
+        repository.deleteById(${controller.getIdentificationVariableCamelCase()});
     }
+
     @PostMapping("/${controller.getURLPath()}")
-    public ResponseEntity<${controller.getEntityName()}> Create(@RequestBody ${controller.getEntityName()} subject) {
-        subject.setPasswort(passwordEncoder.encode(subject.getPasswort()));
-        Benutzer savedSubject = repository.save(subject);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedSubject.getId()).toUri();
+    public ResponseEntity<${controller.getEntityName()}Impl> create(@RequestBody ${controller.getEntityName()}Impl subject) {
+        ${controller.getEntityName()}Impl savedSubject = repository.save(subject);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{${controller.getIdentificationVariableCamelCase()}}").buildAndExpand(savedSubject.getId()).toUri();
         return ResponseEntity.created(location).body(savedSubject);
     }
 
-    @PutMapping("/${controller.getURLPath()}/{${controller.getIdentificationVariable()}}")
-    public ResponseEntity<${controller.getEntityName()}> Update(@RequestBody ${controller.getEntityName()} subject, @PathVariable int ${controller.getIdentificationVariable()}) {
-        Optional<${controller.getEntityName()}> res = repository.findById(id);
-        if (!res.isPresent())
-            return ResponseEntity.notFound().build();
+    @PutMapping("/${controller.getURLPath()}/{${controller.getIdentificationVariableCamelCase()}}")
+    public ResponseEntity<${controller.getEntityName()}Impl> update(@RequestBody ${controller.getEntityName()}Impl subject, @PathVariable int ${controller.getIdentificationVariableCamelCase()}) {
+        Optional<${controller.getEntityName()}Impl> res = repository.findById(${controller.getIdentificationVariableCamelCase()});
+        if (res.isEmpty()) return ResponseEntity.notFound().build();
 
-        if (!subject.getPasswort().equals(res.get().getPasswort())) {
-            subject.setPasswort(passwordEncoder.encode(subject.getPasswort()));
-        }
-        subject.setId(id);
+        subject.setId(${controller.getIdentificationVariableCamelCase()});
         repository.save(subject);
 
         return ResponseEntity.noContent().build();

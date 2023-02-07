@@ -12,6 +12,10 @@ public record AssociationsModel(String fkEntity, String fkName, MultiplicityT fk
         return fkName;
     }
 
+    public String getFKNameCamelCase() {
+        return fkName.substring(0, 1).toLowerCase() + fkName.substring(1);
+    }
+
     public String getReferencedEntity() {
         return referencedEntity;
     }
@@ -20,8 +24,12 @@ public record AssociationsModel(String fkEntity, String fkName, MultiplicityT fk
         return referencedName;
     }
 
+    public String getReferencedNameCamelCase() {
+        return referencedName.substring(0, 1).toLowerCase() + referencedName.substring(1);
+    }
+
     public String getMappedByKey() {
-        return referencedName.substring(0, 1).toLowerCase() + referencedName.substring(1) ;
+        return referencedName.substring(0, 1).toLowerCase() + referencedName.substring(1);
     }
 
     public String getFKKey() {
