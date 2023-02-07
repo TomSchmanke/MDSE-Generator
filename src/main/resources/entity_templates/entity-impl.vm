@@ -8,9 +8,6 @@
 *###
 package ${targetPackagePath};
 
-import jakarta.persistence.Entity;
-
-@Entity
 public class ${entity.getEntityName()}Impl extends ${entity.getEntityName()}Base {
 
     // YOUR CODE HERE
