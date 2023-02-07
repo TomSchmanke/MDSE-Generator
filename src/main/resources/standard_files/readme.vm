@@ -3,16 +3,15 @@
 
  @author Laura Schmidt
  @version 1 Initial creation of README.md file
- *#
-
+ *###
 # ${artifactId}
 
-\## Requirements
+#[[##]]# Requirements
 For building and running the application you need:
 * [Java 17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
 * [Maven 3.5 or above](https://maven.apache.org/download.cgi)
 
-\## Run application locally
+#[[##]]# Run application locally
 You can run your application on your local machine in several ways. For example, you can execute the `main` method within your IDE.
 
 Alternatively you can use the Spring Boot Maven plugin by executing

@@ -28,6 +28,9 @@ public class Main {
     private static final String TARGET_PATH_ENTITIES = PATH_TO_FILES + "entities";
     private static final String TARGET_PATH_REPOSITORIES = PATH_TO_FILES + "repositories";
 
+    private static final String BASE_PATH = NAME;
+    private static final String RESOURCES_PATH = NAME + "/src/main/resources";
+
     public static void main(String[] args) throws IOException {
         //File file = new File ("./src/main");
         //CreateProjectStructureAsJson createProjectStructureAsJson = new CreateProjectStructureAsJson(file);
@@ -63,10 +66,14 @@ public class Main {
         List<String> generatedControllerFiles = templateResolver.createControllerFiles(dataModel.getControllerDataModels(), packagePathControllers, packagePathEntities, packagePathRepositories, TARGET_PATH_CONTROLLERS);
         List<String> generatedEntityFiles = templateResolver.createEntityFiles(dataModel.getEntityDataModels(), dataModel.getAssociationsDataModels(), packagePathEntities, TARGET_PATH_ENTITIES);
         List<String> generatedRepositoryFiles = templateResolver.createRepositoryFiles(dataModel.getRepositoryDataModels(), packagePathRepositories, packagePathEntities, TARGET_PATH_REPOSITORIES);
+        String applicationPropertiesFile = templateResolver.createApplicationProperties(ARTIFACT_ID, RESOURCES_PATH);
+        String readMeFile = templateResolver.createReadMe(ARTIFACT_ID, BASE_PATH);
 
         System.out.println(generatedControllerFiles);
         System.out.println(generatedEntityFiles);
         System.out.println(generatedRepositoryFiles);
+        System.out.println(applicationPropertiesFile);
+        System.out.println(readMeFile);
     }
 
     // TODO: only for test/debug purposes, delete later

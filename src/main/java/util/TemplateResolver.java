@@ -20,6 +20,9 @@ import java.util.stream.Stream;
  *
  * @author Tom Schmanke
  * @version 1.0 Initial creation with generation of controller, entities and repositories based on templates
+ *
+ * @author Laura Schmidt
+ * @version 1.1 Resolve application-properties.vm and readme.vm
  */
 public class TemplateResolver {
 
@@ -112,4 +115,35 @@ public class TemplateResolver {
         return repositoryModels.stream().flatMap(repositoryModel -> Stream.of(repositoryModel.repositoryName() + "RepositoryBase.java", repositoryModel.repositoryName() + "RepositoryImpl.java")).toList();
     }
 
+    /**
+     * Method generates a basic application.properties file.
+     *
+     * @param artifactId ArtifactId from maven coordinates
+     * @param targetPath Path where the file will be generated
+     * @return generated file name
+     */
+    public String createApplicationProperties(String artifactId, String targetPath) {
+        VelocityContext velocityContext = new VelocityContext();
+        velocityContext.put("artifactId", artifactId);
+
+        resolveTemplate(velocityContext, "standard_files/application-properties.vm", "application.properties", targetPath);
+
+        return "application.properties";
+    }
+
+    /**
+     * Method generates a basic README.md file.
+     *
+     * @param artifactId ArtifactId from maven coordinates
+     * @param targetPath Path where the file will be generated
+     * @return generated file name
+     */
+    public String createReadMe(String artifactId, String targetPath) {
+        VelocityContext velocityContext = new VelocityContext();
+        velocityContext.put("artifactId", artifactId);
+
+        resolveTemplate(velocityContext, "standard_files/readme.vm", "README.md", targetPath);
+
+        return "README.md";
+    }
 }

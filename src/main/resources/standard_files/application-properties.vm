@@ -3,7 +3,6 @@
 
  @author Laura Schmidt
  @version 1 Initial creation of application.properties file
- *#
-
+ *###
 spring.application.name = ${artifactId}
 server.port = 8080
