@@ -1,13 +1,8 @@
 import de.arinir.mdsd.metamodell.MDSDMetamodell.UMLClassDiagramm;
 
 import template_data.*;
-import util.CreateProjectStructureAsJson;
-import util.DataConverter;
-import util.ProjectInitializer;
-import util.TemplateResolver;
-import util.XMLConverter;
+import util.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -30,6 +25,7 @@ public class Main {
 
     private static final String BASE_PATH = NAME;
     private static final String RESOURCES_PATH = NAME + "/src/main/resources";
+    private static final String GENERATOR_STANDARD_FILES_PATH = "src/main/resources/standard_files";
 
     public static void main(String[] args) throws IOException {
         //File file = new File ("./src/main");
@@ -74,6 +70,10 @@ public class Main {
         System.out.println(generatedRepositoryFiles);
         System.out.println(applicationPropertiesFile);
         System.out.println(readMeFile);
+
+        FileCopier fileCopier = new FileCopier();
+        fileCopier.copyFile(GENERATOR_STANDARD_FILES_PATH + "/.editorconfig", BASE_PATH + "/.editorconfig");
+        fileCopier.copyFile(GENERATOR_STANDARD_FILES_PATH + "/.gitignore", BASE_PATH + "/.gitignore");
     }
 
     // TODO: only for test/debug purposes, delete later
