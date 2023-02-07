@@ -31,22 +31,22 @@ public abstract class ${entity.getEntityName()}Base {
 
     @Id
     @GeneratedValue
-    private int ${entity.getIdentificationVariableSmall()};
+    private int ${entity.getIdentificationVariableCamelCase()};
 
     #foreach ($attributeModel in $entity.getAttributeDataModels())
-    ${attributeModel.getAttributeVisibility().toString().toLowerCase()} ${attributeModel.getAttributeType()} ${attributeModel.getAttributeNameSmall()};
+    ${attributeModel.getAttributeVisibility().toString().toLowerCase()} ${attributeModel.getAttributeType()} ${attributeModel.getAttributeNameCamelCase()};
 
     #end
     #foreach ($mtoAssociation in $mtoAssociations)
     @ManyToOne
     @JoinColumn(name="${mtoAssociation.getFKKey()}")
-    private ${mtoAssociation.getReferencedEntity()}Impl ${mtoAssociation.getReferencedNameSmall()};
+    private ${mtoAssociation.getReferencedEntity()}Impl ${mtoAssociation.getReferencedNameCamelCase()};
 
     #end
     #foreach ($otmAssociation in $otmAssociations)
     @OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL, mappedBy="${otmAssociation.getMappedByKey()}")
     @JsonIgnore
-    private Collection<${otmAssociation.getFKEntity()}Impl> ${otmAssociation.getFKNameSmall()};
+    private Collection<${otmAssociation.getFKEntity()}Impl> ${otmAssociation.getFKNameCamelCase()};
 
     #end
 
@@ -59,11 +59,11 @@ public abstract class ${entity.getEntityName()}Base {
     }
 
     public int get${entity.getIdentificationVariable()}() {
-        return ${entity.getIdentificationVariableSmall()};
+        return ${entity.getIdentificationVariableCamelCase()};
     }
 
-    public void set${entity.getIdentificationVariable()}(int ${entity.getIdentificationVariableSmall()}) {
-        this.${entity.getIdentificationVariableSmall()} = ${entity.getIdentificationVariableSmall()};
+    public void set${entity.getIdentificationVariable()}(int ${entity.getIdentificationVariableCamelCase()}) {
+        this.${entity.getIdentificationVariableCamelCase()} = ${entity.getIdentificationVariableCamelCase()};
     }
 
     #foreach($attributeModel in $entity.getAttributeDataModels())

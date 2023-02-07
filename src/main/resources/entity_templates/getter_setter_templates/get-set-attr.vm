@@ -11,9 +11,9 @@
   @version 2 remove multiplicity
 *#
     public ${attributeModel.getAttributeType()} get${attributeModel.getAttributeName()}() {
-        return this.${attributeModel.getAttributeNameSmall()};
+        return this.${attributeModel.getAttributeNameCamelCase()};
     }
 
-    public void set${attributeModel.getAttributeName()}(${attributeModel.getAttributeType()} ${attributeModel.getAttributeNameSmall()}) {
-        this.${attributeModel.getAttributeNameSmall()} = ${attributeModel.getAttributeNameSmall()};
+    public void set${attributeModel.getAttributeName()}(${attributeModel.getAttributeType()} ${attributeModel.getAttributeNameCamelCase()}) {
+        this.${attributeModel.getAttributeNameCamelCase()} = ${attributeModel.getAttributeNameCamelCase()};
     }

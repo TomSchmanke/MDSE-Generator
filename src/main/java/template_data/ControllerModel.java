@@ -10,7 +10,7 @@ public record ControllerModel(String entityName, String identificationVariable) 
         return identificationVariable;
     }
 
-    public String getIdentificationVariableSmall() {
+    public String getIdentificationVariableCamelCase() {
         return identificationVariable.substring(0, 1).toLowerCase() + identificationVariable.substring(1);
     }
 

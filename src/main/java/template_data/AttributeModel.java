@@ -9,7 +9,7 @@ public record AttributeModel(String attributeName, DataType attributeType, Visib
         return attributeName;
     }
 
-    public String getAttributeNameSmall() {
+    public String getAttributeNameCamelCase() {
         return attributeName.substring(0, 1).toLowerCase() + attributeName.substring(1);
     }
 

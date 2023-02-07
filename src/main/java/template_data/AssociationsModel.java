@@ -12,7 +12,7 @@ public record AssociationsModel(String fkEntity, String fkName, MultiplicityT fk
         return fkName;
     }
 
-    public String getFKNameSmall() {
+    public String getFKNameCamelCase() {
         return fkName.substring(0, 1).toLowerCase() + fkName.substring(1);
     }
 
@@ -24,7 +24,7 @@ public record AssociationsModel(String fkEntity, String fkName, MultiplicityT fk
         return referencedName;
     }
 
-    public String getReferencedNameSmall() {
+    public String getReferencedNameCamelCase() {
         return referencedName.substring(0, 1).toLowerCase() + referencedName.substring(1);
     }
 
