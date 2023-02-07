@@ -20,7 +20,7 @@
 
   @author Laura Schmidt
   @version 5 setter and getter generation
-*#
+*###
 package ${targetPackagePath};
 
 import java.util.Collection;

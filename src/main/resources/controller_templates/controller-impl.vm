@@ -5,7 +5,7 @@
 
   @author Tom Schmanke
   @version 1 Initial creation for the implementation abstract class based custom code saving
-*#
+*###
 package ${targetPackagePath};
 
 import org.springframework.web.bind.annotation.RestController;
