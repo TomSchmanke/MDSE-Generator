@@ -72,8 +72,8 @@ public class Main {
         System.out.println(readMeFile);
 
         FileCopier fileCopier = new FileCopier();
-        fileCopier.copyFile(GENERATOR_STANDARD_FILES_PATH + "/.editorconfig", BASE_PATH + "/.editorconfig");
-        fileCopier.copyFile(GENERATOR_STANDARD_FILES_PATH + "/.gitignore", BASE_PATH + "/.gitignore");
+        fileCopier.copyFile(GENERATOR_STANDARD_FILES_PATH + "/template-editorconfig", BASE_PATH + "/.editorconfig");
+        fileCopier.copyFile(GENERATOR_STANDARD_FILES_PATH + "/template-gitignore", BASE_PATH + "/.gitignore");
     }
 
     // TODO: only for test/debug purposes, delete later
