@@ -3,7 +3,6 @@ package util;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 
 /**
  * Util class to move files from one place to another
@@ -12,7 +11,11 @@ import java.nio.file.StandardCopyOption;
  * @version 1.0 Initial implementation
  */
 public class FileCopier {
-    public void copyFile(String sourcePath, String targetPath) throws IOException {
-        Files.copy(Path.of(sourcePath), Path.of(targetPath), StandardCopyOption.REPLACE_EXISTING);
+    public void copyFile(String source, String target) throws IOException {
+        Path targetPath = Path.of(target);
+
+        if (!Files.exists(targetPath)) {
+            Files.copy(Path.of(source), targetPath);
+        }
     }
 }
