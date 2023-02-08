@@ -12,6 +12,7 @@ import java.util.List;
  * our generator.
  *
  * @author Laura Schmidt
+ * @version 1.0 Initial implementation
  */
 public class DataConverter {
 

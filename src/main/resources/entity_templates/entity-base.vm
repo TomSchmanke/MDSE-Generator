@@ -6,20 +6,20 @@
     otmAssociations: List<AssociationsModel>; List of "one-to-many" associations
 
   @author Jonas Knebel
-  @version 1 Initial creation of entity-base.vm with basic statements based on the expected results
+  @version 1.0 Initial creation of entity-base.vm with basic statements based on the expected results
 
   @author Tom Schmanke
-  @version 2 Rework of entity template based on the given data structure. This mainly includes import statemens,
+  @version 2.0 Rework of entity template based on the given data structure. This mainly includes import statemens,
   loops, less template duplication, structure of variables and indentation
 
   @author Tom Schmanke
-  @version 3 Transform controller template for abstract class based custom code saving
+  @version 3.0 Transform controller template for abstract class based custom code saving
 
   @author Laura Schmidt
-  @version 4 change datatype of OneToMany associations to Collection<Type>, attribute creation and visibilty
+  @version 3.1 change datatype of OneToMany associations to Collection<Type>, attribute creation and visibilty
 
   @author Laura Schmidt
-  @version 5 setter and getter generation
+  @version 3.2 setter and getter generation
 *#
 package ${targetPackagePath};
 
