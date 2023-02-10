@@ -4,11 +4,11 @@
     attributeModel: AttributeModel; Model containing getMethods for the needed variables
 
   @author Tom Schmanke
-  @version 1 Initial creation of get-set-attr.vm to capsulate the slightly complexer logic to create the needed getter and
+  @version 1.0 Initial creation of get-set-attr.vm to capsulate the slightly complexer logic to create the needed getter and
   setter for the entities.vm
 
   @author Laura Schmidt
-  @version 2 remove multiplicity
+  @version 2.0 remove multiplicity
 *###
     public ${attributeModel.getAttributeType()} get${attributeModel.getAttributeName()}() {
         return this.${attributeModel.getAttributeNameCamelCase()};
@@ -17,4 +17,3 @@
     public void set${attributeModel.getAttributeName()}(${attributeModel.getAttributeType()} ${attributeModel.getAttributeNameCamelCase()}) {
         this.${attributeModel.getAttributeNameCamelCase()} = ${attributeModel.getAttributeNameCamelCase()};
     }
-
