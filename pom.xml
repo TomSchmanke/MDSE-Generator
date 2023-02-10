@@ -91,6 +91,7 @@
             <version>2.12.7.1</version>
         </dependency>
 
+        <!-- https://github.com/sebischair/SimpleNLG-DE -->
         <dependency>
             <groupId>com.github.sebischair</groupId>
             <artifactId>SimpleNLG-DE</artifactId>
