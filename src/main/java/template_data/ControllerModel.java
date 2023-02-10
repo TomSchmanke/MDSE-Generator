@@ -1,5 +1,7 @@
 package template_data;
 
+import util.Plurals;
+
 public record ControllerModel(String entityName, String identificationVariable) {
 
     public String getEntityName() {
@@ -23,6 +25,6 @@ public record ControllerModel(String entityName, String identificationVariable) 
     }
 
     public String getURLPath() {
-        return entityName.replaceAll("([a-z])([A-Z]+)", "$1_$2").toLowerCase() + "s";
+        return Plurals.getPlural(entityName.replaceAll("([a-z])([A-Z]+)", "$1_$2")).toLowerCase();
     }
 }
