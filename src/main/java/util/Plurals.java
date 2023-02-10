@@ -7,6 +7,14 @@ import simplenlgde.lexicon.Lexicon;
 import simplenlgde.phrasespec.NPPhraseSpec;
 import simplenlgde.realiser.Realiser;
 
+/**
+ * Utility functions to create the plural of a given noun.
+ *
+ * @see <a href="https://github.com/sebischair/SimpleNLG-DE">SimpleNLG-DE</a>
+ *
+ * @author Laura Schmidt
+ * @version 1.0 Initial implementation
+ */
 public class Plurals {
 
     private static Lexicon lexicon = Lexicon.getDefaultLexicon();
