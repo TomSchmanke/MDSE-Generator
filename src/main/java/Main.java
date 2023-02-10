@@ -52,6 +52,7 @@ public class Main {
         DataConverter dataConverter = new DataConverter(diagram);
         DataModel dataModel = dataConverter.convertMDSDDiagramToDataModel();
 
+
 //        printDataModel(dataModel);
 
         String packagePath = GROUP_ID.replaceAll("-", "") + '.' + ARTIFACT_ID.replaceAll("-", "") + '.';
