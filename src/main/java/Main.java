@@ -31,7 +31,7 @@ public class Main {
         //File file = new File ("./src/main");
         //CreateProjectStructureAsJson createProjectStructureAsJson = new CreateProjectStructureAsJson(file);
 
-        List<String> dependencies = Arrays.asList("devtools", "web", "security", "data-jpa");
+        List<String> dependencies = Arrays.asList("devtools", "web", "data-jpa", "h2");
 
         ProjectInitializer projectInitializer = new ProjectInitializer();
         String nameOfZip = projectInitializer.loadGeneratedFilesFromSpringInitializer(GROUP_ID, ARTIFACT_ID, NAME,

@@ -20,6 +20,9 @@
 
   @author Laura Schmidt
   @version 3.2 setter and getter generation
+
+  @author Tom Schmanke
+  @version 3.3 Add if-cases to optional imports and constructor
 *###
 package ${targetPackagePath};
 
