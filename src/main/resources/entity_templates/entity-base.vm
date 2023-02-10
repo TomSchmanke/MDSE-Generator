@@ -23,10 +23,13 @@
 *###
 package ${targetPackagePath};
 
+#if($otmAssociations.size() != 0)
 import java.util.Collection;
-import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+#end
+import jakarta.persistence.*;
 
+@Entity
 public abstract class ${entity.getEntityName()}Base {
 
     @Id

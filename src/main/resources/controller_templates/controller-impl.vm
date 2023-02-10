@@ -8,9 +8,6 @@
 *###
 package ${targetPackagePath};
 
-import org.springframework.web.bind.annotation.RestController;
-
-@RestController
 public class ${controller.getControllerName()}Impl extends ${controller.getControllerName()}Base {
 
     // YOUR CODE HERE
