@@ -9,7 +9,7 @@
 
   @author Laura Schmidt
   @version 2.0 remove multiplicity
-*#
+*###
     public ${attributeModel.getAttributeType()} get${attributeModel.getAttributeName()}() {
         return this.${attributeModel.getAttributeNameCamelCase()};
     }

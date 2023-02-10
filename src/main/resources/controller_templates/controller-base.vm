@@ -14,7 +14,7 @@
 
   @author Tom Schmanke
   @version 3.0 Transform controller template for abstract class based custom code saving
-*#
+*###
 package ${targetPackagePath};
 
 import java.net.URI;
@@ -29,11 +29,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import ${entitiesPackagePath};
 import ${repositoriesPackagePath};
 
+@RestController
 public abstract class ${controller.getControllerName()}Base {
 
     @Autowired ${controller.getRepositoryName()}Impl repository;
