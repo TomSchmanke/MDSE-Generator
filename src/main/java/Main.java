@@ -1,4 +1,5 @@
 import user_code_resolver.UserCodeResolver;
+
 import de.arinir.mdsd.metamodell.MDSDMetamodell.UMLClassDiagramm;
 
 import template_data.*;
@@ -31,6 +32,18 @@ public class Main {
     public static void main(String[] args) throws IOException {
         //  File file = new File ("./src/main/java/util");
         // UserCodeResolver createProjectStructureAsJson = new UserCodeResolver(file);
+    
+        String groupIdPart1 = "de";
+        String groupIdPart2 = "generator";
+        String groupId = groupIdPart1 + '.' + groupIdPart2;
+        String artifactId = "generated-application";
+        String name = "generated-application";
+        String description = "Generated basic build for Spring Boot";
+        String javaVersion = "17";
+        String bootVersion = "3.0.2";
+
+
+        String pathToFiles = name + "/src/main/java/" + groupIdPart1 + "/" + groupIdPart2  + "/" + artifactId.replaceAll("-", "" )  + "/";
 
         List<String> dependencies = Arrays.asList("devtools", "web", "data-jpa", "h2");
 
