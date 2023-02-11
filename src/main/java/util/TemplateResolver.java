@@ -20,6 +20,9 @@ import java.util.stream.Stream;
  *
  * @author Tom Schmanke
  * @version 1.0 Initial creation with generation of controller, entities and repositories based on templates
+ *
+ * @author Laura Schmidt
+ * @version 1.1 Resolve application-properties.vm and readme.vm
  */
 public class TemplateResolver {
 
@@ -32,9 +35,9 @@ public class TemplateResolver {
         velocityEngine.init(velocityProperties);
     }
 
-    private void resolveTemplate(VelocityContext velocityContext, String inputTemplate, String outputFile) {
+    private void resolveTemplate(VelocityContext velocityContext, String inputTemplate, String outputFile, String targetPath) {
         try {
-            Writer writer = new FileWriter(outputFile);
+            Writer writer = new FileWriter(targetPath + "/" + outputFile);
             velocityEngine.mergeTemplate(inputTemplate, "UTF-8", velocityContext, writer);
             writer.flush();
             writer.close();
@@ -52,7 +55,7 @@ public class TemplateResolver {
      * of the RestController .java files
      * @return List of names of the generated files
      */
-    public List<String> createControllerFiles(List<ControllerModel> controllerModels, String targetPackagePath, String entitiesPackagePath, String repositoriesPackagePath) {
+    public List<String> createControllerFiles(List<ControllerModel> controllerModels, String targetPackagePath, String entitiesPackagePath, String repositoriesPackagePath, String targetPath) {
         for (ControllerModel controllerModel : controllerModels) {
             VelocityContext velocityContext = new VelocityContext();
             velocityContext.put("targetPackagePath" , targetPackagePath);
@@ -60,8 +63,8 @@ public class TemplateResolver {
             velocityContext.put("repositoriesPackagePath" , repositoriesPackagePath + ".*");
             velocityContext.put("controller", controllerModel);
 
-            resolveTemplate(velocityContext, "controller-base.vm", controllerModel.entityName() + "ControllerBase.java");
-            resolveTemplate(velocityContext, "controller-impl.vm", controllerModel.entityName() + "ControllerImpl.java");
+            resolveTemplate(velocityContext, "controller_templates/controller-base.vm", controllerModel.entityName() + "ControllerBase.java", targetPath);
+            resolveTemplate(velocityContext, "controller_templates/controller-impl.vm", controllerModel.entityName() + "ControllerImpl.java", targetPath);
         }
         return controllerModels.stream().flatMap(controllerModel -> Stream.of(controllerModel.entityName() + "ControllerBase.java", controllerModel.entityName() + "ControllerEntity.java")).toList();
     }
@@ -74,7 +77,7 @@ public class TemplateResolver {
      * of the JPA Entities .java files
      * @return List of names of the generated files
      */
-    public List<String> createEntityFiles(List<EntityModel> entityModels, List<AssociationsModel> associationsModels, String targetPackagePath) {
+    public List<String> createEntityFiles(List<EntityModel> entityModels, List<AssociationsModel> associationsModels, String targetPackagePath, String targetPath) {
         for (EntityModel entityModel : entityModels) {
             VelocityContext velocityContext = new VelocityContext();
             velocityContext.put("targetPackagePath" , targetPackagePath);
@@ -85,8 +88,8 @@ public class TemplateResolver {
             velocityContext.put("mtoAssociations", filteredMTOAssociationsForEntity);
             velocityContext.put("otmAssociations", filteredOTMAssociationsForEntity);
 
-            resolveTemplate(velocityContext, "entity-base.vm", entityModel.entityName() + "Base.java");
-            resolveTemplate(velocityContext, "entity-impl.vm", entityModel.entityName() + "Impl.java");
+            resolveTemplate(velocityContext, "entity_templates/entity-base.vm", entityModel.entityName() + "Base.java", targetPath);
+            resolveTemplate(velocityContext, "entity_templates/entity-impl.vm", entityModel.entityName() + "Impl.java", targetPath);
         }
         return entityModels.stream().flatMap(entityModel -> Stream.of(entityModel.entityName() + "Base.java", entityModel.entityName() + "Impl.java")).toList();
     }
@@ -99,17 +102,48 @@ public class TemplateResolver {
      * of the JPA Repositories .java files
      * @return List of names of the generated files
      */
-    public List<String> createRepositoryFiles(List<RepositoryModel> repositoryModels, String targetPackagePath, String entitiesPackagePath) {
+    public List<String> createRepositoryFiles(List<RepositoryModel> repositoryModels, String targetPackagePath, String entitiesPackagePath, String targetPath) {
         for (RepositoryModel repositoryModel : repositoryModels) {
             VelocityContext velocityContext = new VelocityContext();
             velocityContext.put("targetPackagePath" , targetPackagePath);
             velocityContext.put("entitiesPackagePath" , entitiesPackagePath + ".*");
             velocityContext.put("repository", repositoryModel);
 
-            resolveTemplate(velocityContext, "entity-base.vm", repositoryModel.repositoryName() + "Base.java");
-            resolveTemplate(velocityContext, "entity-impl.vm", repositoryModel.repositoryName() + "Impl.java");
+            resolveTemplate(velocityContext, "repository_templates/repository-base.vm", repositoryModel.repositoryName() + "RepositoryBase.java", targetPath);
+            resolveTemplate(velocityContext, "repository_templates/repository-impl.vm", repositoryModel.repositoryName() + "RepositoryImpl.java", targetPath);
         }
-        return repositoryModels.stream().flatMap(repositoryModel -> Stream.of(repositoryModel.repositoryName() + "Base.java", repositoryModel.repositoryName() + "Impl.java")).toList();
+        return repositoryModels.stream().flatMap(repositoryModel -> Stream.of(repositoryModel.repositoryName() + "RepositoryBase.java", repositoryModel.repositoryName() + "RepositoryImpl.java")).toList();
     }
 
+    /**
+     * Method generates a basic application.properties file.
+     *
+     * @param artifactId ArtifactId from maven coordinates
+     * @param targetPath Path where the file will be generated
+     * @return generated file name
+     */
+    public String createApplicationProperties(String artifactId, String targetPath) {
+        VelocityContext velocityContext = new VelocityContext();
+        velocityContext.put("artifactId", artifactId);
+
+        resolveTemplate(velocityContext, "standard_files/application-properties.vm", "application.properties", targetPath);
+
+        return "application.properties";
+    }
+
+    /**
+     * Method generates a basic README.md file.
+     *
+     * @param artifactId ArtifactId from maven coordinates
+     * @param targetPath Path where the file will be generated
+     * @return generated file name
+     */
+    public String createReadMe(String artifactId, String targetPath) {
+        VelocityContext velocityContext = new VelocityContext();
+        velocityContext.put("artifactId", artifactId);
+
+        resolveTemplate(velocityContext, "standard_files/readme.vm", "README.md", targetPath);
+
+        return "README.md";
+    }
 }
