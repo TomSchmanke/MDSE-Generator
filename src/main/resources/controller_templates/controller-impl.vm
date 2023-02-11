@@ -1,0 +1,15 @@
+#**
+  Template for the creation of RestControllersImpl frame. Expectes the following variables as inputs (see template_data for more):
+    targetPackagePath: String; Path of the packge the file will be used
+    controller: ControllerModel; Model containing getMethods for the needed variables
+
+  @author Tom Schmanke
+  @version 1.0 Initial creation for the implementation abstract class based custom code saving
+*###
+package ${targetPackagePath};
+
+public class ${controller.getControllerName()}Impl extends ${controller.getControllerName()}Base {
+
+    // YOUR CODE HERE
+
+}

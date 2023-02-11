@@ -1,0 +1,24 @@
+#**
+  Template for the creation of JPA Repositories. Expectes the following variables as inputs (see template_data for more):
+    targetPackagePath: String; Path of the packge the file will be used
+    entitiesPackagePath: String; Path of the package of the referenced entities
+    repository: RespositoryModel; Model containing getMethods for the needed variables
+
+  @author Jonas Knebel
+  @version 1.0 Initial creation of repository-base.vm with basic statements based on the expected results
+
+  @author Tom Schmanke
+  @version 2.0 Rework of repository template based on the given data structure. This mainly includes import statemens,
+  loops, less template duplication, structure of variables and indentation
+
+  @author Tom Schmanke
+  @version 3.0 Transform controller template for abstract class based custom code saving
+*###
+package ${targetPackagePath};
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import ${entitiesPackagePath};
+
+public interface ${repository.getRepositoryName()}Base extends JpaRepository<${repository.getEntityName()}Base, Integer> {
+
+}

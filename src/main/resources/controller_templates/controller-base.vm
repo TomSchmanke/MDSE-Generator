@@ -1,0 +1,77 @@
+#**
+  Template for the creation of RestControllerBase. Expectes the following variables as inputs (see template_data for more):
+    targetPackagePath: String; Path of the packge the file will be used
+    entitiesPackagePath: String; Path of the package of the referenced entities
+    repositoriesPackagePath: String; Path of the package of the referenced repositories
+    controller: ControllerModel; Model containing getMethods for the needed variables
+
+  @author Jonas Knebel
+  @version 1.0 Initial creation of controller-base.vm with basic statements based on the expected results
+
+  @author Tom Schmanke
+  @version 2.0 Rework of controller template based on the given data structure. This mainly includes import statemens,
+  loops, less template duplication, structure of variables and indentation
+
+  @author Tom Schmanke
+  @version 3.0 Transform controller template for abstract class based custom code saving
+*###
+package ${targetPackagePath};
+
+import java.net.URI;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import ${entitiesPackagePath};
+import ${repositoriesPackagePath};
+
+@RestController
+public abstract class ${controller.getControllerName()}Base {
+
+    @Autowired ${controller.getRepositoryName()}Base repository;
+
+    @GetMapping("/${controller.getURLPath()}")
+    public List<${controller.getEntityName()}Base> getAll(){
+        return repository.findAll();
+    }
+
+    @GetMapping("/${controller.getURLPath()}/{${controller.getIdentificationVariableCamelCase()}}")
+    public ${controller.getEntityName()}Base get(@PathVariable int ${controller.getIdentificationVariableCamelCase()}) {
+        Optional<${controller.getEntityName()}Base> res = repository.findById(${controller.getIdentificationVariableCamelCase()});
+        return res.orElse(null);
+    }
+
+    @DeleteMapping("/${controller.getURLPath()}/{${controller.getIdentificationVariableCamelCase()}}")
+    public void delete(@PathVariable int ${controller.getIdentificationVariableCamelCase()}) {
+        repository.deleteById(${controller.getIdentificationVariableCamelCase()});
+    }
+
+    @PostMapping("/${controller.getURLPath()}")
+    public ResponseEntity<${controller.getEntityName()}Base> create(@RequestBody ${controller.getEntityName()}Base subject) {
+        ${controller.getEntityName()}Base savedSubject = repository.save(subject);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{${controller.getIdentificationVariableCamelCase()}}").buildAndExpand(savedSubject.getId()).toUri();
+        return ResponseEntity.created(location).body(savedSubject);
+    }
+
+    @PutMapping("/${controller.getURLPath()}/{${controller.getIdentificationVariableCamelCase()}}")
+    public ResponseEntity<${controller.getEntityName()}Base> update(@RequestBody ${controller.getEntityName()}Base subject, @PathVariable int ${controller.getIdentificationVariableCamelCase()}) {
+        Optional<${controller.getEntityName()}Base> res = repository.findById(${controller.getIdentificationVariableCamelCase()});
+        if (res.isEmpty()) return ResponseEntity.notFound().build();
+
+        subject.setId(${controller.getIdentificationVariableCamelCase()});
+        repository.save(subject);
+
+        return ResponseEntity.noContent().build();
+    }
+
+}

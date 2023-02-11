@@ -1,0 +1,15 @@
+#**
+  Template for the creation of JPA Repositories. Expectes the following variables as inputs (see template_data for more):
+    targetPackagePath: String; Path of the packge the file will be used
+    repository: RespositoryModel; Model containing getMethods for the needed variables
+
+  @author Tom Schmanke
+  @version 1.0 Initial creation for the implementation abstract class based custom code saving
+*###
+package ${targetPackagePath};
+
+public interface ${repository.getRepositoryName()}Impl extends ${repository.getRepositoryName()}Base {
+
+    // YOUR CODE HERE
+
+}
