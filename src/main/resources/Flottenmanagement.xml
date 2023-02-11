@@ -222,7 +222,7 @@
 										<UML:Classifier xmi.idref="eaxmiid1"/>
 									</UML:StructuralFeature.type>
 									<UML:ModelElement.taggedValue>
-										<UML:TaggedValue tag="type" value="CurrencyT"/>
+										<UML:TaggedValue tag="type" value="int"/>
 										<UML:TaggedValue tag="derived" value="0"/>
 										<UML:TaggedValue tag="containment" value="Not Specified"/>
 										<UML:TaggedValue tag="ordered" value="0"/>
@@ -478,7 +478,7 @@
 										<UML:Classifier xmi.idref="eaxmiid1"/>
 									</UML:StructuralFeature.type>
 									<UML:ModelElement.taggedValue>
-										<UML:TaggedValue tag="type" value="CurrencyT"/>
+										<UML:TaggedValue tag="type" value="int"/>
 										<UML:TaggedValue tag="derived" value="1"/>
 										<UML:TaggedValue tag="containment" value="Not Specified"/>
 										<UML:TaggedValue tag="ordered" value="0"/>
@@ -649,7 +649,7 @@
 				<UML:DataType xmi.id="eaxmiid0" name="string" visibility="private" isRoot="false" isLeaf="false" isAbstract="false"/>
 				<UML:DataType xmi.id="eaxmiid2" name="bool" visibility="private" isRoot="false" isLeaf="false" isAbstract="false"/>
 				<UML:DataType xmi.id="eaxmiid3" name="float" visibility="private" isRoot="false" isLeaf="false" isAbstract="false"/>
-				<UML:DataType xmi.id="eaxmiid1" name="CurrencyT" visibility="private" isRoot="false" isLeaf="false" isAbstract="false"/>
+				<UML:DataType xmi.id="eaxmiid1" name="int" visibility="private" isRoot="false" isLeaf="false" isAbstract="false"/>
 			</UML:Namespace.ownedElement>
 		</UML:Model>
 		<UML:TaggedValue tag="__W3LSpecifierSettings" xmi.id="EAID_E6E4C80F_34BC_4ec7_AF32_C229A6B03DDB" value="&lt;memo&gt;#NOTES#QgEAAB+LCAAAAAAABACNjrEKwkAMht/lZrlBN9fTakUQrOJ8eKEG0qTkroKI726ltsXJLiF8/P+XPM1lsd/N7Uoqj2yL5Dl4DXYDDOoTCtsjRGn0CiMyS9PDDAnM7L/ECccWpx+JIwROB6bHFMV3hQLpDkpY3lInaE2Zpzjpj16yTRUN7ZM2Y9lJVSN16bxkUThHUCcBcv7MdcAkOtx8vQGsdw6jQgEAAA==" modelElement="MX_EAID_C33E8E82_1F0B_4f14_8258_498C7B0BEAC3"/>

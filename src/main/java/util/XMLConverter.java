@@ -10,6 +10,7 @@ import java.io.InputStream;
  * Helper class to convert XML file to MDSDMetamodell object.
  *
  * @author Laura Schmidt
+ * @version 1.0 Initial implementation
  */
 public class XMLConverter {
 
