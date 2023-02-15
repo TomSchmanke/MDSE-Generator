@@ -1,5 +1,7 @@
 package util;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import template_data.AssociationsModel;
@@ -25,13 +27,14 @@ import java.util.stream.Stream;
  * @version 1.1 Resolve application-properties.vm and readme.vm
  */
 public class TemplateResolver {
+    private static final Logger log = LogManager.getLogger(TemplateResolver.class);
 
     private final VelocityEngine velocityEngine;
 
     public TemplateResolver() {
         velocityEngine = new VelocityEngine();
         Properties velocityProperties = new Properties();
-        velocityProperties.put("file.resource.loader.path", "src/main/resources/");
+        velocityProperties.put("resource.loader.file.path", "src/main/resources/");
         velocityEngine.init(velocityProperties);
     }
 
@@ -41,9 +44,9 @@ public class TemplateResolver {
             velocityEngine.mergeTemplate(inputTemplate, "UTF-8", velocityContext, writer);
             writer.flush();
             writer.close();
-            System.out.println("Successfully generated " + outputFile);
+            log.debug("Successfully generated " + outputFile);
         } catch (IOException e) {
-            System.out.println("Error occurred during merging of template and velocity context " + e);
+            log.error("Error occurred during merging of template and velocity context " + e);
         }
     }
 
@@ -122,13 +125,13 @@ public class TemplateResolver {
      * @param targetPath Path where the file will be generated
      * @return generated file name
      */
-    public String createApplicationProperties(String artifactId, String targetPath) {
+    public List<String> createApplicationProperties(String artifactId, String targetPath) {
         VelocityContext velocityContext = new VelocityContext();
         velocityContext.put("artifactId", artifactId);
 
         resolveTemplate(velocityContext, "standard_files/application-properties.vm", "application.properties", targetPath);
 
-        return "application.properties";
+        return Collections.singletonList("application.properties");
     }
 
     /**
@@ -138,12 +141,12 @@ public class TemplateResolver {
      * @param targetPath Path where the file will be generated
      * @return generated file name
      */
-    public String createReadMe(String artifactId, String targetPath) {
+    public List<String> createReadMe(String artifactId, String targetPath) {
         VelocityContext velocityContext = new VelocityContext();
         velocityContext.put("artifactId", artifactId);
 
         resolveTemplate(velocityContext, "standard_files/readme.vm", "README.md", targetPath);
 
-        return "README.md";
+        return Collections.singletonList("README.md");
     }
 }
