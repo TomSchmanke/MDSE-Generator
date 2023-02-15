@@ -1,13 +1,16 @@
 import de.arinir.mdsd.metamodell.MDSDMetamodell.UMLClassDiagramm;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import template_data.*;
 import util.*;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Stream;
 
 public class Main {
+    private static final Logger log = LogManager.getLogger(Main.class);
 
     private static final String GROUP_ID_PART_1 = "de";
     private static final String GROUP_ID_PART_2 = "generator";
@@ -28,11 +31,13 @@ public class Main {
     private static final String GENERATOR_STANDARD_FILES_PATH = "src/main/resources/standard_files";
 
     public static void main(String[] args) throws IOException {
+        log.info("Start generating application with name: {}", NAME);
         //File file = new File ("./src/main");
         //CreateProjectStructureAsJson createProjectStructureAsJson = new CreateProjectStructureAsJson(file);
 
         List<String> dependencies = Arrays.asList("devtools", "web", "data-jpa", "h2");
 
+        log.info("Start generating Spring project from Spring Initializer ...");
         ProjectInitializer projectInitializer = new ProjectInitializer();
         String nameOfZip = projectInitializer.loadGeneratedFilesFromSpringInitializer(GROUP_ID, ARTIFACT_ID, NAME,
                 DESCRIPTION, JAVA_VERSION, SPRING_BOOT_VERSION, dependencies);
@@ -44,16 +49,21 @@ public class Main {
         projectInitializer.newDirectoryFromPath(PATH_TO_FILES, "controllers");
         projectInitializer.newDirectoryFromPath(PATH_TO_FILES, "entities");
         projectInitializer.newDirectoryFromPath(PATH_TO_FILES, "repositories");
+        log.info("Generate Spring project from Spring Initializer successful!");
 
+        log.info("Start reading XML-file with UML definitions ... ");
         XMLConverter xmlConverter = new XMLConverter();
         UMLClassDiagramm diagram = xmlConverter.processXMLUMLFile("/Flottenmanagement.xml");
+        log.info("Process XML-file successful");
 
+        log.info("Start converting MDSDDiagram to data model ...");
         DataConverter dataConverter = new DataConverter(diagram);
         DataModel dataModel = dataConverter.convertMDSDDiagramToDataModel();
-
+        log.info("Convert to data model successful!");
 
 //        printDataModel(dataModel);
 
+        log.info("Start filling templated with application specific data ...");
         String packagePath = GROUP_ID.replaceAll("-", "") + '.' + ARTIFACT_ID.replaceAll("-", "") + '.';
         String packagePathControllers = packagePath + "controllers";
         String packagePathEntities = packagePath + "entities";
@@ -63,18 +73,19 @@ public class Main {
         List<String> generatedControllerFiles = templateResolver.createControllerFiles(dataModel.getControllerDataModels(), packagePathControllers, packagePathEntities, packagePathRepositories, TARGET_PATH_CONTROLLERS);
         List<String> generatedEntityFiles = templateResolver.createEntityFiles(dataModel.getEntityDataModels(), dataModel.getAssociationsDataModels(), packagePathEntities, TARGET_PATH_ENTITIES);
         List<String> generatedRepositoryFiles = templateResolver.createRepositoryFiles(dataModel.getRepositoryDataModels(), packagePathRepositories, packagePathEntities, TARGET_PATH_REPOSITORIES);
-        String applicationPropertiesFile = templateResolver.createApplicationProperties(ARTIFACT_ID, RESOURCES_PATH);
-        String readMeFile = templateResolver.createReadMe(ARTIFACT_ID, BASE_PATH);
+        List<String> applicationPropertiesFile = templateResolver.createApplicationProperties(ARTIFACT_ID, RESOURCES_PATH);
+        List<String> readMeFile = templateResolver.createReadMe(ARTIFACT_ID, BASE_PATH);
+        List<String> generatedFiles = new ArrayList<>();
+        Stream.of(generatedControllerFiles, generatedEntityFiles, generatedRepositoryFiles, applicationPropertiesFile, readMeFile).forEach(generatedFiles::addAll);
+        log.info("Fill template files successful! Generated files: {}", generatedFiles);
 
-        System.out.println(generatedControllerFiles);
-        System.out.println(generatedEntityFiles);
-        System.out.println(generatedRepositoryFiles);
-        System.out.println(applicationPropertiesFile);
-        System.out.println(readMeFile);
-
+        log.info("Start copying editorconfig and gitignore files ...");
         FileCopier fileCopier = new FileCopier();
         fileCopier.copyFile(GENERATOR_STANDARD_FILES_PATH + "/template-editorconfig", BASE_PATH + "/.editorconfig");
         fileCopier.copyFile(GENERATOR_STANDARD_FILES_PATH + "/template-gitignore", BASE_PATH + "/.gitignore");
+        log.info("Copy successful!");
+
+        log.info("Generating application {} was successful!", NAME);
     }
 
     // TODO: only for test/debug purposes, delete later
