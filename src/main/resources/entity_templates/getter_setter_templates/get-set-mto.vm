@@ -4,10 +4,10 @@
   @author Laura Schmidt
   @version 1.0 add getter and setter template for ManyToOne associations
  *###
-    public ${mtoAssociation.getReferencedEntity()}Base get${mtoAssociation.getReferencedName()}() {
+    public ${mtoAssociation.getReferencedEntity()}BaseGen get${mtoAssociation.getReferencedName()}() {
         return this.${mtoAssociation.getReferencedNameCamelCase()};
     }
 
-    public void set${mtoAssociation.getReferencedName()}(${mtoAssociation.getReferencedEntity()}Base ${mtoAssociation.getReferencedNameCamelCase()}) {
+    public void set${mtoAssociation.getReferencedName()}(${mtoAssociation.getReferencedEntity()}BaseGen ${mtoAssociation.getReferencedNameCamelCase()}) {
         this.${mtoAssociation.getReferencedNameCamelCase()} = ${mtoAssociation.getReferencedNameCamelCase()};
     }

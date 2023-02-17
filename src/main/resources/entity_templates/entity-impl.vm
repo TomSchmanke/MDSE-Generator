@@ -8,7 +8,7 @@
 *###
 package ${targetPackagePath};
 
-public class ${entity.getEntityName()}Impl extends ${entity.getEntityName()}Base {
+public class ${entity.getEntityName()}Impl extends ${entity.getEntityName()}BaseGen {
 
     // YOUR CODE HERE
 
