@@ -5,9 +5,11 @@ import org.apache.logging.log4j.Logger;
 import template_data.*;
 import util.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Stream;
@@ -42,8 +44,8 @@ public class Main {
         log.info("Start generating application with name: {}", NAME);
 
         //////// Determine if the generator runs for the first time ////////
-        Path generatedDirectory = Files.createTempDirectory(NAME);
-        boolean isFirstGeneration = !Files.exists(generatedDirectory);
+        Path generatedDirectory = Paths.get(NAME);
+        boolean isFirstGeneration = Files.notExists(generatedDirectory);
         log.debug("There already is an directory with the name {}", isFirstGeneration);
 
 
@@ -59,8 +61,10 @@ public class Main {
         if (!isFirstGeneration) {
             long timestamp = Instant.now().getEpochSecond();
             log.info("Renaming the old project by concatenating the timestamp {} to the root directory", timestamp);
-            // ToDo
-            log.info("Renaming the old project successful!");
+            File oldDirectory = new File(NAME);
+            File newDirectory = new File(NAME + timestamp);
+            boolean renameFlag = oldDirectory.renameTo(newDirectory);
+            log.info("Renaming the old project successful? {}", renameFlag);
         }
 
 
