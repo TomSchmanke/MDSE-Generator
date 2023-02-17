@@ -20,34 +20,27 @@ import java.util.*;
 import java.util.stream.Stream;
 
 /**
- * The type User code resolver.
+ * class to save usercode between generations
+ *
+ * @author Jonas Knebel
+ * @version 2.0 improved Structure of file and fixed some errors
  */
 public class UserCodeResolver {
 
+
     private File file = new File("userCode.json");
+
+    public File getFile() {
+        return file;
+    }
 
     /**
      * Instantiates a new User code resolver.
      *
-     * @param folder the folder
      * @throws IOException the io exception
      */
-    public UserCodeResolver(File folder) throws IOException {
-        Project project;
-        ObjectMapper objectMapper = new ObjectMapper();
-        if (this.file != null && this.file.length() > 0) {
-            project = objectMapper.readValue(this.file, Project.class);
-        } else {
-            project = objectMapper.readValue("{}", Project.class);
-        }
+    public UserCodeResolver() {
 
-        //METHODE OK
-        List<File> fileList = readStructureFromFolderAsList(folder);
-        String contentOfFiles = readContentOfFilesAsString(fileList, project);
-        writeStringToUserContent(contentOfFiles);
-
-
-        writeUserContentInFiles(project, folder);
     }
 
 
@@ -58,7 +51,7 @@ public class UserCodeResolver {
      * @return the list
      * @throws IOException the io exception
      */
-    private List<String> convertNewProjectStructureToList(List<File> fileList) throws IOException {
+    private List<String> convertNewProjectStructureToList(List<File> fileList) {
         List<String> fileListAsString = new ArrayList<>();
         for (File file : fileList) {
             fileListAsString.add(String.valueOf(file).replace("\\\\", "\\\\\\\\"));
@@ -66,7 +59,7 @@ public class UserCodeResolver {
         return fileListAsString;
     }
 
-    private void writeUserContentInFiles(Project project, File folder) throws IOException {
+    public void writeUserContentInFiles(Project project, File folder) throws IOException {
 
         if (project.getFiles().size() > 0) {
             updateNamesOfImplFiles(project, folder);
@@ -88,7 +81,13 @@ public class UserCodeResolver {
     }
 
 
-    private Project updateNamesOfImplFiles(Project project, File folder) throws IOException {
+    /**
+     * @param project
+     * @param folder
+     * @return
+     * @throws IOException
+     */
+    public Project updateNamesOfImplFiles(Project project, File folder) throws IOException {
         List<String> projectStructureList = new ArrayList<>();
         List<File> fileList = readStructureFromFolderAsList(folder);
         for (UserFiles userList : project.getFiles()) {
@@ -99,37 +98,41 @@ public class UserCodeResolver {
             if (change instanceof ListChange listChange) {
                 for (ContainerElementChange element : listChange.getChanges()) {
                     if (element instanceof ElementValueChange elementValueChange) {
-                        String oldPath = elementValueChange.getLeftValue().toString();
-                        String newPath = elementValueChange.getRightValue().toString();
-                        String[] oldPathArray = oldPath.split("\\\\");
-                        String[] newPathArray = newPath.split("\\\\");
-                        int fileTypeStart = oldPathArray[oldPathArray.length - 1].indexOf(".");
-                        String oldConstructorName = oldPathArray[oldPathArray.length - 1].substring(0, fileTypeStart);
-                        String newConstructorName = newPathArray[oldPathArray.length - 1].substring(0, fileTypeStart);
-                        String newPackage = oldPathArray[oldPathArray.length - 2];
-                        for (UserFiles file : project.getFiles()) {
-                            if (file.getFilename() == elementValueChange.getLeftValue()) {
-                                file.setFilename(newPath);
-                                for (int i = 0; i < file.getContent().size(); i++) {
-                                    String line = file.getContent().get(i);
-                                    if (line == null) continue;
-                                    if (line.contains("package")) {
-                                        for (int arrayIndex = oldPathArray.length - 3; arrayIndex >= 0; arrayIndex--) {
-                                            if (oldPathArray[arrayIndex].equals("java")) {
-                                                break;
-                                            } else {
-                                                newPackage = oldPathArray[arrayIndex] + "." + newPackage;
-                                            }
-                                        }
-                                        line = "package " + newPackage + ";";
-                                        file.getContent().set(i, line);
-                                    } else if (line.contains("class ") || line.contains(oldConstructorName)) {
-                                        file.getContent().set(i, line.replace(oldConstructorName, newConstructorName));
-                                    }
-                                }
-                            }
+                        project = updateFilesBasedOnElementValueChange(elementValueChange, project);
+                    }
+                }
+            }
+        }
+        return project;
+    }
 
+    private Project updateFilesBasedOnElementValueChange(ElementValueChange elementValueChange, Project project) {
+        String oldPath = elementValueChange.getLeftValue().toString();
+        String newPath = elementValueChange.getRightValue().toString();
+        String[] oldPathArray = oldPath.split("\\\\");
+        String[] newPathArray = newPath.split("\\\\");
+        int fileTypeStart = oldPathArray[oldPathArray.length - 1].indexOf(".");
+        String oldConstructorName = oldPathArray[oldPathArray.length - 1].substring(0, fileTypeStart);
+        String newConstructorName = newPathArray[oldPathArray.length - 1].substring(0, fileTypeStart);
+        String newPackage = oldPathArray[oldPathArray.length - 2];
+        for (UserFiles file : project.getFiles()) {
+            if (file.getFilename() == elementValueChange.getLeftValue()) {
+                file.setFilename(newPath);
+                for (int i = 0; i < file.getContent().size(); i++) {
+                    String line = file.getContent().get(i);
+                    if (line == null) continue;
+                    if (line.contains("package")) {
+                        for (int arrayIndex = oldPathArray.length - 3; arrayIndex >= 0; arrayIndex--) {
+                            if (oldPathArray[arrayIndex].equals("java")) {
+                                break;
+                            } else {
+                                newPackage = oldPathArray[arrayIndex] + "." + newPackage;
+                            }
                         }
+                        line = "package " + newPackage + ";";
+                        file.getContent().set(i, line);
+                    } else if (line.contains("class ") || line.contains(oldConstructorName)) {
+                        file.getContent().set(i, line.replace(oldConstructorName, newConstructorName));
                     }
                 }
             }
@@ -145,12 +148,12 @@ public class UserCodeResolver {
      * @return the list
      * @throws IOException the io exception
      */
-    private List<File> readStructureFromFolderAsList(final File folder) throws IOException {
+    public List<File> readStructureFromFolderAsList(final File folder) throws IOException {
         List<File> filePaths = new ArrayList<>();
         String path = String.valueOf(folder);
         try (Stream<Path> paths = Files.walk(Paths.get(path))) {
             paths.filter(Files::isRegularFile).map(Path::toFile).forEach(file -> {
-                if (file.toString().endsWith("Impl.java")) {
+                if (!file.toString().endsWith("Gen.java")) {
                     filePaths.add(file);
                 }
             });
@@ -164,7 +167,8 @@ public class UserCodeResolver {
      * @param fileList the file paths
      * @return the string
      */
-    private String readContentOfFilesAsString(List<File> fileList, Project project) throws JsonProcessingException {
+    public String readContentOfFilesAsString(List<File> fileList) throws JsonProcessingException {
+        Project project = new Project();
         BufferedReader reader;
         ObjectMapper objectMapper = new ObjectMapper();
         for (File userFile : fileList) {
@@ -194,12 +198,14 @@ public class UserCodeResolver {
     /**
      * Write string to file.
      *
-     * @param rootNodeAsString the root node as string
+     * @param JsonAsString the root node as string
      * @throws IOException the io exception
      */
-    private void writeStringToUserContent(String rootNodeAsString) throws IOException {
-        FileWriter fileWriter = new FileWriter(this.file);
-        fileWriter.write(rootNodeAsString);
+    public void writeStringToUserContent(String JsonAsString) throws IOException {
+        FileWriter fileWriter = new FileWriter(this.file, false);
+        System.out.println(JsonAsString);
+        fileWriter.write(JsonAsString);
+        fileWriter.write(System.lineSeparator());
         fileWriter.close();
     }
 

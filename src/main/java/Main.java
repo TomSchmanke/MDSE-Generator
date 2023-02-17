@@ -1,3 +1,5 @@
+import com.fasterxml.jackson.databind.ObjectMapper;
+import user_code_resolver.Project;
 import user_code_resolver.UserCodeResolver;
 
 import de.arinir.mdsd.metamodell.MDSDMetamodell.UMLClassDiagramm;
@@ -5,6 +7,7 @@ import de.arinir.mdsd.metamodell.MDSDMetamodell.UMLClassDiagramm;
 import template_data.*;
 import util.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -30,9 +33,21 @@ public class Main {
     private static final String GENERATOR_STANDARD_FILES_PATH = "src/main/resources/standard_files";
 
     public static void main(String[] args) throws IOException {
-        //  File file = new File ("./src/main/java/util");
-        // UserCodeResolver createProjectStructureAsJson = new UserCodeResolver(file);
-    
+
+        File file = new File("./src/main/java/util");
+        Project project;
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserCodeResolver userCodeResolver = new UserCodeResolver();
+        if (userCodeResolver.getFile() != null && userCodeResolver.getFile().length() > 0) {
+            project = objectMapper.readValue(userCodeResolver.getFile(), Project.class);
+        } else {
+            project = objectMapper.readValue("{}", Project.class);
+        }
+        List<File> fileList = userCodeResolver.readStructureFromFolderAsList(file);
+        String contentOfFiles = userCodeResolver.readContentOfFilesAsString(fileList);
+        userCodeResolver.writeStringToUserContent(contentOfFiles);
+        userCodeResolver.writeUserContentInFiles(project, file);
+
         String groupIdPart1 = "de";
         String groupIdPart2 = "generator";
         String groupId = groupIdPart1 + '.' + groupIdPart2;
@@ -43,7 +58,7 @@ public class Main {
         String bootVersion = "3.0.2";
 
 
-        String pathToFiles = name + "/src/main/java/" + groupIdPart1 + "/" + groupIdPart2  + "/" + artifactId.replaceAll("-", "" )  + "/";
+        String pathToFiles = name + "/src/main/java/" + groupIdPart1 + "/" + groupIdPart2 + "/" + artifactId.replaceAll("-", "") + "/";
 
         List<String> dependencies = Arrays.asList("devtools", "web", "data-jpa", "h2");
 

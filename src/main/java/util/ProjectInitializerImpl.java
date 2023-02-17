@@ -21,7 +21,6 @@ import java.util.zip.ZipInputStream;
  * @version 1.0 Initial creation
  */
 public class ProjectInitializerImpl {
-
     private static final String SPRING_INIT_BASE_URL = "https://start.spring.io/starter.zip";
 
     public String loadGeneratedFilesFromSpringInitializer(String groupId, String artifactId, String name,
