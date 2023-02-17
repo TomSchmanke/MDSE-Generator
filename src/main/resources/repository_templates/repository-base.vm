@@ -19,6 +19,6 @@ package ${targetPackagePath};
 import org.springframework.data.jpa.repository.JpaRepository;
 import ${entitiesPackagePath};
 
-public interface ${repository.getRepositoryName()}Base extends JpaRepository<${repository.getEntityName()}Base, Integer> {
+public interface ${repository.getRepositoryName()}BaseGen extends JpaRepository<${repository.getEntityName()}BaseGen, Integer> {
 
 }

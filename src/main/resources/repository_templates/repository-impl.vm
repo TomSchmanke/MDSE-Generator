@@ -8,7 +8,7 @@
 *###
 package ${targetPackagePath};
 
-public interface ${repository.getRepositoryName()}Impl extends ${repository.getRepositoryName()}Base {
+public interface ${repository.getRepositoryName()}Impl extends ${repository.getRepositoryName()}BaseGen {
 
     // YOUR CODE HERE
 

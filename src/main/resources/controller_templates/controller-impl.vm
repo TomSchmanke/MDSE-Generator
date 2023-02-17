@@ -8,7 +8,7 @@
 *###
 package ${targetPackagePath};
 
-public class ${controller.getControllerName()}Impl extends ${controller.getControllerName()}Base {
+public class ${controller.getControllerName()}Impl extends ${controller.getControllerName()}BaseGen {
 
     // YOUR CODE HERE
 
