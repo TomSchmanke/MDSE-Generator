@@ -24,6 +24,10 @@ public record ControllerModel(String entityName, String identificationVariable) 
         return entityName.substring(0, 1).toUpperCase() + entityName.substring(1) + "Repository";
     }
 
+    public String getRepositoryNameCamelCase() {
+        return entityName.substring(0, 1).toLowerCase() + entityName.substring(1) + "Repository";
+    }
+
     public String getURLPath() {
         return Plurals.getPlural(entityName.replaceAll("([a-z])([A-Z]+)", "$1_$2")).toLowerCase();
     }

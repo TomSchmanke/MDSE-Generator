@@ -1,5 +1,7 @@
 package util;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import template_data.AssociationsModel;
@@ -25,13 +27,14 @@ import java.util.stream.Stream;
  * @version 1.1 Resolve application-properties.vm and readme.vm
  */
 public class TemplateResolver {
+    private static final Logger log = LogManager.getLogger(TemplateResolver.class);
 
     private final VelocityEngine velocityEngine;
 
     public TemplateResolver() {
         velocityEngine = new VelocityEngine();
         Properties velocityProperties = new Properties();
-        velocityProperties.put("file.resource.loader.path", "src/main/resources/");
+        velocityProperties.put("resource.loader.file.path", "src/main/resources/");
         velocityEngine.init(velocityProperties);
     }
 
@@ -41,9 +44,9 @@ public class TemplateResolver {
             velocityEngine.mergeTemplate(inputTemplate, "UTF-8", velocityContext, writer);
             writer.flush();
             writer.close();
-            System.out.println("Successfully generated " + outputFile);
+            log.debug("Successfully generated " + outputFile);
         } catch (IOException e) {
-            System.out.println("Error occurred during merging of template and velocity context " + e);
+            log.error("Error occurred during merging of template and velocity context " + e);
         }
     }
 
@@ -63,10 +66,10 @@ public class TemplateResolver {
             velocityContext.put("repositoriesPackagePath" , repositoriesPackagePath + ".*");
             velocityContext.put("controller", controllerModel);
 
-            resolveTemplate(velocityContext, "controller_templates/controller-base.vm", controllerModel.entityName() + "ControllerBase.java", targetPath);
+            resolveTemplate(velocityContext, "controller_templates/controller-base.vm", controllerModel.entityName() + "ControllerBaseGen.java", targetPath);
             resolveTemplate(velocityContext, "controller_templates/controller-impl.vm", controllerModel.entityName() + "ControllerImpl.java", targetPath);
         }
-        return controllerModels.stream().flatMap(controllerModel -> Stream.of(controllerModel.entityName() + "ControllerBase.java", controllerModel.entityName() + "ControllerEntity.java")).toList();
+        return controllerModels.stream().flatMap(controllerModel -> Stream.of(controllerModel.entityName() + "ControllerBaseGen.java", controllerModel.entityName() + "ControllerEntity.java")).toList();
     }
 
     /**
@@ -88,10 +91,10 @@ public class TemplateResolver {
             velocityContext.put("mtoAssociations", filteredMTOAssociationsForEntity);
             velocityContext.put("otmAssociations", filteredOTMAssociationsForEntity);
 
-            resolveTemplate(velocityContext, "entity_templates/entity-base.vm", entityModel.entityName() + "Base.java", targetPath);
+            resolveTemplate(velocityContext, "entity_templates/entity-base.vm", entityModel.entityName() + "BaseGen.java", targetPath);
             resolveTemplate(velocityContext, "entity_templates/entity-impl.vm", entityModel.entityName() + "Impl.java", targetPath);
         }
-        return entityModels.stream().flatMap(entityModel -> Stream.of(entityModel.entityName() + "Base.java", entityModel.entityName() + "Impl.java")).toList();
+        return entityModels.stream().flatMap(entityModel -> Stream.of(entityModel.entityName() + "BaseGen.java", entityModel.entityName() + "Impl.java")).toList();
     }
 
     /**
@@ -109,10 +112,10 @@ public class TemplateResolver {
             velocityContext.put("entitiesPackagePath" , entitiesPackagePath + ".*");
             velocityContext.put("repository", repositoryModel);
 
-            resolveTemplate(velocityContext, "repository_templates/repository-base.vm", repositoryModel.repositoryName() + "RepositoryBase.java", targetPath);
+            resolveTemplate(velocityContext, "repository_templates/repository-base.vm", repositoryModel.repositoryName() + "RepositoryBaseGen.java", targetPath);
             resolveTemplate(velocityContext, "repository_templates/repository-impl.vm", repositoryModel.repositoryName() + "RepositoryImpl.java", targetPath);
         }
-        return repositoryModels.stream().flatMap(repositoryModel -> Stream.of(repositoryModel.repositoryName() + "RepositoryBase.java", repositoryModel.repositoryName() + "RepositoryImpl.java")).toList();
+        return repositoryModels.stream().flatMap(repositoryModel -> Stream.of(repositoryModel.repositoryName() + "RepositoryBaseGen.java", repositoryModel.repositoryName() + "RepositoryImpl.java")).toList();
     }
 
     /**
@@ -122,13 +125,13 @@ public class TemplateResolver {
      * @param targetPath Path where the file will be generated
      * @return generated file name
      */
-    public String createApplicationProperties(String artifactId, String targetPath) {
+    public List<String> createApplicationProperties(String artifactId, String targetPath) {
         VelocityContext velocityContext = new VelocityContext();
         velocityContext.put("artifactId", artifactId);
 
         resolveTemplate(velocityContext, "standard_files/application-properties.vm", "application.properties", targetPath);
 
-        return "application.properties";
+        return Collections.singletonList("application.properties");
     }
 
     /**
@@ -138,12 +141,12 @@ public class TemplateResolver {
      * @param targetPath Path where the file will be generated
      * @return generated file name
      */
-    public String createReadMe(String artifactId, String targetPath) {
+    public List<String> createReadMe(String artifactId, String targetPath) {
         VelocityContext velocityContext = new VelocityContext();
         velocityContext.put("artifactId", artifactId);
 
         resolveTemplate(velocityContext, "standard_files/readme.vm", "README.md", targetPath);
 
-        return "README.md";
+        return Collections.singletonList("README.md");
     }
 }

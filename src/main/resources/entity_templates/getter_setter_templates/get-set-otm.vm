@@ -4,10 +4,10 @@
  @author Laura Schmidt
  @version 1.0 add getter and setter template for OneToMany associations
  *###
-    public Collection<${otmAssociation.getFKEntity()}Base> get${otmAssociation.getFKName()}() {
+    public Collection<${otmAssociation.getFKEntity()}BaseGen> get${otmAssociation.getFKName()}() {
         return this.${otmAssociation.getFKNameCamelCase()};
     }
 
-    public void set${otmAssociation.getFKName()}(Collection<${otmAssociation.getFKEntity()}Base> ${otmAssociation.getFKNameCamelCase()}) {
+    public void set${otmAssociation.getFKName()}(Collection<${otmAssociation.getFKEntity()}BaseGen> ${otmAssociation.getFKNameCamelCase()}) {
         this.${otmAssociation.getFKNameCamelCase()} = ${otmAssociation.getFKNameCamelCase()};
     }

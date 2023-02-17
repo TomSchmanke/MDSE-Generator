@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,18 +37,19 @@ import ${entitiesPackagePath};
 import ${repositoriesPackagePath};
 
 @RestController
-public abstract class ${controller.getControllerName()}Base {
+public abstract class ${controller.getControllerName()}BaseGen {
 
-    @Autowired ${controller.getRepositoryName()}Base repository;
+    @Qualifier("${controller.getRepositoryNameCamelCase()}BaseGen")
+    @Autowired ${controller.getRepositoryName()}BaseGen repository;
 
     @GetMapping("/${controller.getURLPath()}")
-    public List<${controller.getEntityName()}Base> getAll(){
+    public List<${controller.getEntityName()}BaseGen> getAll(){
         return repository.findAll();
     }
 
     @GetMapping("/${controller.getURLPath()}/{${controller.getIdentificationVariableCamelCase()}}")
-    public ${controller.getEntityName()}Base get(@PathVariable int ${controller.getIdentificationVariableCamelCase()}) {
-        Optional<${controller.getEntityName()}Base> res = repository.findById(${controller.getIdentificationVariableCamelCase()});
+    public ${controller.getEntityName()}BaseGen get(@PathVariable int ${controller.getIdentificationVariableCamelCase()}) {
+        Optional<${controller.getEntityName()}BaseGen> res = repository.findById(${controller.getIdentificationVariableCamelCase()});
         return res.orElse(null);
     }
 
@@ -57,15 +59,15 @@ public abstract class ${controller.getControllerName()}Base {
     }
 
     @PostMapping("/${controller.getURLPath()}")
-    public ResponseEntity<${controller.getEntityName()}Base> create(@RequestBody ${controller.getEntityName()}Base subject) {
-        ${controller.getEntityName()}Base savedSubject = repository.save(subject);
+    public ResponseEntity<${controller.getEntityName()}BaseGen> create(@RequestBody ${controller.getEntityName()}BaseGen subject) {
+        ${controller.getEntityName()}BaseGen savedSubject = repository.save(subject);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{${controller.getIdentificationVariableCamelCase()}}").buildAndExpand(savedSubject.getId()).toUri();
         return ResponseEntity.created(location).body(savedSubject);
     }
 
     @PutMapping("/${controller.getURLPath()}/{${controller.getIdentificationVariableCamelCase()}}")
-    public ResponseEntity<${controller.getEntityName()}Base> update(@RequestBody ${controller.getEntityName()}Base subject, @PathVariable int ${controller.getIdentificationVariableCamelCase()}) {
-        Optional<${controller.getEntityName()}Base> res = repository.findById(${controller.getIdentificationVariableCamelCase()});
+    public ResponseEntity<${controller.getEntityName()}BaseGen> update(@RequestBody ${controller.getEntityName()}BaseGen subject, @PathVariable int ${controller.getIdentificationVariableCamelCase()}) {
+        Optional<${controller.getEntityName()}BaseGen> res = repository.findById(${controller.getIdentificationVariableCamelCase()});
         if (res.isEmpty()) return ResponseEntity.notFound().build();
 
         subject.setId(${controller.getIdentificationVariableCamelCase()});

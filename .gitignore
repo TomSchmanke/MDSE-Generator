@@ -3,6 +3,7 @@
 ##############################
 generated-application.zip
 generated-application/
+logs/
 
 ##############################
 ## Java
