@@ -114,7 +114,7 @@ public class Main {
 
         log.info("Generating application {} was successful!", NAME);
 
-        userCodeResolver.writeUserContentInFiles(project, file);
+        userCodeResolver.writeUserContentInNewProject(project, file);
     }
 
     // TODO: only for test/debug purposes, delete later

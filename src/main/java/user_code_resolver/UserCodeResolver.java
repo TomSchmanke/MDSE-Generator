@@ -42,9 +42,14 @@ public class UserCodeResolver {
     public UserCodeResolver() {
     }
 
-
-    public void writeUserContentInFiles(Project project, File folder) throws IOException {
-
+    /**
+     * Write the JSOn Object in the new Project
+     *
+     * @param project
+     * @param folder
+     * @throws IOException
+     */
+    public void writeUserContentInNewProject(Project project, File folder) throws IOException {
         if (project.getFiles().size() > 0) {
             updateNamesOfImplFiles(project, folder);
         }
@@ -60,7 +65,6 @@ public class UserCodeResolver {
                     outputStream.write(decodedBytes);
                 } catch (IOException e) {
                     logger.error("An error occurred while writing the file: " + e.getMessage());
-
                 }
             } else {
                 try (FileWriter writer = new FileWriter(file.getFilename())) {
@@ -158,7 +162,7 @@ public class UserCodeResolver {
      * @return
      * @throws IOException
      */
-    public Project updateNamesOfImplFiles(Project project, File folder) throws IOException {
+    private Project updateNamesOfImplFiles(Project project, File folder) throws IOException {
         List<String> projectStructureList = new ArrayList<>();
         List<File> fileList = readStructureFromFolderAsList(folder);
         for (UserFile userList : project.getFiles()) {
