@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -99,52 +100,47 @@ public class UserCodeResolver {
     }
 
     /**
-     * Read content of files and map as string.7
+     * Read content of files and map as string.
      *
      * @param fileList the file paths
      * @return the string
      */
     public String readContentOfFilesAsString(List<File> fileList) throws JsonProcessingException {
-        Project project = new Project();
-        BufferedReader reader;
-        ObjectMapper objectMapper = new ObjectMapper();
-        for (File file : fileList) {
+        Project project = fileList.stream().map(file -> {
+            UserFile userFile = new UserFile();
+            userFile.setFilename(String.valueOf(file));
             try {
-                String fileName = file.toString();
-                UserFile userFile = new UserFile();
-                userFile.setFilename(String.valueOf(file));
-                if (fileName.endsWith(".jpg") || fileName.endsWith(".jpeg") || fileName.endsWith(".png") || fileName.endsWith(".gif")) {
+                //////// encode image as Base64 and set content of UserFile  ////////
+                if (file.toString().matches(".*\\.(jpg|jpeg|png|gif)$")) {
                     userFile.setContent(Collections.singletonList(encodeImageToBase64(file)));
                 } else {
-                    reader = new BufferedReader(new FileReader(file));
-                    ArrayList<String> fileStringList = new ArrayList<>();
-                    String line = reader.readLine();
-                    fileStringList.add(line);
-                    while (line != null) {
-                        line = reader.readLine();
-                        if (line != null) {
-                            fileStringList.add(line);
-                        }
-                    }
-                    reader.close();
-                    userFile.setContent(fileStringList);
+                    userFile.setContent(Files.readAllLines(file.toPath()));
                 }
-                project.addFile(userFile);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        }
+            return userFile;
+        }).collect(Collectors.collectingAndThen(Collectors.toList(), Project::new));
+
+        ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(project);
     }
 
-    public static String encodeImageToBase64(File file) throws IOException {
+    /**
+     * Returns the image fiel encoded as base64
+     *
+     * @param file
+     * @return image encoded as base64
+     * @throws IOException
+     */
+    private static String encodeImageToBase64(File file) throws IOException {
         byte[] imageBytes = Files.readAllBytes(Paths.get(file.getPath()));
         return Base64.getEncoder().encodeToString(imageBytes);
     }
 
 
     /**
-     * Write string to file.
+     * Write the JsonString to "UserCode.json"
      *
      * @param JsonAsString the root node as string
      * @throws IOException the io exception
@@ -157,22 +153,26 @@ public class UserCodeResolver {
 
 
     /**
+     * This method checks for name changes in the new project and updates the impl files saved in the userCode.json based on that
+     *
      * @param project
      * @param folder
-     * @return
+     * @return the project with updated names of impl Files
      * @throws IOException
      */
     private Project updateNamesOfImplFiles(Project project, File folder) throws IOException {
         List<String> projectStructureList = new ArrayList<>();
         List<File> fileList = readStructureFromFolderAsList(folder);
-        for (UserFile userList : project.getFiles()) {
-            projectStructureList.add(userList.getFilename());
-        }
+
+        project.getFiles().forEach(file -> projectStructureList.add(file.getFilename()));
         Diff diff = compareStructure(projectStructureList, convertNewProjectStructureToList(fileList));
+        //////// Get all elementValueChanges that are of Type ListChanges and update the project based on them ////////
         for (Change change : diff.getChanges()) {
             if (change instanceof ListChange listChange) {
+                logger.info("The following structural changes have been found:");
                 for (ContainerElementChange element : listChange.getChanges()) {
                     if (element instanceof ElementValueChange elementValueChange) {
+                        logger.info(elementValueChange);
                         project = updateFilesBasedOnElementValueChange(elementValueChange, project);
                     }
                 }
@@ -182,18 +182,24 @@ public class UserCodeResolver {
     }
 
     /**
+     * Converts the file list to a string list
+     *
      * @param fileList
-     * @return
+     * @return fileList converted to a string list
      */
     private List<String> convertNewProjectStructureToList(List<File> fileList) {
-        List<String> fileListAsString = new ArrayList<>();
-        for (File file : fileList) {
-            fileListAsString.add(String.valueOf(file).replace("\\\\", "\\\\\\\\"));
-        }
-        return fileListAsString;
+        return fileList.stream().map(String::valueOf).collect(Collectors.toList());
     }
 
+    /**
+     * This method updates the Impl files based on the ElementValueChange Object
+     *
+     * @param elementValueChange
+     * @param project
+     * @return updated project object
+     */
     private Project updateFilesBasedOnElementValueChange(ElementValueChange elementValueChange, Project project) {
+        //////// Get all relevant values from the ElementValue Change object ////////
         String oldPath = elementValueChange.getLeftValue().toString();
         String newPath = elementValueChange.getRightValue().toString();
         String[] oldPathArray = oldPath.split("\\\\");
@@ -201,7 +207,8 @@ public class UserCodeResolver {
         int fileTypeStart = oldPathArray[oldPathArray.length - 1].indexOf(".");
         String oldConstructorName = oldPathArray[oldPathArray.length - 1].substring(0, fileTypeStart);
         String newConstructorName = newPathArray[oldPathArray.length - 1].substring(0, fileTypeStart);
-        String newPackage = oldPathArray[oldPathArray.length - 2];
+
+        //////// Find and update the relevant file with the new project  ////////
         for (UserFile file : project.getFiles()) {
             if (file.getFilename() == elementValueChange.getLeftValue()) {
                 file.setFilename(newPath);
@@ -209,24 +216,34 @@ public class UserCodeResolver {
                     String line = file.getContent().get(i);
                     if (line == null) continue;
                     if (line.contains("package")) {
-                        for (int arrayIndex = oldPathArray.length - 3; arrayIndex >= 0; arrayIndex--) {
-                            if (oldPathArray[arrayIndex].equals("java")) {
-                                break;
-                            } else {
-                                newPackage = oldPathArray[arrayIndex] + "." + newPackage;
-                            }
-                        }
-                        line = "package " + newPackage + ";";
+                        line = getNewPackageName(oldPathArray);
                         file.getContent().set(i, line);
-                    } else if (line.contains("class ") || line.contains(oldConstructorName)) {
+                    }
+                    if (line.contains("class ") || line.contains(oldConstructorName)) {
                         file.getContent().set(i, line.replace(oldConstructorName, newConstructorName));
                     }
                 }
+                //TODO check if elementVlaueChange only has 1 value if yes add break;
             }
         }
         return project;
     }
 
+    /**
+     * Returns the new PackageName based on the new structure
+     *
+     * @param oldPathArray
+     * @return newPackgeName
+     */
+    private String getNewPackageName(String[] oldPathArray) {
+        String newPackage = oldPathArray[oldPathArray.length - 2];
+        for (int arrayIndex = oldPathArray.length - 3; arrayIndex >= 0; arrayIndex--) {
+            if (!oldPathArray[arrayIndex].equals("java")) {
+                newPackage = oldPathArray[arrayIndex] + "." + newPackage;
+            } else break;
+        }
+        return "package " + newPackage + ";";
+    }
 
     /**
      * Compare structure diff.

@@ -149,7 +149,7 @@ public class Main {
 
         //////// Copying user generated code to new project ////////
         log.info("Start adding the user code to the 'new' project ...");
-        // ToDO
+        userCodeResolver.writeUserContentInNewProject(project, file);
         log.info("Adding the user code to the 'new' project successful!");
 
 
