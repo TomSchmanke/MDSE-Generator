@@ -44,7 +44,7 @@ public class UserCodeResolver {
     }
 
     /**
-     * Write the JSOn Object in the new Project
+     * Write the JSON Object in the new Project
      *
      * @param project
      * @param folder
@@ -60,7 +60,7 @@ public class UserCodeResolver {
             if (Files.notExists(path)) {
                 Files.createFile(path);
             }
-            if (file.getFilename().endsWith(".jpg") || file.getFilename().endsWith(".jpeg") || file.getFilename().endsWith(".png") || file.getFilename().endsWith(".gif")) {
+            if (file.toString().matches(".*\\.(jpg|jpeg|png|gif)$")) {
                 byte[] decodedBytes = Base64.getDecoder().decode(file.getContent().get(0));
                 try (FileOutputStream outputStream = new FileOutputStream(file.getFilename())) {
                     outputStream.write(decodedBytes);
@@ -127,7 +127,7 @@ public class UserCodeResolver {
     }
 
     /**
-     * Returns the image fiel encoded as base64
+     * Returns the image file encoded as base64
      *
      * @param file
      * @return image encoded as base64
@@ -161,11 +161,11 @@ public class UserCodeResolver {
      * @throws IOException
      */
     private Project updateNamesOfImplFiles(Project project, File folder) throws IOException {
-        List<String> projectStructureList = new ArrayList<>();
-        List<File> fileList = readStructureFromFolderAsList(folder);
+        List<String> oldProjectStructureList = new ArrayList<>();
+        List<File> newProjectStructureList = readStructureFromFolderAsList(folder);
 
-        project.getFiles().forEach(file -> projectStructureList.add(file.getFilename()));
-        Diff diff = compareStructure(projectStructureList, convertNewProjectStructureToList(fileList));
+        project.getFiles().forEach(file -> oldProjectStructureList.add(file.getFilename()));
+        Diff diff = compareStructure(oldProjectStructureList, convertNewProjectStructureToList(newProjectStructureList));
         //////// Get all elementValueChanges that are of Type ListChanges and update the project based on them ////////
         for (Change change : diff.getChanges()) {
             if (change instanceof ListChange listChange) {
