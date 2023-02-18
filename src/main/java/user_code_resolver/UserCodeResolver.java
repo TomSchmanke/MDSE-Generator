@@ -65,7 +65,7 @@ public class UserCodeResolver {
                 try (FileOutputStream outputStream = new FileOutputStream(file.getFilename())) {
                     outputStream.write(decodedBytes);
                 } catch (IOException e) {
-                    logger.error("An error occurred while writing the file: " + e.getMessage());
+                    logger.error("An error occurred while writing in file: " + file + ": " + e.getMessage());
                 }
             } else {
                 try (FileWriter writer = new FileWriter(file.getFilename())) {
@@ -73,7 +73,7 @@ public class UserCodeResolver {
                         writer.write(file.getContent().get(i) + System.lineSeparator());
                     }
                 } catch (IOException e) {
-                    logger.error("An error occurred while writing the file: " + e.getMessage());
+                    logger.error("An error occurred while writing in file: " + file + ": " + e.getMessage());
                 }
             }
         }
@@ -95,6 +95,8 @@ public class UserCodeResolver {
                     filePaths.add(file);
                 }
             });
+        } catch (IOException e) {
+            logger.error("Error reading structure of folder" + folder.toString(), e.getMessage());
         }
         return filePaths;
     }
@@ -117,7 +119,7 @@ public class UserCodeResolver {
                     userFile.setContent(Files.readAllLines(file.toPath()));
                 }
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                logger.error("Error reading file: " + file + ": " + e.getMessage());
             }
             return userFile;
         }).collect(Collectors.collectingAndThen(Collectors.toList(), Project::new));
