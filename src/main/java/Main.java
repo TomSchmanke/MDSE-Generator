@@ -76,6 +76,8 @@ public class Main {
                 DESCRIPTION, JAVA_VERSION, SPRING_BOOT_VERSION, dependencies);
         log.info("Generating Spring project successful!");
 
+
+        //////// Unzip file ////////
         if(nameOfZip == null) {
             log.error("No zip file was downloaded from Spring Initializr");
             return;

@@ -40,8 +40,8 @@ import ${repositoriesPackagePath};
 
 public abstract class ${controller.getControllerName()}BaseGen {
 
-    @Qualifier("${controller.getRepositoryNameCamelCase()}BaseGen")
-    @Autowired ${controller.getRepositoryName()}BaseGen repository;
+    @Qualifier("${controller.getRepositoryNameCamelCase()}Impl")
+    @Autowired ${controller.getRepositoryName()}Impl repository;
 
     @GetMapping("/${controller.getURLPath()}")
     public List<${controller.getEntityName()}Impl> getAll(){
