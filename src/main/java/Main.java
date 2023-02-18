@@ -77,6 +77,7 @@ public class Main {
         log.info("Generating Spring project successful!");
 
         if(nameOfZip == null) {
+            log.error("No zip file was downloaded from Spring Initializr");
             return;
         }
         log.info("Start unzipping file with Spring project from Spring Initializr ...");
