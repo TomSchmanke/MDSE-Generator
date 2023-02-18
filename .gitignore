@@ -2,7 +2,7 @@
 ## Project specific
 ##############################
 generated-application.zip
-generated-application/
+generated-application*/
 logs/
 
 ##############################
