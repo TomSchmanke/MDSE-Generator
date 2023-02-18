@@ -5,10 +5,17 @@
 
   @author Tom Schmanke
   @version 1.0 Initial creation for the implementation abstract class based custom code saving
+
+  @author Tom Schmanke
+  @version 2.0 Edit templates so that the final Spring application is runnable without errors
+
+  @author Tom Schmanke
+  @version 2.1 Add Lombok
 *###
 package ${targetPackagePath};
 
 import jakarta.persistence.Entity;
+import lombok.Data;
 
 @Entity
 @Data

@@ -5,6 +5,9 @@
 
   @author Tom Schmanke
   @version 1.0 Initial creation for the implementation abstract class based custom code saving
+
+  @author Laura Schmidt, Tom Schmanke
+  @version 2.0 Edit Controller templates so that the final Spring application is runnable without errors
 *###
 package ${targetPackagePath};
 

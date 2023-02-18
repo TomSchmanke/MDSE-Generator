@@ -13,12 +13,15 @@
 
   @author Tom Schmanke
   @version 3.0 Transform controller template for abstract class based custom code saving
+
+  @author Laura Schmidt
+  @version 4.0 Edit templates so that the final Spring application is runnable without errors
 *###
 package ${targetPackagePath};
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import ${entitiesPackagePath};
 
-public interface ${repository.getRepositoryName()}BaseGen extends JpaRepository<${repository.getEntityName()}BaseGen, Integer> {
+public interface ${repository.getRepositoryName()}BaseGen extends JpaRepository<${repository.getEntityName()}Impl, Integer> {
 
 }

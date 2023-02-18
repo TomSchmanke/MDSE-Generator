@@ -23,6 +23,12 @@
 
   @author Tom Schmanke
   @version 3.3 Add if-cases to optional imports and constructor
+
+  @author Laura Schmidt
+  @version 4.0 Edit templates so that the final Spring application is runnable without errors
+
+  @author Laura Schmidt
+  @version 4.1 add Lombok
 *###
 package ${targetPackagePath};
 
@@ -31,7 +37,10 @@ import java.util.Collection;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 #end
 import jakarta.persistence.*;
+import lombok.Data;
 
+@MappedSuperclass
+@Data
 public abstract class ${entity.getEntityName()}BaseGen {
 
     @Id
@@ -45,41 +54,13 @@ public abstract class ${entity.getEntityName()}BaseGen {
     #foreach ($mtoAssociation in $mtoAssociations)
     @ManyToOne
     @JoinColumn(name="${mtoAssociation.getFKKey()}")
-    private ${mtoAssociation.getReferencedEntity()}BaseGen ${mtoAssociation.getReferencedNameCamelCase()};
+    private ${mtoAssociation.getReferencedEntity()}Impl ${mtoAssociation.getReferencedNameCamelCase()};
 
     #end
     #foreach ($otmAssociation in $otmAssociations)
     @OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL, mappedBy="${otmAssociation.getMappedByKey()}")
     @JsonIgnore
-    private Collection<${otmAssociation.getFKEntity()}BaseGen> ${otmAssociation.getFKNameCamelCase()};
+    private Collection<${otmAssociation.getFKEntity()}Impl> ${otmAssociation.getFKNameCamelCase()};
 
-    #end
-
-    public ${entity.getEntityName()}BaseGen() {
-
-    }
-
-    #if(${entity.getAttributesForConstructorHeader()} != "")
-    public ${entity.getEntityName()}BaseGen(${entity.getAttributesForConstructorHeader()}) {
-        ${entity.getAttributesForConstructorBody()}
-    }
-    #end
-
-    public int get${entity.getIdentificationVariable()}() {
-        return ${entity.getIdentificationVariableCamelCase()};
-    }
-
-    public void set${entity.getIdentificationVariable()}(int ${entity.getIdentificationVariableCamelCase()}) {
-        this.${entity.getIdentificationVariableCamelCase()} = ${entity.getIdentificationVariableCamelCase()};
-    }
-
-    #foreach($attributeModel in $entity.getAttributeDataModels())
-        #parse("entity_templates/getter_setter_templates/get-set-attr.vm")
-    #end
-    #foreach($mtoAssociation in $mtoAssociations)
-        #parse("entity_templates/getter_setter_templates/get-set-mto.vm")
-    #end
-    #foreach($otmAssociation in $otmAssociations)
-        #parse("entity_templates/getter_setter_templates/get-set-otm.vm")
     #end
 }
