@@ -37,7 +37,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        File file = new File("./src/main/java/util");
+        File file = new File("./generated-application");
         Project project;
         ObjectMapper objectMapper = new ObjectMapper();
         UserCodeResolver userCodeResolver = new UserCodeResolver();
@@ -49,7 +49,6 @@ public class Main {
         List<File> fileList = userCodeResolver.readStructureFromFolderAsList(file);
         String contentOfFiles = userCodeResolver.readContentOfFilesAsString(fileList);
         userCodeResolver.writeStringToUserContent(contentOfFiles);
-        userCodeResolver.writeUserContentInFiles(project, file);
 
         String groupIdPart1 = "de";
         String groupIdPart2 = "generator";
@@ -114,6 +113,8 @@ public class Main {
         log.info("Copy successful!");
 
         log.info("Generating application {} was successful!", NAME);
+
+        userCodeResolver.writeUserContentInFiles(project, file);
     }
 
     // TODO: only for test/debug purposes, delete later

@@ -4,24 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Project {
-    private List<UserFiles> files = new ArrayList<>();
+    private List<UserFile> files = new ArrayList<>();
 
-    public Project(List<UserFiles> files) {
+    public Project(List<UserFile> files) {
         this.files = files;
     }
 
     public Project() {
     }
 
-    public void addFile(UserFiles file) {
+    public void addFile(UserFile file) {
         files.add(file);
     }
 
-    public List<UserFiles> getFiles() {
+    public List<UserFile> getFiles() {
         return this.files;
     }
 
-    public void setFiles(List<UserFiles> files) {
+    public void setFiles(List<UserFile> files) {
         this.files = files;
     }
 

@@ -3,16 +3,16 @@ package user_code_resolver;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserFiles {
+public class UserFile {
     private String filename = "";
     private List<String> content = new ArrayList<>();
 
-    public UserFiles(String filename, List<String> content) {
+    public UserFile(String filename, List<String> content) {
         this.filename = filename;
         this.content = content;
     }
 
-    public UserFiles() {
+    public UserFile() {
     }
 
     public String getFilename() {
