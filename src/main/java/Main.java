@@ -1,3 +1,7 @@
+import com.fasterxml.jackson.databind.ObjectMapper;
+import user_code_resolver.Project;
+import user_code_resolver.UserCodeResolver;
+
 import de.arinir.mdsd.metamodell.MDSDMetamodell.UMLClassDiagramm;
 
 import org.apache.logging.log4j.LogManager;
@@ -42,7 +46,10 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         log.info("Start generating application with name: {}", NAME);
-
+        ObjectMapper objectMapper = new ObjectMapper();
+        Project project = objectMapper.readValue("{}", Project.class);
+        UserCodeResolver userCodeResolver = new UserCodeResolver();
+        File file = new File("./generated-application");
         //////// Determine if the generator runs for the first time ////////
         Path generatedDirectory = Paths.get(NAME);
         boolean isFirstGeneration = Files.notExists(generatedDirectory);
@@ -51,9 +58,18 @@ public class Main {
 
         //////// Read the user code from the old project ////////
         if (!isFirstGeneration) {
+            log.info("Start updating 'old' project object based on the json ...");
+            if (userCodeResolver.getFile() != null && userCodeResolver.getFile().length() > 0) {
+                project = objectMapper.readValue(userCodeResolver.getFile(), Project.class);
+            }
+            log.info("Updating of the 'old' project object successful!");
             log.info("Start reading the user created code of the 'old' project ...");
-            // ToDo
+            List<File> fileList = userCodeResolver.readStructureFromFolderAsList(file);
             log.info("Reading the user created code successful!");
+            String contentOfFiles = userCodeResolver.readContentOfFilesAsString(fileList);
+            log.info("Start writing the user created code into 'userCode.json'");
+            userCodeResolver.writeStringToUserContent(contentOfFiles);
+            log.info("Writing of the user created code successful!");
         }
 
 
@@ -76,9 +92,8 @@ public class Main {
                 DESCRIPTION, JAVA_VERSION, SPRING_BOOT_VERSION, dependencies);
         log.info("Generating Spring project successful!");
 
-
         //////// Unzip file ////////
-        if(nameOfZip == null) {
+        if (nameOfZip == null) {
             log.error("No zip file was downloaded from Spring Initializr");
             return;
         }
@@ -132,10 +147,9 @@ public class Main {
         fileCopier.copyFile(GENERATOR_STANDARD_FILES_PATH + "/template-gitignore", BASE_PATH + "/.gitignore");
         log.info("Copy successful!");
 
-
         //////// Copying user generated code to new project ////////
         log.info("Start adding the user code to the 'new' project ...");
-        // ToDO
+        userCodeResolver.writeUserContentInNewProject(project, file);
         log.info("Adding the user code to the 'new' project successful!");
 
 
