@@ -3,14 +3,15 @@ package user_code_resolver;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * class for creating the Elements in the JSON Object
+ *
+ * @author Jonas Knebel
+ * @version 1.0 initial creation
+ */
 public class UserFile {
     private String filename = "";
     private List<String> content = new ArrayList<>();
-
-    public UserFile(String filename, List<String> content) {
-        this.filename = filename;
-        this.content = content;
-    }
 
     public UserFile() {
     }

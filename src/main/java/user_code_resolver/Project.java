@@ -3,6 +3,12 @@ package user_code_resolver;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * class for creating the JSON Object
+ *
+ * @author Jonas Knebel
+ * @version 1.0 Initial creation
+ */
 public class Project {
     private List<UserFile> files = new ArrayList<>();
 
@@ -13,9 +19,6 @@ public class Project {
     public Project() {
     }
 
-    public void addFile(UserFile file) {
-        files.add(file);
-    }
 
     public List<UserFile> getFiles() {
         return this.files;

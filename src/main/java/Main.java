@@ -58,8 +58,10 @@ public class Main {
 
         //////// Read the user code from the old project ////////
         if (!isFirstGeneration) {
-            log.info("Start reading the user created code of the 'old' project ...");
+            log.info("Start updating 'old' project object based on the json ...");
             project = objectMapper.readValue(userCodeResolver.getFile(), Project.class);
+            log.info("Updating of the 'old' project object successful!");
+            log.info("Start reading the user created code of the 'old' project ...");
             List<File> fileList = userCodeResolver.readStructureFromFolderAsList(file);
             log.info("Reading the user created code successful!");
             String contentOfFiles = userCodeResolver.readContentOfFilesAsString(fileList);
