@@ -46,10 +46,6 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         log.info("Start generating application with name: {}", NAME);
-        ObjectMapper objectMapper = new ObjectMapper();
-        Project project = objectMapper.readValue("{}", Project.class);
-        UserCodeResolver userCodeResolver = new UserCodeResolver();
-        File file = new File("./generated-application");
         //////// Determine if the generator runs for the first time ////////
         Path generatedDirectory = Paths.get(NAME);
         boolean isFirstGeneration = Files.notExists(generatedDirectory);
@@ -57,6 +53,10 @@ public class Main {
 
 
         //////// Read the user code from the old project ////////
+        ObjectMapper objectMapper = new ObjectMapper();
+        Project project = objectMapper.readValue("{}", Project.class);
+        UserCodeResolver userCodeResolver = new UserCodeResolver();
+        File file = new File("./generated-application");
         if (!isFirstGeneration) {
             log.info("Start updating 'old' project object based on the json ...");
             if (userCodeResolver.getFile() != null && userCodeResolver.getFile().length() > 0) {
