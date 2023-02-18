@@ -44,21 +44,12 @@ public class Main {
     private static final String GENERATOR_STANDARD_FILES_PATH = "src/main/resources/standard_files";
 
     public static void main(String[] args) throws IOException {
-        File file = new File("./generated-application");
-        Project project;
-        ObjectMapper objectMapper = new ObjectMapper();
-        UserCodeResolver userCodeResolver = new UserCodeResolver();
-        if (userCodeResolver.getFile() != null && userCodeResolver.getFile().length() > 0) {
-            project = objectMapper.readValue(userCodeResolver.getFile(), Project.class);
-        } else {
-            project = objectMapper.readValue("{}", Project.class);
-        }
-        List<File> fileList = userCodeResolver.readStructureFromFolderAsList(file);
-        String contentOfFiles = userCodeResolver.readContentOfFilesAsString(fileList);
-        userCodeResolver.writeStringToUserContent(contentOfFiles);
+
         log.info("Start generating application with name: {}", NAME);
-
-
+        ObjectMapper objectMapper = new ObjectMapper();
+        Project project = objectMapper.readValue("{}", Project.class);
+        UserCodeResolver userCodeResolver = new UserCodeResolver();
+        File file = new File("./generated-application");
         //////// Determine if the generator runs for the first time ////////
         Path generatedDirectory = Paths.get(NAME);
         boolean isFirstGeneration = Files.notExists(generatedDirectory);
@@ -68,8 +59,13 @@ public class Main {
         //////// Read the user code from the old project ////////
         if (!isFirstGeneration) {
             log.info("Start reading the user created code of the 'old' project ...");
-            // ToDo
+            project = objectMapper.readValue(userCodeResolver.getFile(), Project.class);
+            List<File> fileList = userCodeResolver.readStructureFromFolderAsList(file);
             log.info("Reading the user created code successful!");
+            String contentOfFiles = userCodeResolver.readContentOfFilesAsString(fileList);
+            log.info("Start writing the user created code into 'userCode.json'");
+            userCodeResolver.writeStringToUserContent(contentOfFiles);
+            log.info("Writing of the user created code successful!");
         }
 
 
