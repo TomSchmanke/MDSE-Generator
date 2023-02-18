@@ -60,7 +60,7 @@ public class UserCodeResolver {
             if (Files.notExists(path)) {
                 Files.createFile(path);
             }
-            if (file.toString().matches(".*\\.(jpg|jpeg|png|gif)$")) {
+            if (file.toString().matches(".*\\.(jpg|jpeg|png|gif|pdf)$")) {
                 byte[] decodedBytes = Base64.getDecoder().decode(file.getContent().get(0));
                 try (FileOutputStream outputStream = new FileOutputStream(file.getFilename())) {
                     outputStream.write(decodedBytes);
@@ -111,7 +111,7 @@ public class UserCodeResolver {
             userFile.setFilename(String.valueOf(file));
             try {
                 //////// encode image as Base64 and set content of UserFile  ////////
-                if (file.toString().matches(".*\\.(jpg|jpeg|png|gif)$")) {
+                if (file.toString().matches(".*\\.(jpg|jpeg|png|gif|pdf)$")) {
                     userFile.setContent(Collections.singletonList(encodeImageToBase64(file)));
                 } else {
                     userFile.setContent(Files.readAllLines(file.toPath()));
