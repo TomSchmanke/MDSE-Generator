@@ -32,7 +32,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 #end
 import jakarta.persistence.*;
 
-@Entity
 public abstract class ${entity.getEntityName()}BaseGen {
 
     @Id

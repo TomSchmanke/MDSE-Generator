@@ -8,6 +8,10 @@
 *###
 package ${targetPackagePath};
 
+import jakarta.persistence.Entity;
+
+@Entity
+@Data
 public class ${entity.getEntityName()}Impl extends ${entity.getEntityName()}BaseGen {
 
     // YOUR CODE HERE

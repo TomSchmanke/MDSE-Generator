@@ -35,7 +35,7 @@ public class Main {
         //File file = new File ("./src/main");
         //CreateProjectStructureAsJson createProjectStructureAsJson = new CreateProjectStructureAsJson(file);
 
-        List<String> dependencies = Arrays.asList("devtools", "web", "data-jpa", "h2");
+        List<String> dependencies = Arrays.asList("devtools", "web", "data-jpa", "h2", "lombok");
 
         log.info("Start generating Spring project from Spring Initializer ...");
         ProjectInitializer projectInitializer = new ProjectInitializer();
