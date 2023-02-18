@@ -71,14 +71,14 @@ public class Main {
         //////// Download zip with initial project structure from Spring Initializr ////////
         log.info("Start generating Spring project from Spring Initializr ...");
         ProjectInitializer projectInitializer = new ProjectInitializer();
-        List<String> dependencies = Arrays.asList("devtools", "web", "data-jpa", "h2");
+        List<String> dependencies = Arrays.asList("devtools", "web", "data-jpa", "h2", "lombok");
         String nameOfZip = projectInitializer.loadGeneratedFilesFromSpringInitializer(GROUP_ID, ARTIFACT_ID, NAME,
                 DESCRIPTION, JAVA_VERSION, SPRING_BOOT_VERSION, dependencies);
         log.info("Generating Spring project successful!");
 
 
         //////// Unzip file ////////
-        if (nameOfZip == null) {
+        if(nameOfZip == null) {
             log.error("No zip file was downloaded from Spring Initializr");
             return;
         }
@@ -147,5 +147,4 @@ public class Main {
 
         log.info("Generating application {} was successful!", NAME);
     }
-
 }

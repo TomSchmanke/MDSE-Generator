@@ -14,6 +14,9 @@
 
   @author Tom Schmanke
   @version 3.0 Transform controller template for abstract class based custom code saving
+
+  @author Laura Schmidt, Tom Schmanke
+  @version 4.0 Edit Controller templates so that the final Spring application is runnable without errors
 *###
 package ${targetPackagePath};
 
@@ -30,26 +33,24 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import ${entitiesPackagePath};
 import ${repositoriesPackagePath};
 
-@RestController
 public abstract class ${controller.getControllerName()}BaseGen {
 
-    @Qualifier("${controller.getRepositoryNameCamelCase()}BaseGen")
-    @Autowired ${controller.getRepositoryName()}BaseGen repository;
+    @Qualifier("${controller.getRepositoryNameCamelCase()}Impl")
+    @Autowired ${controller.getRepositoryName()}Impl repository;
 
     @GetMapping("/${controller.getURLPath()}")
-    public List<${controller.getEntityName()}BaseGen> getAll(){
+    public List<${controller.getEntityName()}Impl> getAll(){
         return repository.findAll();
     }
 
     @GetMapping("/${controller.getURLPath()}/{${controller.getIdentificationVariableCamelCase()}}")
     public ${controller.getEntityName()}BaseGen get(@PathVariable int ${controller.getIdentificationVariableCamelCase()}) {
-        Optional<${controller.getEntityName()}BaseGen> res = repository.findById(${controller.getIdentificationVariableCamelCase()});
+        Optional<${controller.getEntityName()}Impl> res = repository.findById(${controller.getIdentificationVariableCamelCase()});
         return res.orElse(null);
     }
 
@@ -59,15 +60,15 @@ public abstract class ${controller.getControllerName()}BaseGen {
     }
 
     @PostMapping("/${controller.getURLPath()}")
-    public ResponseEntity<${controller.getEntityName()}BaseGen> create(@RequestBody ${controller.getEntityName()}BaseGen subject) {
+    public ResponseEntity<${controller.getEntityName()}BaseGen> create(@RequestBody ${controller.getEntityName()}Impl subject) {
         ${controller.getEntityName()}BaseGen savedSubject = repository.save(subject);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{${controller.getIdentificationVariableCamelCase()}}").buildAndExpand(savedSubject.getId()).toUri();
         return ResponseEntity.created(location).body(savedSubject);
     }
 
     @PutMapping("/${controller.getURLPath()}/{${controller.getIdentificationVariableCamelCase()}}")
-    public ResponseEntity<${controller.getEntityName()}BaseGen> update(@RequestBody ${controller.getEntityName()}BaseGen subject, @PathVariable int ${controller.getIdentificationVariableCamelCase()}) {
-        Optional<${controller.getEntityName()}BaseGen> res = repository.findById(${controller.getIdentificationVariableCamelCase()});
+    public ResponseEntity<${controller.getEntityName()}BaseGen> update(@RequestBody ${controller.getEntityName()}Impl subject, @PathVariable int ${controller.getIdentificationVariableCamelCase()}) {
+        Optional<${controller.getEntityName()}Impl> res = repository.findById(${controller.getIdentificationVariableCamelCase()});
         if (res.isEmpty()) return ResponseEntity.notFound().build();
 
         subject.setId(${controller.getIdentificationVariableCamelCase()});
@@ -75,5 +76,4 @@ public abstract class ${controller.getControllerName()}BaseGen {
 
         return ResponseEntity.noContent().build();
     }
-
 }
