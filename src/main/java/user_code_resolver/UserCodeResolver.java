@@ -21,7 +21,7 @@ import java.util.*;
 import java.util.stream.Stream;
 
 /**
- * class to save usercode between generations
+ * class to save user code between generations
  *
  * @author Jonas Knebel
  * @version 2.0 improved Structure of file and fixed some errors
@@ -29,7 +29,7 @@ import java.util.stream.Stream;
 public class UserCodeResolver {
 
 
-    private File file = new File("userCode.json");
+    private final File file = new File("userCode.json");
     private static final Logger logger = LogManager.getLogger(UserCodeResolver.class);
 
     public File getFile() {
@@ -38,8 +38,6 @@ public class UserCodeResolver {
 
     /**
      * Instantiates a new User code resolver.
-     *
-     * @throws IOException the io exception
      */
     public UserCodeResolver() {
     }
@@ -57,10 +55,7 @@ public class UserCodeResolver {
                 Files.createFile(path);
             }
             if (file.getFilename().endsWith(".jpg") || file.getFilename().endsWith(".jpeg") || file.getFilename().endsWith(".png") || file.getFilename().endsWith(".gif")) {
-                List list = new ArrayList();
                 byte[] decodedBytes = Base64.getDecoder().decode(file.getContent().get(0));
-                list.add(decodedBytes);
-                file.setContent(list);
                 try (FileOutputStream outputStream = new FileOutputStream(file.getFilename())) {
                     outputStream.write(decodedBytes);
                 } catch (IOException e) {
@@ -183,11 +178,8 @@ public class UserCodeResolver {
     }
 
     /**
-     * Convert new project structure to list<String>.
-     *
-     * @param fileList the file list
-     * @return the list
-     * @throws IOException the io exception
+     * @param fileList
+     * @return
      */
     private List<String> convertNewProjectStructureToList(List<File> fileList) {
         List<String> fileListAsString = new ArrayList<>();
@@ -235,13 +227,13 @@ public class UserCodeResolver {
     /**
      * Compare structure diff.
      *
-     * @param oldFolderstructure the old folderstructure
-     * @param newFolderstructure the new folderstructure
+     * @param oldFolderStructure the old folderStructure
+     * @param newFolderStructure the new folderStructure
      * @return the diff
      */
-    private Diff compareStructure(List<String> oldFolderstructure, List<String> newFolderstructure) {
+    private Diff compareStructure(List<String> oldFolderStructure, List<String> newFolderStructure) {
         Javers javers = JaversBuilder.javers().withListCompareAlgorithm(ListCompareAlgorithm.LEVENSHTEIN_DISTANCE).build();
-        return javers.compare(oldFolderstructure, newFolderstructure);
+        return javers.compare(oldFolderStructure, newFolderStructure);
     }
 }
 
