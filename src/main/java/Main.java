@@ -1,12 +1,10 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
-import user_code_resolver.Project;
-import user_code_resolver.UserCodeResolver;
-
 import de.arinir.mdsd.metamodell.MDSDMetamodell.UMLClassDiagramm;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import template_data.*;
+import template_data.DataModel;
+import user_code_resolver.UserCodeResolver;
+import user_code_resolver.UserFileWrapper;
 import util.*;
 
 import java.io.File;
@@ -15,7 +13,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -54,13 +54,13 @@ public class Main {
 
         //////// Read the user code from the old project ////////
         ObjectMapper objectMapper = new ObjectMapper();
-        Project project = objectMapper.readValue("{}", Project.class);
+        UserFileWrapper userFileWrapper = objectMapper.readValue("{}", UserFileWrapper.class);
         UserCodeResolver userCodeResolver = new UserCodeResolver();
         File file = new File("./generated-application");
         if (!isFirstGeneration) {
             log.info("Start updating 'old' project object based on the json ...");
             if (userCodeResolver.getFile() != null && userCodeResolver.getFile().length() > 0) {
-                project = objectMapper.readValue(userCodeResolver.getFile(), Project.class);
+                userFileWrapper = objectMapper.readValue(userCodeResolver.getFile(), UserFileWrapper.class);
             }
             log.info("Updating of the 'old' project object successful!");
             log.info("Start reading the user created code of the 'old' project ...");
@@ -149,7 +149,7 @@ public class Main {
 
         //////// Copying user generated code to new project ////////
         log.info("Start adding the user code to the 'new' project ...");
-        userCodeResolver.writeUserContentInNewProject(project, file);
+        userCodeResolver.writeUserContentInNewProject(userFileWrapper, file);
         log.info("Adding the user code to the 'new' project successful!");
 
 
