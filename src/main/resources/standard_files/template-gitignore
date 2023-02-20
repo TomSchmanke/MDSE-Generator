@@ -50,7 +50,7 @@ out/
 tmp/
 .metadata
 .classpath
-.userFileWrapper
+.project
 *.tmp
 *.bak
 *.swp
