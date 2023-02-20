@@ -45,41 +45,6 @@ public class UserCodeResolver {
     public UserCodeResolver() {
     }
 
-    /**
-     * This method writes the content of the {@link UserFileWrapper} object to all files, which might have been modified or added by the user.
-     *
-     * @param userFileWrapper wrapper object which contains a list of {@link UserFile} objects
-     * @param folder          of the newly generated project
-     * @throws IOException Signals that an I/O exception of some sort has occurred. This class is the general class of exceptions produced by failed or interrupted I/O operations.
-     */
-    public void writeUserContentInNewProject(UserFileWrapper userFileWrapper, File folder) throws IOException {
-        if (!userFileWrapper.getFiles().isEmpty()) {
-            userFileWrapper = this.updateNamesOfImplFiles(userFileWrapper, folder);
-        }
-
-        for (UserFile file : userFileWrapper.getFiles()) {
-            Path path = Paths.get(file.getFilename());
-            if (Files.notExists(path)) {
-                Files.createFile(path);
-            }
-            if (isBinaryFile(file.toString())) {
-                byte[] decodedBytes = Base64.getDecoder().decode(file.getContent().get(0));
-                try (FileOutputStream outputStream = new FileOutputStream(file.getFilename())) {
-                    outputStream.write(decodedBytes);
-                } catch (IOException e) {
-                    logger.error("An error occurred while writing in file {}: {}", file, e.getMessage());
-                }
-            } else {
-                try (FileWriter writer = new FileWriter(file.getFilename())) {
-                    for (int i = 0; i < file.getContent().size(); i++) {
-                        writer.write(file.getContent().get(i).concat(System.lineSeparator()));
-                    }
-                } catch (IOException e) {
-                    logger.error("An error occurred while writing in file {}: {}", file, e.getMessage());
-                }
-            }
-        }
-    }
 
     /**
      * This method reads the structure of the {@code folder} passed into the method and returns a list of all file paths
@@ -156,6 +121,43 @@ public class UserCodeResolver {
         FileWriter fileWriter = new FileWriter(file, false);
         fileWriter.write(jsonAsFormattedString);
         fileWriter.close();
+    }
+
+    /**
+     * This method writes the content of the {@link UserFileWrapper} object to all files, which might have been modified or added by the user.
+     *
+     * @param userFileWrapper wrapper object which contains a list of {@link UserFile} objects
+     * @param folder          of the newly generated project
+     * @throws IOException Signals that an I/O exception of some sort has occurred. This class is the general class of exceptions produced by failed or interrupted I/O operations.
+     */
+    public void writeUserContentInNewProject(UserFileWrapper userFileWrapper, File folder) throws IOException {
+        if (!userFileWrapper.getFiles().isEmpty()) {
+            userFileWrapper = this.updateNamesOfImplFiles(userFileWrapper, folder);
+        }
+
+        for (UserFile file : userFileWrapper.getFiles()) {
+            Path path = Paths.get(file.getFilename());
+            if (Files.notExists(path)) {
+                Files.createFile(path);
+            }
+
+            if (isBinaryFile(file.getFilename())) {
+                byte[] decodedBytes = Base64.getDecoder().decode(file.getContent().get(0));
+                try (FileOutputStream outputStream = new FileOutputStream(file.getFilename())) {
+                    outputStream.write(decodedBytes);
+                } catch (IOException e) {
+                    logger.error("An error occurred while writing in file {}: {}", file, e.getMessage());
+                }
+            } else {
+                try (FileWriter writer = new FileWriter(file.getFilename())) {
+                    for (int i = 0; i < file.getContent().size(); i++) {
+                        writer.write(file.getContent().get(i).concat(System.lineSeparator()));
+                    }
+                } catch (IOException e) {
+                    logger.error("An error occurred while writing in file {}: {}", file, e.getMessage());
+                }
+            }
+        }
     }
 
     /**

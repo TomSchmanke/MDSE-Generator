@@ -58,6 +58,7 @@ public class Main {
         UserCodeResolver userCodeResolver = new UserCodeResolver();
         File file = new File("./generated-application");
         if (!isFirstGeneration) {
+            System.out.println("AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
             log.info("Start updating 'old' project object based on the json ...");
             if (userCodeResolver.getFile() != null && userCodeResolver.getFile().length() > 0) {
                 userFileWrapper = objectMapper.readValue(userCodeResolver.getFile(), UserFileWrapper.class);
