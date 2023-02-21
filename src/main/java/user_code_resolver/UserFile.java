@@ -13,26 +13,47 @@ public class UserFile {
     private String filename = "";
     private List<String> content = new ArrayList<>();
 
+    /**
+     * default constructor
+     */
     public UserFile() {
     }
 
+    /**
+     * This returns the value of the field filename
+     *
+     * @return the value of the field filename
+     */
     public String getFilename() {
-        return this.filename;
+        return filename;
     }
 
-    public List<String> getContent() {
-        return this.content;
-    }
-
+    /**
+     * This sets the value of the field filename
+     *
+     * @param filename sets the value of the field filename
+     */
     public void setFilename(String filename) {
         this.filename = filename;
     }
 
+    /**
+     * This returns the value of the field content
+     *
+     * @return the value of the field content
+     */
+    public List<String> getContent() {
+        return content;
+    }
+
+    /**
+     * This sets the value of the field content
+     *
+     * @param content sets the value of the field content
+     */
     public void setContent(List<String> content) {
         this.content = content;
     }
 
-    public String toString() {
-        return "UserFiles(filename=" + this.getFilename() + ", content=" + this.getContent() + ")";
-    }
+
 }
