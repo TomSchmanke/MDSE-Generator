@@ -25,25 +25,31 @@ import java.util.stream.Stream;
 public class Main {
     private static final Logger log = LogManager.getLogger(Main.class);
 
-    private static final String GROUP_ID_PART_1 = "de";
-    private static final String GROUP_ID_PART_2 = "generator";
-    private static final String GROUP_ID = GROUP_ID_PART_1 + "." + GROUP_ID_PART_2;
-    private static final String ARTIFACT_ID = "generated-application";
-    private static final String NAME = "generated-application";
-    private static final String DESCRIPTION = "Generated basic build for Spring Boot";
-    private static final String JAVA_VERSION = "17";
-    private static final String SPRING_BOOT_VERSION = "3.0.2";
-    private static final String PATH_TO_FILES = NAME + "/src/main/java/" + GROUP_ID_PART_1 + "/" + GROUP_ID_PART_2 + "/" + ARTIFACT_ID.replaceAll("-", "") + "/";
-
-    private static final String TARGET_PATH_CONTROLLERS = PATH_TO_FILES + "controllers";
-    private static final String TARGET_PATH_ENTITIES = PATH_TO_FILES + "entities";
-    private static final String TARGET_PATH_REPOSITORIES = PATH_TO_FILES + "repositories";
-
-    private static final String BASE_PATH = NAME;
-    private static final String RESOURCES_PATH = NAME + "/src/main/resources";
-    private static final String GENERATOR_STANDARD_FILES_PATH = "src/main/resources/standard_files";
+    private static String GROUP_ID = "de.generated";
+    private static String ARTIFACT_ID = "generated-application";
+    private static String NAME = "generated-application";
+    private static String DESCRIPTION = "Generated basic build for Spring Boot";
 
     public static void main(String[] args) throws IOException {
+        log.info("Read command line arguments.");
+        //////// Read CLI arguments ////////
+        readArgs(args);
+        log.info("Reading command line arguments successful.");
+
+
+        //////// Declare variables based on default values or CLI arguments ////////
+        String javaVersion = "17";
+        String springBootVersion = "3.0.2";
+        String pathToFiles = NAME + "/src/main/java/" + GROUP_ID.replaceAll("\\.", "/") + "/" + ARTIFACT_ID.replaceAll("-", "") + "/";
+
+        String targetPathControllers = pathToFiles + "controllers";
+        String targetPathEntities = pathToFiles + "entities";
+        String targetPathRepositories = pathToFiles + "repositories";
+
+        String basePath = NAME;
+        String resourcesPath = NAME + "/src/main/resources";
+        String generatorStandardFilesPath = "src/main/resources/standard_files";
+
 
         log.info("Start generating application with name: {}", NAME);
         //////// Determine if the generator runs for the first time ////////
@@ -56,7 +62,7 @@ public class Main {
         ObjectMapper objectMapper = new ObjectMapper();
         UserFileWrapper userFileWrapper = objectMapper.readValue("{}", UserFileWrapper.class);
         UserCodeResolver userCodeResolver = new UserCodeResolver();
-        File file = new File("./generated-application");
+        File file = new File("./" + NAME);
         if (!isFirstGeneration) {
             log.info("Start updating 'old' project object based on the json ...");
             if (userCodeResolver.getFile() != null && userCodeResolver.getFile().length() > 0) {
@@ -89,7 +95,7 @@ public class Main {
         ProjectInitializer projectInitializer = new ProjectInitializer();
         List<String> dependencies = Arrays.asList("devtools", "web", "data-jpa", "h2", "lombok");
         String nameOfZip = projectInitializer.loadGeneratedFilesFromSpringInitializer(GROUP_ID, ARTIFACT_ID, NAME,
-                DESCRIPTION, JAVA_VERSION, SPRING_BOOT_VERSION, dependencies);
+                DESCRIPTION, javaVersion, springBootVersion, dependencies);
         log.info("Generating Spring project successful!");
 
         //////// Unzip file ////////
@@ -97,16 +103,16 @@ public class Main {
             log.error("No zip file was downloaded from Spring Initializr");
             return;
         }
-        log.info("Start unzipping file with Spring project from Spring Initializr ...");
+        log.info("Start unzipping file {} with Spring project from Spring Initializr ...", nameOfZip);
         projectInitializer.unzipFile(nameOfZip, nameOfZip.substring(0, nameOfZip.length() - 3));
         log.info("Unzipping file successful!");
 
 
         //////// Create directories for controllers, entities and repositories ////////
         log.info("Start creating directories for controllers, entities and repositories ...");
-        projectInitializer.newDirectoryFromPath(PATH_TO_FILES, "controllers");
-        projectInitializer.newDirectoryFromPath(PATH_TO_FILES, "entities");
-        projectInitializer.newDirectoryFromPath(PATH_TO_FILES, "repositories");
+        projectInitializer.newDirectoryFromPath(pathToFiles, "controllers");
+        projectInitializer.newDirectoryFromPath(pathToFiles, "entities");
+        projectInitializer.newDirectoryFromPath(pathToFiles, "repositories");
         log.info("Creating directories successful!");
 
 
@@ -130,11 +136,11 @@ public class Main {
         String packagePathRepositories = packagePath + "repositories";
 
         TemplateResolver templateResolver = new TemplateResolver();
-        List<String> generatedControllerFiles = templateResolver.createControllerFiles(dataModel.getControllerDataModels(), packagePathControllers, packagePathEntities, packagePathRepositories, TARGET_PATH_CONTROLLERS);
-        List<String> generatedEntityFiles = templateResolver.createEntityFiles(dataModel.getEntityDataModels(), dataModel.getAssociationsDataModels(), packagePathEntities, TARGET_PATH_ENTITIES);
-        List<String> generatedRepositoryFiles = templateResolver.createRepositoryFiles(dataModel.getRepositoryDataModels(), packagePathRepositories, packagePathEntities, TARGET_PATH_REPOSITORIES);
-        List<String> applicationPropertiesFile = templateResolver.createApplicationProperties(ARTIFACT_ID, RESOURCES_PATH);
-        List<String> readMeFile = templateResolver.createReadMe(ARTIFACT_ID, BASE_PATH);
+        List<String> generatedControllerFiles = templateResolver.createControllerFiles(dataModel.getControllerDataModels(), packagePathControllers, packagePathEntities, packagePathRepositories, targetPathControllers);
+        List<String> generatedEntityFiles = templateResolver.createEntityFiles(dataModel.getEntityDataModels(), dataModel.getAssociationsDataModels(), packagePathEntities, targetPathEntities);
+        List<String> generatedRepositoryFiles = templateResolver.createRepositoryFiles(dataModel.getRepositoryDataModels(), packagePathRepositories, packagePathEntities, targetPathRepositories);
+        List<String> applicationPropertiesFile = templateResolver.createApplicationProperties(ARTIFACT_ID, resourcesPath);
+        List<String> readMeFile = templateResolver.createReadMe(ARTIFACT_ID, basePath);
         List<String> generatedFiles = new ArrayList<>();
         Stream.of(generatedControllerFiles, generatedEntityFiles, generatedRepositoryFiles, applicationPropertiesFile, readMeFile).forEach(generatedFiles::addAll);
         log.info("Fill template files successful! Generated files: {}", generatedFiles);
@@ -143,8 +149,8 @@ public class Main {
         //////// Copying basic files ////////
         log.info("Start copying editorconfig and gitignore files ...");
         FileCopier fileCopier = new FileCopier();
-        fileCopier.copyFile(GENERATOR_STANDARD_FILES_PATH + "/template-editorconfig", BASE_PATH + "/.editorconfig");
-        fileCopier.copyFile(GENERATOR_STANDARD_FILES_PATH + "/template-gitignore", BASE_PATH + "/.gitignore");
+        fileCopier.copyFile(generatorStandardFilesPath + "/template-editorconfig", basePath + "/.editorconfig");
+        fileCopier.copyFile(generatorStandardFilesPath + "/template-gitignore", basePath + "/.gitignore");
         log.info("Copy successful!");
 
         //////// Copying user generated code to new project ////////
@@ -152,13 +158,22 @@ public class Main {
         userCodeResolver.writeUserContentInNewProject(userFileWrapper, file);
         log.info("Adding the user code to the 'new' project successful!");
 
-
-        //////// Show errors to the user ////////
-        log.info("Start showing the errors to user ...");
-        // ToDO
-        log.info("Showing the errors to user successful!");
-
-
         log.info("Generating application {} was successful!", NAME);
+    }
+
+    /**
+     * Reads the Java command line arguments. Required order is: groupId, artifactId, name, description.
+     * If there are no CLI arguments the default values are used. If the number of arguments isn't exactly
+     * four the defaults are used.
+     *
+     * @param args Java CLI arguments
+     */
+    private static void readArgs(String[] args) {
+        if (args.length == 4) {
+            GROUP_ID = args[0];
+            ARTIFACT_ID = args[1];
+            NAME = args[2];
+            DESCRIPTION = args[3];
+        }
     }
 }
