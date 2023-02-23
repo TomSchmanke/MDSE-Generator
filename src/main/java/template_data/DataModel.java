@@ -2,6 +2,12 @@ package template_data;
 
 import java.util.List;
 
+/**
+ * Data model that is used to create the generated application.
+ *
+ * @author Laura Schmidt
+ * @version 1.0 initial creation
+ */
 public class DataModel {
     private List<ControllerModel> controllerModels;
     private List<EntityModel> entityModels;

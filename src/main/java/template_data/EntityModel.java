@@ -2,6 +2,16 @@ package template_data;
 
 import java.util.List;
 
+/**
+ * Record that holds information about JPA-Entities.
+ *
+ * @param entityName name of JPA entity
+ * @param identificationVariable variable used for identification
+ * @param attributeModels entity attributes
+ *
+ * @author Tom Schmanke
+ * @version 1.0 initial creation
+ */
 public record EntityModel(String entityName, String identificationVariable, List<AttributeModel> attributeModels) {
 
     public String getEntityName() {
