@@ -36,127 +36,131 @@ public class Main {
     private static String NAME = "generated-application";
     private static String DESCRIPTION = "Generated basic build for Spring Boot";
 
-    public static void main(String[] args) throws IOException {
-        //////// Read CLI arguments ////////
-        log.info("Read command line arguments.");
-        readArgs(args);
+    public static void main(String[] args) {
+        try {
+            //////// Read CLI arguments ////////
+            log.info("Read command line arguments.");
+            readArgs(args);
 
 
-        //////// Declare variables based on default values or CLI arguments ////////
-        String javaVersion = "17";
-        String springBootVersion = "3.0.2";
-        String pathToFiles = NAME + "/src/main/java/" + GROUP_ID.replaceAll("\\.", "/") + "/" + ARTIFACT_ID.replaceAll("-", "") + "/";
+            //////// Declare variables based on default values or CLI arguments ////////
+            String javaVersion = "17";
+            String springBootVersion = "3.0.2";
+            String pathToFiles = NAME + "/src/main/java/" + GROUP_ID.replaceAll("\\.", "/") + "/" + ARTIFACT_ID.replaceAll("-", "") + "/";
 
-        String targetPathControllers = pathToFiles + "controllers";
-        String targetPathEntities = pathToFiles + "entities";
-        String targetPathRepositories = pathToFiles + "repositories";
+            String targetPathControllers = pathToFiles + "controllers";
+            String targetPathEntities = pathToFiles + "entities";
+            String targetPathRepositories = pathToFiles + "repositories";
 
-        String basePath = NAME;
-        String resourcesPath = NAME + "/src/main/resources";
-        String generatorStandardFilesPath = "src/main/resources/standard_files";
-
-
-        //////// Determine if the generator runs for the first time ////////
-        log.info("Start generating application with name: {}", NAME);
-        Path generatedDirectory = Paths.get(NAME);
-        boolean isFirstGeneration = Files.notExists(generatedDirectory);
-        log.debug("There already is a directory with the name {}", isFirstGeneration);
+            String basePath = NAME;
+            String resourcesPath = NAME + "/src/main/resources";
+            String generatorStandardFilesPath = "src/main/resources/standard_files";
 
 
-        //////// Read the user code from the old project ////////
-        ObjectMapper objectMapper = new ObjectMapper();
-        UserFileWrapper userFileWrapper = objectMapper.readValue("{}", UserFileWrapper.class);
-        UserCodeResolver userCodeResolver = new UserCodeResolver();
-        File file = new File("./" + NAME);
-        if (!isFirstGeneration) {
-            log.info("Start updating 'old' project object based on the json ...");
-            if (userCodeResolver.getFile() != null && userCodeResolver.getFile().length() > 0) {
-                userFileWrapper = objectMapper.readValue(userCodeResolver.getFile(), UserFileWrapper.class);
+            //////// Determine if the generator runs for the first time ////////
+            log.info("Start generating application with name: {}", NAME);
+            Path generatedDirectory = Paths.get(NAME);
+            boolean isFirstGeneration = Files.notExists(generatedDirectory);
+            log.debug("There already is a directory with the name {}", isFirstGeneration);
+
+
+            //////// Read the user code from the old project ////////
+            ObjectMapper objectMapper = new ObjectMapper();
+            UserFileWrapper userFileWrapper = objectMapper.readValue("{}", UserFileWrapper.class);
+            UserCodeResolver userCodeResolver = new UserCodeResolver();
+            File file = new File("./" + NAME);
+            if (!isFirstGeneration) {
+                log.info("Start updating 'old' project object based on the json ...");
+                if (userCodeResolver.getFile() != null && userCodeResolver.getFile().length() > 0) {
+                    userFileWrapper = objectMapper.readValue(userCodeResolver.getFile(), UserFileWrapper.class);
+                }
+                log.info("Start reading the user created code of the 'old' project ...");
+                List<File> fileList = userCodeResolver.readStructureFromFolderAsList(file);
+                String contentOfFiles = userCodeResolver.readContentOfFilesAsString(fileList);
+                log.info("Start writing the user created code into 'userCode.json'");
+                userCodeResolver.writeStringToUserContent(contentOfFiles);
             }
-            log.info("Start reading the user created code of the 'old' project ...");
-            List<File> fileList = userCodeResolver.readStructureFromFolderAsList(file);
-            String contentOfFiles = userCodeResolver.readContentOfFilesAsString(fileList);
-            log.info("Start writing the user created code into 'userCode.json'");
-            userCodeResolver.writeStringToUserContent(contentOfFiles);
-        }
 
 
-        //////// Rename the old project to create a new project later on ////////
-        if (!isFirstGeneration) {
-            long timestamp = Instant.now().getEpochSecond();
-            log.info("Renaming the old project by concatenating the timestamp {} to the root directory", timestamp);
-            File oldDirectory = new File(NAME);
-            File newDirectory = new File(NAME + timestamp);
-            boolean renameFlag = oldDirectory.renameTo(newDirectory);
-            if (!renameFlag) {
-                log.error("Renaming old project was not successful");
+            //////// Rename the old project to create a new project later on ////////
+            if (!isFirstGeneration) {
+                long timestamp = Instant.now().getEpochSecond();
+                log.info("Renaming the old project by concatenating the timestamp {} to the root directory", timestamp);
+                File oldDirectory = new File(NAME);
+                File newDirectory = new File(NAME + timestamp);
+                boolean renameFlag = oldDirectory.renameTo(newDirectory);
+                if (!renameFlag) {
+                    log.error("Renaming old project was not successful");
+                }
+                log.info("Renaming old project was successful");
             }
-            log.info("Renaming old project was successful");
+
+
+            //////// Download zip with initial project structure from Spring Initializr ////////
+            log.info("Start generating Spring project from Spring Initializr ...");
+            ProjectInitializer projectInitializer = new ProjectInitializer();
+            List<String> dependencies = Arrays.asList("devtools", "web", "data-jpa", "h2", "lombok");
+            String nameOfZip = projectInitializer.loadGeneratedFilesFromSpringInitializer(GROUP_ID, ARTIFACT_ID, NAME,
+                    DESCRIPTION, javaVersion, springBootVersion, dependencies);
+
+            //////// Unzip file ////////
+            if (nameOfZip == null) {
+                log.error("No zip file was downloaded from Spring Initializr");
+                return;
+            }
+            log.info("Start unzipping file {} with Spring project from Spring Initializr ...", nameOfZip);
+            projectInitializer.unzipFile(nameOfZip, nameOfZip.substring(0, nameOfZip.length() - 3));
+
+
+            //////// Create directories for controllers, entities and repositories ////////
+            log.info("Start creating directories for controllers, entities and repositories ...");
+            projectInitializer.newDirectoryFromPath(pathToFiles, "controllers");
+            projectInitializer.newDirectoryFromPath(pathToFiles, "entities");
+            projectInitializer.newDirectoryFromPath(pathToFiles, "repositories");
+
+
+            //////// Converting data from XML-File to our data model ////////
+            log.info("Start reading XML-file with UML definitions ...");
+            XMLConverter xmlConverter = new XMLConverter();
+            UMLClassDiagramm diagram = xmlConverter.processXMLUMLFile("/Flottenmanagement.xml");
+
+            log.info("Start converting MDSDDiagram to data model ...");
+            DataConverter dataConverter = new DataConverter(diagram);
+            DataModel dataModel = dataConverter.convertMDSDDiagramToDataModel();
+
+
+            //////// Generating files from templates ////////
+            log.info("Start filling templated with application specific data ...");
+            String packagePath = GROUP_ID.replaceAll("-", "") + '.' + ARTIFACT_ID.replaceAll("-", "") + '.';
+            String packagePathControllers = packagePath + "controllers";
+            String packagePathEntities = packagePath + "entities";
+            String packagePathRepositories = packagePath + "repositories";
+
+            TemplateResolver templateResolver = new TemplateResolver();
+            List<String> generatedControllerFiles = templateResolver.createControllerFiles(dataModel.getControllerDataModels(), packagePathControllers, packagePathEntities, packagePathRepositories, targetPathControllers);
+            List<String> generatedEntityFiles = templateResolver.createEntityFiles(dataModel.getEntityDataModels(), dataModel.getAssociationsDataModels(), packagePathEntities, targetPathEntities);
+            List<String> generatedRepositoryFiles = templateResolver.createRepositoryFiles(dataModel.getRepositoryDataModels(), packagePathRepositories, packagePathEntities, targetPathRepositories);
+            List<String> applicationPropertiesFile = templateResolver.createApplicationProperties(ARTIFACT_ID, resourcesPath);
+            List<String> readMeFile = templateResolver.createReadMe(ARTIFACT_ID, basePath);
+            List<String> generatedFiles = new ArrayList<>();
+            Stream.of(generatedControllerFiles, generatedEntityFiles, generatedRepositoryFiles, applicationPropertiesFile, readMeFile).forEach(generatedFiles::addAll);
+            log.info("Generated files: {}", generatedFiles);
+
+
+            //////// Copying basic files ////////
+            log.info("Start copying editorconfig and gitignore files ...");
+            FileCopier fileCopier = new FileCopier();
+            fileCopier.copyFile(generatorStandardFilesPath + "/template-editorconfig", basePath + "/.editorconfig");
+            fileCopier.copyFile(generatorStandardFilesPath + "/template-gitignore", basePath + "/.gitignore");
+
+            //////// Copying user generated code to new project ////////
+            log.info("Start adding the user code to the 'new' project ...");
+            userCodeResolver.writeUserContentInNewProject(userFileWrapper, file);
+
+            log.info("Generating application with name {} was successful!", NAME);
+        } catch (IOException e) {
+            log.error("Generating application with name {} was not successful. Please see log messages for more information.", NAME);
         }
-
-
-        //////// Download zip with initial project structure from Spring Initializr ////////
-        log.info("Start generating Spring project from Spring Initializr ...");
-        ProjectInitializer projectInitializer = new ProjectInitializer();
-        List<String> dependencies = Arrays.asList("devtools", "web", "data-jpa", "h2", "lombok");
-        String nameOfZip = projectInitializer.loadGeneratedFilesFromSpringInitializer(GROUP_ID, ARTIFACT_ID, NAME,
-                DESCRIPTION, javaVersion, springBootVersion, dependencies);
-
-        //////// Unzip file ////////
-        if (nameOfZip == null) {
-            log.error("No zip file was downloaded from Spring Initializr");
-            return;
-        }
-        log.info("Start unzipping file {} with Spring project from Spring Initializr ...", nameOfZip);
-        projectInitializer.unzipFile(nameOfZip, nameOfZip.substring(0, nameOfZip.length() - 3));
-
-
-        //////// Create directories for controllers, entities and repositories ////////
-        log.info("Start creating directories for controllers, entities and repositories ...");
-        projectInitializer.newDirectoryFromPath(pathToFiles, "controllers");
-        projectInitializer.newDirectoryFromPath(pathToFiles, "entities");
-        projectInitializer.newDirectoryFromPath(pathToFiles, "repositories");
-
-
-        //////// Converting data from XML-File to our data model ////////
-        log.info("Start reading XML-file with UML definitions ...");
-        XMLConverter xmlConverter = new XMLConverter();
-        UMLClassDiagramm diagram = xmlConverter.processXMLUMLFile("/Flottenmanagement.xml");
-
-        log.info("Start converting MDSDDiagram to data model ...");
-        DataConverter dataConverter = new DataConverter(diagram);
-        DataModel dataModel = dataConverter.convertMDSDDiagramToDataModel();
-
-
-        //////// Generating files from templates ////////
-        log.info("Start filling templated with application specific data ...");
-        String packagePath = GROUP_ID.replaceAll("-", "") + '.' + ARTIFACT_ID.replaceAll("-", "") + '.';
-        String packagePathControllers = packagePath + "controllers";
-        String packagePathEntities = packagePath + "entities";
-        String packagePathRepositories = packagePath + "repositories";
-
-        TemplateResolver templateResolver = new TemplateResolver();
-        List<String> generatedControllerFiles = templateResolver.createControllerFiles(dataModel.getControllerDataModels(), packagePathControllers, packagePathEntities, packagePathRepositories, targetPathControllers);
-        List<String> generatedEntityFiles = templateResolver.createEntityFiles(dataModel.getEntityDataModels(), dataModel.getAssociationsDataModels(), packagePathEntities, targetPathEntities);
-        List<String> generatedRepositoryFiles = templateResolver.createRepositoryFiles(dataModel.getRepositoryDataModels(), packagePathRepositories, packagePathEntities, targetPathRepositories);
-        List<String> applicationPropertiesFile = templateResolver.createApplicationProperties(ARTIFACT_ID, resourcesPath);
-        List<String> readMeFile = templateResolver.createReadMe(ARTIFACT_ID, basePath);
-        List<String> generatedFiles = new ArrayList<>();
-        Stream.of(generatedControllerFiles, generatedEntityFiles, generatedRepositoryFiles, applicationPropertiesFile, readMeFile).forEach(generatedFiles::addAll);
-        log.info("Generated files: {}", generatedFiles);
-
-
-        //////// Copying basic files ////////
-        log.info("Start copying editorconfig and gitignore files ...");
-        FileCopier fileCopier = new FileCopier();
-        fileCopier.copyFile(generatorStandardFilesPath + "/template-editorconfig", basePath + "/.editorconfig");
-        fileCopier.copyFile(generatorStandardFilesPath + "/template-gitignore", basePath + "/.gitignore");
-
-        //////// Copying user generated code to new project ////////
-        log.info("Start adding the user code to the 'new' project ...");
-        userCodeResolver.writeUserContentInNewProject(userFileWrapper, file);
-
-        log.info("Generated application with name: {}!", NAME);
     }
 
     /**

@@ -38,7 +38,7 @@ public class TemplateResolver {
         velocityEngine.init(velocityProperties);
     }
 
-    private void resolveTemplate(VelocityContext velocityContext, String inputTemplate, String outputFile, String targetPath) {
+    private void resolveTemplate(VelocityContext velocityContext, String inputTemplate, String outputFile, String targetPath) throws IOException {
         try {
             Writer writer = new FileWriter(targetPath + "/" + outputFile);
             velocityEngine.mergeTemplate(inputTemplate, "UTF-8", velocityContext, writer);
@@ -47,6 +47,7 @@ public class TemplateResolver {
             log.debug("Successfully generated " + outputFile);
         } catch (IOException e) {
             log.error("Error occurred during merging of template and velocity context " + e);
+            throw e;
         }
     }
 
@@ -58,7 +59,7 @@ public class TemplateResolver {
      * of the RestController .java files
      * @return List of names of the generated files
      */
-    public List<String> createControllerFiles(List<ControllerModel> controllerModels, String targetPackagePath, String entitiesPackagePath, String repositoriesPackagePath, String targetPath) {
+    public List<String> createControllerFiles(List<ControllerModel> controllerModels, String targetPackagePath, String entitiesPackagePath, String repositoriesPackagePath, String targetPath) throws IOException {
         for (ControllerModel controllerModel : controllerModels) {
             VelocityContext velocityContext = new VelocityContext();
             velocityContext.put("targetPackagePath" , targetPackagePath);
@@ -80,7 +81,7 @@ public class TemplateResolver {
      * of the JPA Entities .java files
      * @return List of names of the generated files
      */
-    public List<String> createEntityFiles(List<EntityModel> entityModels, List<AssociationsModel> associationsModels, String targetPackagePath, String targetPath) {
+    public List<String> createEntityFiles(List<EntityModel> entityModels, List<AssociationsModel> associationsModels, String targetPackagePath, String targetPath) throws IOException {
         for (EntityModel entityModel : entityModels) {
             VelocityContext velocityContext = new VelocityContext();
             velocityContext.put("targetPackagePath" , targetPackagePath);
@@ -105,7 +106,7 @@ public class TemplateResolver {
      * of the JPA Repositories .java files
      * @return List of names of the generated files
      */
-    public List<String> createRepositoryFiles(List<RepositoryModel> repositoryModels, String targetPackagePath, String entitiesPackagePath, String targetPath) {
+    public List<String> createRepositoryFiles(List<RepositoryModel> repositoryModels, String targetPackagePath, String entitiesPackagePath, String targetPath) throws IOException {
         for (RepositoryModel repositoryModel : repositoryModels) {
             VelocityContext velocityContext = new VelocityContext();
             velocityContext.put("targetPackagePath" , targetPackagePath);
@@ -125,7 +126,7 @@ public class TemplateResolver {
      * @param targetPath Path where the file will be generated
      * @return generated file name
      */
-    public List<String> createApplicationProperties(String artifactId, String targetPath) {
+    public List<String> createApplicationProperties(String artifactId, String targetPath) throws IOException {
         VelocityContext velocityContext = new VelocityContext();
         velocityContext.put("artifactId", artifactId);
 
@@ -141,7 +142,7 @@ public class TemplateResolver {
      * @param targetPath Path where the file will be generated
      * @return generated file name
      */
-    public List<String> createReadMe(String artifactId, String targetPath) {
+    public List<String> createReadMe(String artifactId, String targetPath) throws IOException {
         VelocityContext velocityContext = new VelocityContext();
         velocityContext.put("artifactId", artifactId);
 
