@@ -53,7 +53,7 @@ public class UserCodeResolver {
      * @param folder of which the structure should be examined
      * @return the list of  all file paths in that folder, which don't end with "BaseGen.java" or ".jar
      */
-    public List<File> readStructureFromFolderAsList(final File folder) {
+    public List<File> readStructureFromFolderAsList(final File folder) throws IOException {
         List<File> filePaths = new ArrayList<>();
         String path = String.valueOf(folder);
         try (Stream<Path> paths = Files.walk(Paths.get(path))) {
@@ -64,6 +64,7 @@ public class UserCodeResolver {
             });
         } catch (IOException e) {
             logger.error("Error reading structure of folder {}: {}", folder.toString(), e.getMessage());
+            throw e;
         }
         return filePaths;
     }
@@ -147,6 +148,7 @@ public class UserCodeResolver {
                     outputStream.write(decodedBytes);
                 } catch (IOException e) {
                     logger.error("An error occurred while writing in file {}: {}", file, e.getMessage());
+                    throw e;
                 }
             } else {
                 try (FileWriter writer = new FileWriter(file.getFilename())) {
@@ -155,6 +157,7 @@ public class UserCodeResolver {
                     }
                 } catch (IOException e) {
                     logger.error("An error occurred while writing in file {}: {}", file, e.getMessage());
+                    throw e;
                 }
             }
         }
@@ -192,7 +195,7 @@ public class UserCodeResolver {
      * @param folder          of the newly generated project
      * @return wrapper object {@link UserFileWrapper} with updated values of the {@link UserFile} objects
      */
-    private UserFileWrapper updateNamesOfImplFiles(UserFileWrapper userFileWrapper, File folder) {
+    private UserFileWrapper updateNamesOfImplFiles(UserFileWrapper userFileWrapper, File folder) throws IOException {
         List<String> oldProjectStructureList = new ArrayList<>();
         List<File> newProjectStructureList = this.readStructureFromFolderAsList(folder);
 

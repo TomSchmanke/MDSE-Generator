@@ -2,6 +2,15 @@ package template_data;
 
 import util.Plurals;
 
+/**
+ * Record that holds information for REST controller creation.
+ *
+ * @param entityName name of entity
+ * @param identificationVariable variable used for identification
+ *
+ * @author Tom Schmanke
+ * @version 1.0 initial creation
+ */
 public record ControllerModel(String entityName, String identificationVariable) {
 
     public String getEntityName() {

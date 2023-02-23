@@ -3,6 +3,19 @@ package template_data;
 import de.arinir.mdsd.metamodell.MDSDMetamodell.DataType;
 import de.arinir.mdsd.metamodell.MDSDMetamodell.VisibilityET;
 
+/**
+ * Record that holds data of attributes.
+ *
+ * @param attributeName name of attribute
+ * @param attributeType data type of attribute
+ * @param visibility visibility of attribute
+ *
+ * @author Tom Schmanke
+ * @version 1.0 initial creation
+ *
+ * @author Laura Schmidt
+ * @version 1.1 add visibility
+ */
 public record AttributeModel(String attributeName, DataType attributeType, VisibilityET visibility) {
 
     public String getAttributeNameCamelCase() {

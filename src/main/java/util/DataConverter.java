@@ -34,6 +34,11 @@ public class DataConverter {
         return dataModel;
     }
 
+    /**
+     * Create {@link ControllerModel}s from classes of the UML diagram.
+     *
+     * @return list of {@link ControllerModel}s
+     */
     private List<ControllerModel> convertController() {
         List<ControllerModel> controllerModels = new ArrayList<>();
         for (Class c : mdsdDiagram.getClasses()) {
@@ -43,6 +48,11 @@ public class DataConverter {
         return controllerModels;
     }
 
+    /**
+     * Create {@link EntityModel}s from classes of the UML diagram.
+     *
+     * @return list of {@link EntityModel}s
+     */
     private List<EntityModel> convertEntities() {
         List<EntityModel> entityModels = new ArrayList<>();
         for (Class cl : mdsdDiagram.getClasses()) {
@@ -53,6 +63,12 @@ public class DataConverter {
         return entityModels;
     }
 
+    /**
+     * Create {@link AttributeModel}s from a class of the UML diagram.
+     *
+     * @param cl UML class with attributes
+     * @return list of {@link AttributeModel}s
+     */
     private List<AttributeModel> convertAttributes(Class cl) {
         List<AttributeModel> attributeModels = new ArrayList<>();
         for (Attribute att : cl.getAttributes()) {
@@ -62,6 +78,14 @@ public class DataConverter {
         return attributeModels;
     }
 
+    /**
+     * Normalize data type. It is possible that in the UML class diagram abbreviations
+     * such as str for String or bool for boolean is used. To get the right Java data type
+     * a normalization is needed.
+     *
+     * @param oldType data type from UML diagram
+     * @return normalized data type
+     */
     private DataType normalizeType(DataType oldType) {
         var oldName = oldType.getName();
         return switch (oldName) {
@@ -72,6 +96,11 @@ public class DataConverter {
         };
     }
 
+    /**
+     * Create {@link AssociationsModel}s from associations in UML diagram.
+     *
+     * @return list of {@link AssociationsModel}s
+     */
     private List<AssociationsModel> convertAssociations() {
         List<AssociationsModel> associationsModels = new ArrayList<>();
         for (Assoziation a : mdsdDiagram.getAssoziations()) {
@@ -84,6 +113,11 @@ public class DataConverter {
         return associationsModels;
     }
 
+    /**
+     * Create {@link RepositoryModel}s from classes of the UML diagram.
+     *
+     * @return list of {@link RepositoryModel}
+     */
     private List<RepositoryModel> convertRepositories() {
         List<RepositoryModel> repositoryModels = new ArrayList<>();
         for (Class c : mdsdDiagram.getClasses()) {
