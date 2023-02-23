@@ -21,6 +21,12 @@ import java.util.stream.Stream;
 /**
  * @author Tom Schmanke
  * @version 1.0 Create overall program schedule
+ *
+ * @author Laura Schmidt
+ * @version 1.1 Logging
+ *
+ * @author Laura Schmidt
+ * @version 1.2 CLI arguments
  */
 public class Main {
     private static final Logger log = LogManager.getLogger(Main.class);
@@ -31,10 +37,9 @@ public class Main {
     private static String DESCRIPTION = "Generated basic build for Spring Boot";
 
     public static void main(String[] args) throws IOException {
-        log.info("Read command line arguments.");
         //////// Read CLI arguments ////////
+        log.info("Read command line arguments.");
         readArgs(args);
-        log.info("Reading command line arguments successful.");
 
 
         //////// Declare variables based on default values or CLI arguments ////////
@@ -51,11 +56,11 @@ public class Main {
         String generatorStandardFilesPath = "src/main/resources/standard_files";
 
 
-        log.info("Start generating application with name: {}", NAME);
         //////// Determine if the generator runs for the first time ////////
+        log.info("Start generating application with name: {}", NAME);
         Path generatedDirectory = Paths.get(NAME);
         boolean isFirstGeneration = Files.notExists(generatedDirectory);
-        log.debug("There already is an directory with the name {}", isFirstGeneration);
+        log.debug("There already is a directory with the name {}", isFirstGeneration);
 
 
         //////// Read the user code from the old project ////////
@@ -68,14 +73,11 @@ public class Main {
             if (userCodeResolver.getFile() != null && userCodeResolver.getFile().length() > 0) {
                 userFileWrapper = objectMapper.readValue(userCodeResolver.getFile(), UserFileWrapper.class);
             }
-            log.info("Updating of the 'old' project object successful!");
             log.info("Start reading the user created code of the 'old' project ...");
             List<File> fileList = userCodeResolver.readStructureFromFolderAsList(file);
-            log.info("Reading the user created code successful!");
             String contentOfFiles = userCodeResolver.readContentOfFilesAsString(fileList);
             log.info("Start writing the user created code into 'userCode.json'");
             userCodeResolver.writeStringToUserContent(contentOfFiles);
-            log.info("Writing of the user created code successful!");
         }
 
 
@@ -86,7 +88,10 @@ public class Main {
             File oldDirectory = new File(NAME);
             File newDirectory = new File(NAME + timestamp);
             boolean renameFlag = oldDirectory.renameTo(newDirectory);
-            log.info("Renaming the old project successful? {}", renameFlag);
+            if (!renameFlag) {
+                log.error("Renaming old project was not successful");
+            }
+            log.info("Renaming old project was successful");
         }
 
 
@@ -96,7 +101,6 @@ public class Main {
         List<String> dependencies = Arrays.asList("devtools", "web", "data-jpa", "h2", "lombok");
         String nameOfZip = projectInitializer.loadGeneratedFilesFromSpringInitializer(GROUP_ID, ARTIFACT_ID, NAME,
                 DESCRIPTION, javaVersion, springBootVersion, dependencies);
-        log.info("Generating Spring project successful!");
 
         //////// Unzip file ////////
         if (nameOfZip == null) {
@@ -105,7 +109,6 @@ public class Main {
         }
         log.info("Start unzipping file {} with Spring project from Spring Initializr ...", nameOfZip);
         projectInitializer.unzipFile(nameOfZip, nameOfZip.substring(0, nameOfZip.length() - 3));
-        log.info("Unzipping file successful!");
 
 
         //////// Create directories for controllers, entities and repositories ////////
@@ -113,19 +116,16 @@ public class Main {
         projectInitializer.newDirectoryFromPath(pathToFiles, "controllers");
         projectInitializer.newDirectoryFromPath(pathToFiles, "entities");
         projectInitializer.newDirectoryFromPath(pathToFiles, "repositories");
-        log.info("Creating directories successful!");
 
 
         //////// Converting data from XML-File to our data model ////////
         log.info("Start reading XML-file with UML definitions ...");
         XMLConverter xmlConverter = new XMLConverter();
         UMLClassDiagramm diagram = xmlConverter.processXMLUMLFile("/Flottenmanagement.xml");
-        log.info("Process XML-file successful!");
 
         log.info("Start converting MDSDDiagram to data model ...");
         DataConverter dataConverter = new DataConverter(diagram);
         DataModel dataModel = dataConverter.convertMDSDDiagramToDataModel();
-        log.info("Convert to data model successful!");
 
 
         //////// Generating files from templates ////////
@@ -143,7 +143,7 @@ public class Main {
         List<String> readMeFile = templateResolver.createReadMe(ARTIFACT_ID, basePath);
         List<String> generatedFiles = new ArrayList<>();
         Stream.of(generatedControllerFiles, generatedEntityFiles, generatedRepositoryFiles, applicationPropertiesFile, readMeFile).forEach(generatedFiles::addAll);
-        log.info("Fill template files successful! Generated files: {}", generatedFiles);
+        log.info("Generated files: {}", generatedFiles);
 
 
         //////// Copying basic files ////////
@@ -151,14 +151,12 @@ public class Main {
         FileCopier fileCopier = new FileCopier();
         fileCopier.copyFile(generatorStandardFilesPath + "/template-editorconfig", basePath + "/.editorconfig");
         fileCopier.copyFile(generatorStandardFilesPath + "/template-gitignore", basePath + "/.gitignore");
-        log.info("Copy successful!");
 
         //////// Copying user generated code to new project ////////
         log.info("Start adding the user code to the 'new' project ...");
         userCodeResolver.writeUserContentInNewProject(userFileWrapper, file);
-        log.info("Adding the user code to the 'new' project successful!");
 
-        log.info("Generating application {} was successful!", NAME);
+        log.info("Generated application with name: {}!", NAME);
     }
 
     /**
