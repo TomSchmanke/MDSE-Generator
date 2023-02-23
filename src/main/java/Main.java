@@ -89,10 +89,11 @@ public class Main {
                 File oldDirectory = new File(NAME);
                 File newDirectory = new File(NAME + timestamp);
                 boolean renameFlag = oldDirectory.renameTo(newDirectory);
-                if (!renameFlag) {
+                if (renameFlag) {
+                    log.info("Renaming old project was successful");
+                } else {
                     log.error("Renaming old project was not successful");
                 }
-                log.info("Renaming old project was successful");
             }
 
 
