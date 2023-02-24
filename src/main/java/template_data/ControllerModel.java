@@ -4,9 +4,10 @@ import util.Plurals;
 
 /**
  * Record that holds information for REST controller creation.
+ * The record and its methods are used in the controller-base.vm and controller-impl.vm template.
  *
  * @param entityName name of entity
- * @param identificationVariable variable used for identification
+ * @param identificationVariable variable used for identification (normally id)
  *
  * @author Tom Schmanke
  * @version 1.0 initial creation

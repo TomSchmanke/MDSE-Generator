@@ -4,9 +4,10 @@ import java.util.List;
 
 /**
  * Record that holds information about JPA-Entities.
+ * The record and its methods are used in the entity-base.vm and entity-impl.vm template.
  *
  * @param entityName name of JPA entity
- * @param identificationVariable variable used for identification
+ * @param identificationVariable variable used for identification (normally id)
  * @param attributeModels entity attributes
  *
  * @author Tom Schmanke

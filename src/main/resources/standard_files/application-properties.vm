@@ -5,7 +5,7 @@
  @version 1.0 Initial creation of application.properties file
 
  @author Tom Schmanke
- @version 1.1 Add h2 database configurations
+ @version 1.1 Add jpa and h2 database configurations
 *###
 #[[#]]# Spring Configurations
 spring.application.name = ${artifactId}

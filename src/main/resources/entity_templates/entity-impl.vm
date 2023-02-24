@@ -1,5 +1,5 @@
 #**
-  Template for the creation of JPA Entities. Expectes the following variables as inputs (see template_data for more):
+  Template for the creation of JPA Entities. Expectes the following variables as inputs (see directory template_data for more):
     targetPackagePath: String; Path of the packge the file will be used
     entity: EntityModel; Model containing getMethods for the needed variables
 

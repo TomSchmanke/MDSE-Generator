@@ -31,6 +31,9 @@ import java.util.stream.Stream;
  * class to save user code between generations
  *
  * @author Jonas Knebel
+ * @version 1.0 initial creation
+ *
+ * @author Jonas Knebel
  * @version 1.1 added support to save images between versions
  */
 public class UserCodeResolver {

@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 
 /**
  * Class which on initialization creates a velocity engine and context configured for the templates used to create the
- * necessary controllers, entities and repositories out of data given in the structure defined in the template_data
+ * necessary controllers, entities, repositories and standard files out of data given in the structure defined in the template_data
  * directory based on the .vm templates in the resources' directory.
  *
  * @author Tom Schmanke
@@ -38,6 +38,15 @@ public class TemplateResolver {
         velocityEngine.init(velocityProperties);
     }
 
+    /**
+     * Generates a file based on a configured velocity template and a template.
+     *
+     * @param velocityContext Configured velocity template with target and data
+     * @param inputTemplate Name of a .vm template file in the resources directory which should be used
+     * @param outputFile Name of the output file
+     * @param targetPath Path to where the file should be generated to
+     * @throws IOException Signals that an I/O exception of some sort has occurred. This class is the general class of exceptions produced by failed or interrupted I/O operations.
+     */
     private void resolveTemplate(VelocityContext velocityContext, String inputTemplate, String outputFile, String targetPath) throws IOException {
         try {
             Writer writer = new FileWriter(targetPath + "/" + outputFile);

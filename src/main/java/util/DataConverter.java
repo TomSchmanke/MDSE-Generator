@@ -106,8 +106,8 @@ public class DataConverter {
         for (Assoziation a : mdsdDiagram.getAssoziations()) {
             var from = a.getFrom();
             var to = a.getTo();
-            var model = new AssociationsModel(from.getReference().getName(), from.getRoleName(), from.getMultiplicity(),
-                    to.getReference().getName(), to.getRoleName(), to.getMultiplicity());
+            var model = new AssociationsModel(from.getReference().getName(), from.getRoleName(),
+                    to.getReference().getName(), to.getRoleName());
             associationsModels.add(model);
         }
         return associationsModels;

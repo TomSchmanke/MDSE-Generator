@@ -24,6 +24,21 @@ public class ProjectInitializer {
 
     private static final String SPRING_INIT_BASE_URL = "https://start.spring.io/starter.zip";
 
+    /**
+     * Method makes a configured call to a spring initializr endpoint to download a zip file which contains the
+     * configured base structure and base files of a new Spring Boot project.
+     * The configurations can be set via the parameters.
+     *
+     * @param groupId GroupId of the generated Spring Boot project
+     * @param artifactId ArtifactId of the generated Spring Boot project
+     * @param name Name of the generated Spring Boot project
+     * @param description Description of the generated Spring Boot project
+     * @param javaVersion Java version of the generated Spring Boot project
+     * @param bootVersion Spring Boot version of the generated Spring Boot project
+     * @param dependencies Keywords for further dependencies of the generated Spring Boot project
+     * @return The name of the zip file or null when no file was generated
+     * @throws IOException Signals that an I/O exception of some sort has occurred. This class is the general class of exceptions produced by failed or interrupted I/O operations.
+     */
     public String loadGeneratedFilesFromSpringInitializer(String groupId, String artifactId, String name,
                                                           String description, String javaVersion, String bootVersion,
                                                           List<String> dependencies) throws IOException {
@@ -64,11 +79,18 @@ public class ProjectInitializer {
     }
 
 
-    public void unzipFile(String in, String target) throws IOException {
-        File destDir = new File(target);
+    /**
+     * Method takes a zip file as parameter and unzip the file in the target directory
+     *
+     * @param inputFile The path to the zip file
+     * @param targetFile The path to the target directory
+     * @throws IOException Signals that an I/O exception of some sort has occurred. This class is the general class of exceptions produced by failed or interrupted I/O operations.
+     */
+    public void unzipFile(String inputFile, String targetFile) throws IOException {
+        File destDir = new File(targetFile);
 
         byte[] buffer = new byte[1024];
-        ZipInputStream zis = new ZipInputStream(new FileInputStream(in));
+        ZipInputStream zis = new ZipInputStream(new FileInputStream(inputFile));
         ZipEntry zipEntry = zis.getNextEntry();
         while (zipEntry != null) {
             File newFile = newFileFromZip(destDir, zipEntry);
@@ -98,6 +120,13 @@ public class ProjectInitializer {
         zis.close();
     }
 
+    /**
+     * Creates a file based on an entry in a zip file
+     * @param destinationDir Target directory to place the file
+     * @param zipEntry Entry in zip file
+     * @return The created file
+     * @throws IOException Signals that an I/O exception of some sort has occurred. This class is the general class of exceptions produced by failed or interrupted I/O operations.
+     */
     private File newFileFromZip(File destinationDir, ZipEntry zipEntry) throws IOException {
         File destFile = new File(destinationDir, zipEntry.getName());
 
@@ -111,6 +140,12 @@ public class ProjectInitializer {
         return destFile;
     }
 
+    /**
+     * Creates a directory based on a directory in a zip file
+     * @param destinationDir Target directory to place the new directory
+     * @param newDirectory Directory in zip file
+     * @return true/false if the directory could be created
+     */
     public boolean newDirectoryFromPath(String destinationDir, String newDirectory) {
         File theDir = new File(destinationDir + newDirectory);
         if (!theDir.exists()){
