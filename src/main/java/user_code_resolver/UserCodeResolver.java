@@ -260,7 +260,22 @@ public class UserCodeResolver {
                         line = this.getNewPackageName(oldPathArray);
                         file.getContent().set(i, line);
                     }
-                    if (line.contains("class ") || line.contains(oldConstructorName)) {
+                    if (line.contains("class ")) {
+                        line = line.replace(oldConstructorName, newConstructorName);
+                        String baseClass= "";
+                        String[] words = line.split("\\s+");
+                        for(String word : words){
+                            if(word.contains("BaseGen")){
+                                baseClass = word;
+                            break;
+                            }
+                        }
+                        String tempName = newConstructorName;
+                        String newBaseGenClassName = tempName.replace("Impl", "BaseGen");
+                        line = line.replace(baseClass, newBaseGenClassName);
+                        file.getContent().set(i, line);
+                    }
+                    if(line.contains(oldConstructorName)) {
                         file.getContent().set(i, line.replace(oldConstructorName, newConstructorName));
                     }
                 }
