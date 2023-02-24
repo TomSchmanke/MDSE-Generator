@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import template_data.DataModel;
 import user_code_resolver.UserCodeResolver;
-import user_code_resolver.UserFileWrapper;
 import util.*;
 
 import java.io.File;
@@ -65,15 +64,9 @@ public class Main {
 
 
             //////// Read the user code from the old project ////////
-            ObjectMapper objectMapper = new ObjectMapper();
-            UserFileWrapper userFileWrapper = objectMapper.readValue("{}", UserFileWrapper.class);
             UserCodeResolver userCodeResolver = new UserCodeResolver();
             File file = new File("./" + NAME);
             if (!isFirstGeneration) {
-                log.info("Start updating 'old' project object based on the json ...");
-                if (userCodeResolver.getFile() != null && userCodeResolver.getFile().length() > 0) {
-                    userFileWrapper = objectMapper.readValue(userCodeResolver.getFile(), UserFileWrapper.class);
-                }
                 log.info("Start reading the user created code of the 'old' project ...");
                 List<File> fileList = userCodeResolver.readStructureFromFolderAsList(file);
                 String contentOfFiles = userCodeResolver.readContentOfFilesAsString(fileList);
@@ -155,9 +148,10 @@ public class Main {
             fileCopier.copyFile(generatorStandardFilesPath + "/template-gitignore", basePath + "/.gitignore");
 
             //////// Copying user generated code to new project ////////
-            log.info("Start adding the user code to the 'new' project ...");
-            userCodeResolver.writeUserContentInNewProject(userFileWrapper, file);
-
+            if (!isFirstGeneration) {
+                log.info("Start adding the user code to the 'new' project ...");
+                userCodeResolver.writeUserContentInNewProject(file);
+            }
             log.info("Generating application with name {} was successful!", NAME);
         } catch (IOException e) {
             log.error("Generating application with name {} was not successful. Please see log messages for more information.", NAME);

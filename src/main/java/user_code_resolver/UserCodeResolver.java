@@ -79,6 +79,7 @@ public class UserCodeResolver {
      * @throws JsonProcessingException if the {link UserFileWrapper} object cant be transformed toa JSON string by the {@link ObjectMapper}
      */
     public String readContentOfFilesAsString(List<File> fileList) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
         UserFileWrapper userFileWrapper = fileList.stream().map(file -> {
             UserFile userFile = new UserFile();
             userFile.setFilename(String.valueOf(file));
@@ -94,8 +95,6 @@ public class UserCodeResolver {
             }
             return userFile;
         }).collect(Collectors.collectingAndThen(Collectors.toList(), UserFileWrapper::new));
-
-        ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(userFileWrapper);
     }
 
@@ -127,11 +126,12 @@ public class UserCodeResolver {
     /**
      * This method writes the content of the {@link UserFileWrapper} object to all files, which might have been modified or added by the user.
      *
-     * @param userFileWrapper wrapper object which contains a list of {@link UserFile} objects
      * @param folder          of the newly generated project
      * @throws IOException Signals that an I/O exception of some sort has occurred. This class is the general class of exceptions produced by failed or interrupted I/O operations.
      */
-    public void writeUserContentInNewProject(UserFileWrapper userFileWrapper, File folder) throws IOException {
+    public void writeUserContentInNewProject(File folder) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserFileWrapper userFileWrapper = objectMapper.readValue(this.getFile(), UserFileWrapper.class);
         if (!userFileWrapper.getFiles().isEmpty()) {
             userFileWrapper = this.updateNamesOfImplFiles(userFileWrapper, folder);
         }
@@ -241,13 +241,15 @@ public class UserCodeResolver {
         String newPath = elementValueChange.getRightValue().toString();
         String[] oldPathArray = oldPath.split("\\\\");
         String[] newPathArray = newPath.split("\\\\");
-        int fileTypeStart = oldPathArray[oldPathArray.length - 1].indexOf(".");
-        String oldConstructorName = oldPathArray[oldPathArray.length - 1].substring(0, fileTypeStart);
-        String newConstructorName = newPathArray[oldPathArray.length - 1].substring(0, fileTypeStart);
-
+        int oldFileTypeStart = oldPathArray[oldPathArray.length - 1].indexOf(".");
+        String oldConstructorName = oldPathArray[oldPathArray.length - 1].substring(0, oldFileTypeStart);
+        int newFileTypeStart = oldPathArray[oldPathArray.length - 1].indexOf(".");
+        String newConstructorName = newPathArray[oldPathArray.length - 1].substring(0, newFileTypeStart);
+        System.out.println(newConstructorName);
         //////// Find and update the relevant file with the new project  ////////
         for (UserFile file : userFileWrapper.getFiles()) {
             if (file.getFilename() == elementValueChange.getLeftValue()) {
+                System.out.println(file.getFilename());
                 file.setFilename(newPath);
                 for (int i = 0; i < file.getContent().size(); i++) {
                     String line = file.getContent().get(i);
