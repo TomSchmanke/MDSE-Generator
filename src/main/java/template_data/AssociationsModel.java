@@ -1,7 +1,7 @@
 package template_data;
 
 /**
- * Record that holds information about associations between to entities identified via the parameters.
+ * Record that holds information about associations between two entities identified via the parameters.
  * The record and its methods are used in the entity-base.vm template.
  *
  * @param fkEntity name of entity (association end 1)
