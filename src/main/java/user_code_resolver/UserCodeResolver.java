@@ -246,13 +246,12 @@ public class UserCodeResolver {
         String[] newPathArray = newPath.split("\\\\");
         int oldFileTypeStart = oldPathArray[oldPathArray.length - 1].indexOf(".");
         String oldConstructorName = oldPathArray[oldPathArray.length - 1].substring(0, oldFileTypeStart);
-        int newFileTypeStart = oldPathArray[oldPathArray.length - 1].indexOf(".");
-        String newConstructorName = newPathArray[oldPathArray.length - 1].substring(0, newFileTypeStart);
+        int newFileTypeStart = newPathArray[newPathArray.length - 1].indexOf(".");;
+        String newConstructorName = newPathArray[newPathArray.length - 1].substring(0, newFileTypeStart);
         System.out.println(newConstructorName);
         //////// Find and update the relevant file with the new project  ////////
         for (UserFile file : userFileWrapper.getFiles()) {
             if (file.getFilename() == elementValueChange.getLeftValue()) {
-                System.out.println(file.getFilename());
                 file.setFilename(newPath);
                 for (int i = 0; i < file.getContent().size(); i++) {
                     String line = file.getContent().get(i);
