@@ -5,6 +5,7 @@ import de.arinir.mdsd.metamodell.MDSDMetamodell.VisibilityET;
 
 /**
  * Record that holds data of attributes.
+ * The record and its methods are used in the entity-base.vm template.
  *
  * @param attributeName name of attribute
  * @param attributeType data type of attribute

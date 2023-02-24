@@ -1,7 +1,8 @@
 package template_data;
 
 /**
- * Record that holds information for the JPARepository creation.
+ * Record that holds information for the JPA-Repository creation.
+ * The record and its methods are used in the repository-base.vm and repository-impl.vm template.
  *
  * @param repositoryName name of JPARepository
  *
