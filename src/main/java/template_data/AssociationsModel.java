@@ -1,16 +1,13 @@
 package template_data;
 
-import de.arinir.mdsd.metamodell.MDSDMetamodell.MultiplicityT;
-
 /**
- * Record that holds information about associations.
+ * Record that holds information about associations between two entities identified via the parameters.
+ * The record and its methods are used in the entity-base.vm template.
  *
  * @param fkEntity name of entity (association end 1)
  * @param fkName role name of entity (association end 1)
- * @param fkMultiplicity multiplicity (association end 1)
  * @param referencedEntity name of entity (association end 2)
  * @param referencedName role name of entity (association end 2)
- * @param referencedMultiplicity multiplicity (association end 2)
  *
  * @author Tom Schmanke
  * @version 1.0 initial creation
@@ -18,7 +15,7 @@ import de.arinir.mdsd.metamodell.MDSDMetamodell.MultiplicityT;
  * @author Laura Schmidt
  * @version 2.0 use MultiplicityT instead of own class for multiplicity
  */
-public record AssociationsModel(String fkEntity, String fkName, MultiplicityT fkMultiplicity, String referencedEntity, String referencedName, MultiplicityT referencedMultiplicity) {
+public record AssociationsModel(String fkEntity, String fkName, String referencedEntity, String referencedName) {
 
     public String getFKEntity() {
         return fkEntity;

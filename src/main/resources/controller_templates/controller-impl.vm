@@ -1,5 +1,5 @@
 #**
-  Template for the creation of RestControllersImpl frame. Expectes the following variables as inputs (see template_data for more):
+  Template for the creation of RestControllersImpl frame. Expectes the following variables as inputs (see directorytemplate_data for more):
     targetPackagePath: String; Path of the packge the file will be used
     controller: ControllerModel; Model containing getMethods for the needed variables
 
