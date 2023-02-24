@@ -35,6 +35,7 @@ public class Main {
     private static String ARTIFACT_ID = "generated-application";
     private static String NAME = "generated-application";
     private static String DESCRIPTION = "Generated basic build for Spring Boot";
+    private static String NAME_OF_XML_FILE = "Flottenmanagement.xml";
 
     public static void main(String[] args) {
         try {
@@ -123,7 +124,7 @@ public class Main {
             //////// Converting data from XML-File to our data model ////////
             log.info("Start reading XML-file with UML definitions ...");
             XMLConverter xmlConverter = new XMLConverter();
-            UMLClassDiagramm diagram = xmlConverter.processXMLUMLFile("/Flottenmanagement.xml");
+            UMLClassDiagramm diagram = xmlConverter.processXMLUMLFile("/" + NAME_OF_XML_FILE);
 
             log.info("Start converting MDSDDiagram to data model ...");
             DataConverter dataConverter = new DataConverter(diagram);
@@ -177,6 +178,7 @@ public class Main {
             ARTIFACT_ID = args[1];
             NAME = args[2];
             DESCRIPTION = args[3];
+            NAME_OF_XML_FILE = args[4];
         }
     }
 }
