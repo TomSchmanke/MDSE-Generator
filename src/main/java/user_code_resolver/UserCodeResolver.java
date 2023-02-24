@@ -61,7 +61,7 @@ public class UserCodeResolver {
         String path = String.valueOf(folder);
         try (Stream<Path> paths = Files.walk(Paths.get(path))) {
             paths.filter(Files::isRegularFile).map(Path::toFile).forEach(file -> {
-                if (!file.toString().endsWith("BaseGen.java") && !file.toString().endsWith(".jar")) {
+                if (!file.toString().endsWith("BaseGen.java") && !file.toString().endsWith(".jar") && !file.toString().contains("\\.idea\\")) {
                     filePaths.add(file);
                 }
             });
