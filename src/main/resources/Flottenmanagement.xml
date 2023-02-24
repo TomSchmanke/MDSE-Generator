@@ -332,7 +332,7 @@
 								<UML:TaggedValue tag="headStyle" value="0"/>
 								<UML:TaggedValue tag="lineStyle" value="0"/>
 								<UML:TaggedValue tag="ea_localid" value="4"/>
-								<UML:TaggedValue tag="ea_sourceName" value="AntragF"/>
+								<UML:TaggedValue tag="ea_sourceName" value="Antrag"/>
 								<UML:TaggedValue tag="ea_targetName" value="Fahrzeug"/>
 								<UML:TaggedValue tag="ea_sourceType" value="Class"/>
 								<UML:TaggedValue tag="ea_targetType" value="Class"/>
@@ -340,12 +340,12 @@
 								<UML:TaggedValue tag="ea_targetID" value="10"/>
 								<UML:TaggedValue tag="virtualInheritance" value="0"/>
 								<UML:TaggedValue tag="lb" value="0..*"/>
-								<UML:TaggedValue tag="lt" value="+AntragF"/>
+								<UML:TaggedValue tag="lt" value="+Antrag"/>
 								<UML:TaggedValue tag="rb" value="0..1"/>
 								<UML:TaggedValue tag="rt" value="+WunschFahrzeug"/>
 							</UML:ModelElement.taggedValue>
 							<UML:Association.connection>
-								<UML:AssociationEnd visibility="public" multiplicity="0..*" name="AntragF" aggregation="none" isOrdered="false" targetScope="instance" changeable="none" isNavigable="true" type="EAID_BF8B974E_238E_4233_AB04_AF5DC5046FA5">
+								<UML:AssociationEnd visibility="public" multiplicity="0..*" name="Antrag" aggregation="none" isOrdered="false" targetScope="instance" changeable="none" isNavigable="true" type="EAID_BF8B974E_238E_4233_AB04_AF5DC5046FA5">
 									<UML:ModelElement.taggedValue>
 										<UML:TaggedValue tag="containment" value="Unspecified"/>
 										<UML:TaggedValue tag="sourcestyle" value="Union=0;Derived=0;AllowDuplicates=0;Owned=0;Navigable=Navigable;"/>
@@ -364,7 +364,7 @@
 								</UML:AssociationEnd>
 							</UML:Association.connection>
 						</UML:Association>
-						<UML:Class name="AntragF" xmi.id="EAID_BF8B974E_238E_4233_AB04_AF5DC5046FA5" visibility="public" namespace="EAPK_C33E8E82_1F0B_4f14_8258_498C7B0BEAC3" isRoot="false" isLeaf="false" isAbstract="false" isActive="false">
+						<UML:Class name="Antrag" xmi.id="EAID_BF8B974E_238E_4233_AB04_AF5DC5046FA5" visibility="public" namespace="EAPK_C33E8E82_1F0B_4f14_8258_498C7B0BEAC3" isRoot="false" isLeaf="false" isAbstract="false" isActive="false">
 							<UML:ModelElement.taggedValue>
 								<UML:TaggedValue tag="isSpecification" value="false"/>
 								<UML:TaggedValue tag="ea_stype" value="Class"/>
@@ -540,7 +540,7 @@
 								<UML:TaggedValue tag="headStyle" value="0"/>
 								<UML:TaggedValue tag="lineStyle" value="0"/>
 								<UML:TaggedValue tag="ea_localid" value="6"/>
-								<UML:TaggedValue tag="ea_sourceName" value="AntragF"/>
+								<UML:TaggedValue tag="ea_sourceName" value="Antrag"/>
 								<UML:TaggedValue tag="ea_targetName" value="Benutzer"/>
 								<UML:TaggedValue tag="ea_sourceType" value="Class"/>
 								<UML:TaggedValue tag="ea_targetType" value="Class"/>
@@ -583,7 +583,7 @@
 								<UML:TaggedValue tag="headStyle" value="0"/>
 								<UML:TaggedValue tag="lineStyle" value="0"/>
 								<UML:TaggedValue tag="ea_localid" value="7"/>
-								<UML:TaggedValue tag="ea_sourceName" value="AntragF"/>
+								<UML:TaggedValue tag="ea_sourceName" value="Antrag"/>
 								<UML:TaggedValue tag="ea_targetName" value="Benutzer"/>
 								<UML:TaggedValue tag="ea_sourceType" value="Class"/>
 								<UML:TaggedValue tag="ea_targetType" value="Class"/>
