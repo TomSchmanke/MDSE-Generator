@@ -141,8 +141,13 @@ public class UserCodeResolver {
 
         for (UserFile file : userFileWrapper.getFiles()) {
             Path path = Paths.get(file.getFilename());
-            if (Files.notExists(path)) {
-                Files.createFile(path);
+            try {
+                if (Files.notExists(path)) {
+                    Files.createFile(path);
+                }
+            } catch (IOException e) {
+                logger.error("An error occurred while creating the file {}: {}", file, e.getMessage());
+                throw e;
             }
 
             if (isBinaryFile(file.getFilename())) {
@@ -248,7 +253,6 @@ public class UserCodeResolver {
         String oldConstructorName = oldPathArray[oldPathArray.length - 1].substring(0, oldFileTypeStart);
         int newFileTypeStart = newPathArray[newPathArray.length - 1].indexOf(".");;
         String newConstructorName = newPathArray[newPathArray.length - 1].substring(0, newFileTypeStart);
-        System.out.println(newConstructorName);
         //////// Find and update the relevant file with the new project  ////////
         for (UserFile file : userFileWrapper.getFiles()) {
             if (file.getFilename() == elementValueChange.getLeftValue()) {
