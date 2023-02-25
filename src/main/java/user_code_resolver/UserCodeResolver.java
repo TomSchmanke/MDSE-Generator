@@ -34,7 +34,7 @@ import java.util.stream.Stream;
  * @version 1.0 initial creation
  *
  * @author Jonas Knebel
- * @version 1.1 added support to save images between versions
+ * @version 1.1 added support to save binary files between versions
  */
 public class UserCodeResolver {
 
@@ -89,7 +89,7 @@ public class UserCodeResolver {
             try {
                 //////// encode file as Base64 and set content of UserFile  ////////
                 if (isBinaryFile(file.toString())) {
-                    userFile.setContent(Collections.singletonList(encodeImageToBase64(file)));
+                    userFile.setContent(Collections.singletonList(encodeFileToBase64(file)));
                 } else {
                     userFile.setContent(Files.readAllLines(file.toPath()));
                 }
@@ -188,9 +188,9 @@ public class UserCodeResolver {
      * @throws IOException if an I/O error occurs reading from the stream OutOfMemoryError – if an array of the required
      *                     size cannot be allocated, for example the file is larger that 2GB.
      */
-    private static String encodeImageToBase64(File file) throws IOException {
-        byte[] imageBytes = Files.readAllBytes(Paths.get(file.getPath()));
-        return Base64.getEncoder().encodeToString(imageBytes);
+    private static String encodeFileToBase64(File file) throws IOException {
+        byte[] fileBytes = Files.readAllBytes(Paths.get(file.getPath()));
+        return Base64.getEncoder().encodeToString(fileBytes);
     }
 
     /**
