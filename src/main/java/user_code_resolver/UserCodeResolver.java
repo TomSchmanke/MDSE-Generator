@@ -267,8 +267,8 @@ public class UserCodeResolver {
                         line = this.getNewPackageName(oldPathArray);
                         file.getContent().set(i, line);
                     }
-                    if (line.contains("class ")) {
-                        line.replace(oldConstructorName, newConstructorName);
+                    if (line.contains("class ") || line.contains("interface ")) {
+                        line = line.replace(oldConstructorName, newConstructorName);
                         String baseClass = "";
                         String[] words = line.split("\\s+");
                         for (String word : words) {
@@ -279,7 +279,7 @@ public class UserCodeResolver {
                         }
                         String tempName = newConstructorName;
                         String newBaseGenClassName = tempName.replace("Impl", "BaseGen");
-                        line.replace(baseClass, newBaseGenClassName);
+                        line = line.replace(baseClass, newBaseGenClassName);
                         file.getContent().set(i, line);
                     }
                     if (line.contains(oldConstructorName)) {
@@ -308,12 +308,14 @@ public class UserCodeResolver {
     }
 
     /**
-     * This method compares the
+     * This method compares a list of Strings, which represent the old and the new folder structure.
      *
      * @param oldFolderStructure the folderStructure of the old project as a {@code List<String>} of all file paths
-     *                           strings, which don't end with {@code "BaseGen.java"} or {@code ".jar"}
+     *                           strings, which don't end with {@code "BaseGen.java"} or {@code ".jar"} or are in the
+     *                           {@code "\\.idea\\"} or {@code "\\target"} folder.
      * @param newFolderStructure the folderStructure of the new project as a {@code List<String>} list all file path
-     *                           strings, which don't end with {@code "BaseGen.java"} or {@code ".jar"}
+     *                           strings, which don't end with {@code "BaseGen.java"} or {@code ".jar"} or are in the
+     *                           {@code "\\.idea\\"} or {@code "\\target"} folder.
      * @return diff which displays the differences in the project structure based on the levenshtein distance
      */
     private Diff compareStructure(List<String> oldFolderStructure, List<String> newFolderStructure) {
@@ -321,7 +323,3 @@ public class UserCodeResolver {
         return javers.compare(oldFolderStructure, newFolderStructure);
     }
 }
-
-
-
-
