@@ -1,4 +1,3 @@
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.arinir.mdsd.metamodell.MDSDMetamodell.UMLClassDiagramm;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

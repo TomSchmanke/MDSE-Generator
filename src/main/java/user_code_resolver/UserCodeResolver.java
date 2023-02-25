@@ -61,7 +61,7 @@ public class UserCodeResolver {
         String path = String.valueOf(folder);
         try (Stream<Path> paths = Files.walk(Paths.get(path))) {
             paths.filter(Files::isRegularFile).map(Path::toFile).forEach(file -> {
-                if (!file.toString().endsWith("BaseGen.java") && !file.toString().endsWith(".jar") && !file.toString().contains("\\.idea\\")) {
+                if (!file.toString().endsWith("BaseGen.java") && !file.toString().endsWith(".jar") && !file.toString().contains("\\.idea\\") && !file.toString().contains("\\target\\")) {
                     filePaths.add(file);
                 }
             });
@@ -261,7 +261,7 @@ public class UserCodeResolver {
                         file.getContent().set(i, line);
                     }
                     if (line.contains("class ")) {
-                        line = line.replace(oldConstructorName, newConstructorName);
+                        line.replace(oldConstructorName, newConstructorName);
                         String baseClass= "";
                         String[] words = line.split("\\s+");
                         for(String word : words){
@@ -272,7 +272,7 @@ public class UserCodeResolver {
                         }
                         String tempName = newConstructorName;
                         String newBaseGenClassName = tempName.replace("Impl", "BaseGen");
-                        line = line.replace(baseClass, newBaseGenClassName);
+                        line.replace(baseClass, newBaseGenClassName);
                         file.getContent().set(i, line);
                     }
                     if(line.contains(oldConstructorName)) {
