@@ -265,7 +265,7 @@ public class UserCodeResolver {
                         file.getContent().set(i, line);
                     }
                     if (line.contains("class ")) {
-                        line.replace(oldConstructorName, newConstructorName);
+                        line = line.replace(oldConstructorName, newConstructorName);
                         String baseClass= "";
                         String[] words = line.split("\\s+");
                         for(String word : words){
@@ -276,7 +276,7 @@ public class UserCodeResolver {
                         }
                         String tempName = newConstructorName;
                         String newBaseGenClassName = tempName.replace("Impl", "BaseGen");
-                        line.replace(baseClass, newBaseGenClassName);
+                        line = line.replace(baseClass, newBaseGenClassName);
                         file.getContent().set(i, line);
                     }
                     if(line.contains(oldConstructorName)) {
