@@ -267,7 +267,7 @@ public class UserCodeResolver {
                         line = this.getNewPackageName(oldPathArray);
                         file.getContent().set(i, line);
                     }
-                    if (line.contains("class ") && line.contains("interface ")) {
+                    if (line.contains("class ") || line.contains("interface ")) {
                         line = line.replace(oldConstructorName, newConstructorName);
                         String baseClass = "";
                         String[] words = line.split("\\s+");
