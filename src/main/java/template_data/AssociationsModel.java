@@ -4,16 +4,13 @@ package template_data;
  * Record that holds information about associations between two entities identified via the parameters.
  * The record and its methods are used in the entity-base.vm template.
  *
- * @param fkEntity name of entity (association end 1)
- * @param fkName role name of entity (association end 1)
+ * @param fkEntity         name of entity (association end 1)
+ * @param fkName           role name of entity (association end 1)
  * @param referencedEntity name of entity (association end 2)
- * @param referencedName role name of entity (association end 2)
+ * @param referencedName   role name of entity (association end 2)
  *
  * @author Tom Schmanke
  * @version 1.0 initial creation
- *
- * @author Laura Schmidt
- * @version 2.0 use MultiplicityT instead of own class for multiplicity
  */
 public record AssociationsModel(String fkEntity, String fkName, String referencedEntity, String referencedName) {
 

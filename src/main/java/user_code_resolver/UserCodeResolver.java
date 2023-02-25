@@ -37,8 +37,6 @@ import java.util.stream.Stream;
  * @version 1.1 added support to save binary files between versions
  */
 public class UserCodeResolver {
-
-
     private static final File file = new File("userCode.json");
     private static final Logger logger = LogManager.getLogger(UserCodeResolver.class);
 
@@ -48,6 +46,31 @@ public class UserCodeResolver {
     public UserCodeResolver() {
     }
 
+    /**
+     * This method checks if a file is a binary file based on the file ending. It should be noted that the list might
+     * not be exhaustive, if you need more file formats it might be better to use <a href="https://tika.apache.org/">Tika</a>.
+     * This implementation was used to prevent false positives and make it clear which files get encoded.
+     *
+     * @param file as String which should be examined for file ending
+     * @return {@code true} if file is binary file else return {@code false}
+     */
+    private static boolean isBinaryFile(String file) {
+        return file.matches(".*\\.(jpeg|jpg|png|gif|bmp|tiff|ico|webp|heic|heif|avi|mp4|wmv|mp3|wav|ogg|flac|" +
+                "pdf|doc|docx|xls|xlsx|ppt|pptx|zip|tar|gz|bz2|7z|apk|ipa|exe|dll)$");
+    }
+
+    /**
+     * This method returns the {@code file} encoded as base64 {@code String}.
+     *
+     * @param file the file that should be encoded as base64, this works on any file that consists of binary data.
+     * @return file encoded as base64 {@code String}
+     * @throws IOException if an I/O error occurs reading from the stream OutOfMemoryError – if an array of the required
+     *                     size cannot be allocated, for example the file is larger that 2GB.
+     */
+    private static String encodeFileToBase64(File file) throws IOException {
+        byte[] fileBytes = Files.readAllBytes(Paths.get(file.getPath()));
+        return Base64.getEncoder().encodeToString(fileBytes);
+    }
 
     /**
      * This method reads the structure of the {@code folder} passed into the method and returns a list of all file paths
@@ -61,7 +84,8 @@ public class UserCodeResolver {
         String path = String.valueOf(folder);
         try (Stream<Path> paths = Files.walk(Paths.get(path))) {
             paths.filter(Files::isRegularFile).map(Path::toFile).forEach(file -> {
-                if (!file.toString().endsWith("BaseGen.java") && !file.toString().endsWith(".jar") && !file.toString().contains("\\.idea\\") && !file.toString().contains("\\target\\")) {
+                if (!file.toString().endsWith("BaseGen.java") && !file.toString().endsWith(".jar")
+                        && !file.toString().contains("\\.idea\\") && !file.toString().contains("\\target\\")) {
                     filePaths.add(file);
                 }
             });
@@ -102,23 +126,11 @@ public class UserCodeResolver {
     }
 
     /**
-     * This method checks if a file is a binary file based on the file ending. It should be noted that the list might
-     * not be exhaustive, if you need more file formats it might be better to use <a href="https://tika.apache.org/">Tika</a>.
-     * This implementation was used to prevent false positives and make it clear which files get encoded.
-     *
-     * @param file as String which should be examined for file ending
-     * @return {@code true} if file is binary file else return {@code false}
-     */
-    private static boolean isBinaryFile(String file) {
-        return file.matches(".*\\.(jpeg|jpg|png|gif|bmp|tiff|ico|webp|heic|heif|avi|mp4|wmv|mp3|wav|ogg|flac|pdf|doc|docx|xls|xlsx|ppt|pptx|zip|tar|gz|bz2|7z|apk|ipa|exe|dll)$");
-    }
-
-
-    /**
      * This method writes the formatted JSON String that {@link UserCodeResolver#readContentOfFilesAsString} to {@link UserCodeResolver#file}.
      *
      * @param jsonAsFormattedString the user code JSON formatted as JSON string
-     * @throws IOException if the file exists but is a directory rather than a regular file, does not exist but cannot be created, or cannot be opened for any other reason
+     * @throws IOException if the file exists but is a directory rather than a regular file, does not exist but cannot
+     *                      be created, or cannot be opened for any other reason
      */
     public void writeStringToUserContent(String jsonAsFormattedString) throws IOException {
         FileWriter fileWriter = new FileWriter(file, false);
@@ -127,10 +139,12 @@ public class UserCodeResolver {
     }
 
     /**
-     * This method writes the content of the {@link UserFileWrapper} object to all files, which might have been modified or added by the user.
+     * This method writes the content of the {@link UserFileWrapper} object to all files, which might have been modified
+     * or added by the user.
      *
-     * @param folder          of the newly generated project
-     * @throws IOException Signals that an I/O exception of some sort has occurred. This class is the general class of exceptions produced by failed or interrupted I/O operations.
+     * @param folder of the newly generated project
+     * @throws IOException Signals that an I/O exception of some sort has occurred. This class is the general class of
+     *                      exceptions produced by failed or interrupted I/O operations.
      */
     public void writeUserContentInNewProject(File folder) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -181,23 +195,11 @@ public class UserCodeResolver {
     }
 
     /**
-     * This method returns the {@code file} encoded as base64 {@code String}.
-     *
-     * @param file the file that should be encoded as base64, this works on any file that consists of binary data.
-     * @return file encoded as base64 {@code String}
-     * @throws IOException if an I/O error occurs reading from the stream OutOfMemoryError – if an array of the required
-     *                     size cannot be allocated, for example the file is larger that 2GB.
-     */
-    private static String encodeFileToBase64(File file) throws IOException {
-        byte[] fileBytes = Files.readAllBytes(Paths.get(file.getPath()));
-        return Base64.getEncoder().encodeToString(fileBytes);
-    }
-
-    /**
      * This method compares the folder structure of the old and the new project with {@link UserCodeResolver#compareStructure}
-     * and updates the {@code filename} and {@code content} of all {@link UserFile} Objects in the {@link UserFileWrapper} accordingly.
-     * This means updating the {@code filename}, the class name and all constructor names inside the of {@code content} if a renaming has occurred,
-     * which the {@link UserCodeResolver#compareStructure} has found.
+     * and updates the {@code filename} and {@code content} of all {@link UserFile} Objects in the {@link UserFileWrapper}
+     * accordingly.
+     * This means updating the {@code filename}, the class name and all constructor names inside the of {@code content}
+     * if a renaming has occurred, which the {@link UserCodeResolver#compareStructure} has found.
      *
      * @param userFileWrapper wrapper object which contains a list of {@link UserFile} objects
      * @param folder          of the newly generated project
@@ -240,8 +242,8 @@ public class UserCodeResolver {
      *
      * @param elementValueChange which gets extracted from the {@link Diff} object which gets created by the {@link UserCodeResolver#compareStructure} method
      * @param userFileWrapper    is the object which contains the list of the {@link UserFile} objects
-     * @return the updated {@link UserFileWrapper} object which contains the list of {@link UserFile} objects with updated file paths / names,
-     * package names, class names and constructor names
+     * @return the updated {@link UserFileWrapper} object which contains the list of {@link UserFile} objects with updated
+     *              file paths / names package names, class names and constructor names
      */
     private UserFileWrapper updateFilesBasedOnElementValueChange(ElementValueChange elementValueChange, UserFileWrapper userFileWrapper) {
         //////// Get all relevant values from the ElementValue Change object ////////
@@ -251,7 +253,8 @@ public class UserCodeResolver {
         String[] newPathArray = newPath.split("\\\\");
         int oldFileTypeStart = oldPathArray[oldPathArray.length - 1].indexOf(".");
         String oldConstructorName = oldPathArray[oldPathArray.length - 1].substring(0, oldFileTypeStart);
-        int newFileTypeStart = newPathArray[newPathArray.length - 1].indexOf(".");;
+        int newFileTypeStart = newPathArray[newPathArray.length - 1].indexOf(".");
+        ;
         String newConstructorName = newPathArray[newPathArray.length - 1].substring(0, newFileTypeStart);
         //////// Find and update the relevant file with the new project  ////////
         for (UserFile file : userFileWrapper.getFiles()) {
@@ -266,12 +269,12 @@ public class UserCodeResolver {
                     }
                     if (line.contains("class ")) {
                         line.replace(oldConstructorName, newConstructorName);
-                        String baseClass= "";
+                        String baseClass = "";
                         String[] words = line.split("\\s+");
-                        for(String word : words){
-                            if(word.contains("BaseGen")){
+                        for (String word : words) {
+                            if (word.contains("BaseGen")) {
                                 baseClass = word;
-                            break;
+                                break;
                             }
                         }
                         String tempName = newConstructorName;
@@ -279,7 +282,7 @@ public class UserCodeResolver {
                         line.replace(baseClass, newBaseGenClassName);
                         file.getContent().set(i, line);
                     }
-                    if(line.contains(oldConstructorName)) {
+                    if (line.contains(oldConstructorName)) {
                         file.getContent().set(i, line.replace(oldConstructorName, newConstructorName));
                     }
                 }
@@ -307,8 +310,10 @@ public class UserCodeResolver {
     /**
      * This method compares the
      *
-     * @param oldFolderStructure the folderStructure of the old project as a {@code List<String>} of all file paths strings, which don't end with {@code "BaseGen.java"} or {@code ".jar"}
-     * @param newFolderStructure the folderStructure of the new project as a {@code List<String>} list all file path strings, which don't end with {@code "BaseGen.java"} or {@code ".jar"}
+     * @param oldFolderStructure the folderStructure of the old project as a {@code List<String>} of all file paths
+     *                           strings, which don't end with {@code "BaseGen.java"} or {@code ".jar"}
+     * @param newFolderStructure the folderStructure of the new project as a {@code List<String>} list all file path
+     *                           strings, which don't end with {@code "BaseGen.java"} or {@code ".jar"}
      * @return diff which displays the differences in the project structure based on the levenshtein distance
      */
     private Diff compareStructure(List<String> oldFolderStructure, List<String> newFolderStructure) {

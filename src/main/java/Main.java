@@ -45,7 +45,8 @@ public class Main {
             //////// Declare variables based on default values or CLI arguments ////////
             String javaVersion = "17";
             String springBootVersion = "3.0.2";
-            String pathToFiles = NAME + "/src/main/java/" + GROUP_ID.replaceAll("\\.", "/") + "/" + ARTIFACT_ID.replaceAll("-", "") + "/";
+            String pathToFiles = NAME + "/src/main/java/" + GROUP_ID.replaceAll("\\.", "/") + "/" +
+                    ARTIFACT_ID.replaceAll("-", "") + "/";
 
             String targetPathControllers = pathToFiles + "controllers";
             String targetPathEntities = pathToFiles + "entities";
@@ -131,13 +132,17 @@ public class Main {
             String packagePathRepositories = packagePath + "repositories";
 
             TemplateResolver templateResolver = new TemplateResolver();
-            List<String> generatedControllerFiles = templateResolver.createControllerFiles(dataModel.getControllerDataModels(), packagePathControllers, packagePathEntities, packagePathRepositories, targetPathControllers);
-            List<String> generatedEntityFiles = templateResolver.createEntityFiles(dataModel.getEntityDataModels(), dataModel.getAssociationsDataModels(), packagePathEntities, targetPathEntities);
-            List<String> generatedRepositoryFiles = templateResolver.createRepositoryFiles(dataModel.getRepositoryDataModels(), packagePathRepositories, packagePathEntities, targetPathRepositories);
+            List<String> generatedControllerFiles = templateResolver.createControllerFiles(dataModel.getControllerDataModels(),
+                    packagePathControllers, packagePathEntities, packagePathRepositories, targetPathControllers);
+            List<String> generatedEntityFiles = templateResolver.createEntityFiles(dataModel.getEntityDataModels(),
+                    dataModel.getAssociationsDataModels(), packagePathEntities, targetPathEntities);
+            List<String> generatedRepositoryFiles = templateResolver.createRepositoryFiles(dataModel.getRepositoryDataModels(),
+                    packagePathRepositories, packagePathEntities, targetPathRepositories);
             List<String> applicationPropertiesFile = templateResolver.createApplicationProperties(ARTIFACT_ID, resourcesPath);
             List<String> readMeFile = templateResolver.createReadMe(ARTIFACT_ID, basePath);
             List<String> generatedFiles = new ArrayList<>();
-            Stream.of(generatedControllerFiles, generatedEntityFiles, generatedRepositoryFiles, applicationPropertiesFile, readMeFile).forEach(generatedFiles::addAll);
+            Stream.of(generatedControllerFiles, generatedEntityFiles, generatedRepositoryFiles, applicationPropertiesFile, readMeFile)
+                    .forEach(generatedFiles::addAll);
             log.info("Generated files: {}", generatedFiles);
 
 
