@@ -207,6 +207,7 @@ public class UserCodeResolver {
         //////// Get all elementValueChanges that are of Type ListChanges and update the userFile objects based on them ////////
         for (Change change : diff.getChanges()) {
             if (change instanceof ListChange listChange) {
+            System.out.println(change);
                 logger.info("The following structural changes have been found:");
                 for (ContainerElementChange element : listChange.getChanges()) {
                     if (element instanceof ElementValueChange elementValueChange) {
@@ -261,7 +262,7 @@ public class UserCodeResolver {
                         file.getContent().set(i, line);
                     }
                     if (line.contains("class ")) {
-                        line = line.replace(oldConstructorName, newConstructorName);
+                        line.replace(oldConstructorName, newConstructorName);
                         String baseClass= "";
                         String[] words = line.split("\\s+");
                         for(String word : words){
@@ -272,7 +273,7 @@ public class UserCodeResolver {
                         }
                         String tempName = newConstructorName;
                         String newBaseGenClassName = tempName.replace("Impl", "BaseGen");
-                        line = line.replace(baseClass, newBaseGenClassName);
+                        line.replace(baseClass, newBaseGenClassName);
                         file.getContent().set(i, line);
                     }
                     if(line.contains(oldConstructorName)) {
