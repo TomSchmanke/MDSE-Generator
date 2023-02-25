@@ -166,7 +166,7 @@ public class Main {
      * @param args Java CLI arguments
      */
     private static void readArgs(String[] args) {
-        if (args.length == 4) {
+        if (args.length == 5) {
             GROUP_ID = args[0];
             ARTIFACT_ID = args[1];
             NAME = args[2];
