@@ -42,10 +42,11 @@ public class TemplateResolver {
      * Generates a file based on a configured velocity template and a template.
      *
      * @param velocityContext Configured velocity template with target and data
-     * @param inputTemplate Name of a .vm template file in the resources directory which should be used
-     * @param outputFile Name of the output file
-     * @param targetPath Path to where the file should be generated to
-     * @throws IOException Signals that an I/O exception of some sort has occurred. This class is the general class of exceptions produced by failed or interrupted I/O operations.
+     * @param inputTemplate   Name of a .vm template file in the resources directory which should be used
+     * @param outputFile      Name of the output file
+     * @param targetPath      Path to where the file should be generated to
+     * @throws IOException Signals that an I/O exception of some sort has occurred. This class is the general class of
+     *                      exceptions produced by failed or interrupted I/O operations.
      */
     private void resolveTemplate(VelocityContext velocityContext, String inputTemplate, String outputFile, String targetPath) throws IOException {
         try {
@@ -65,21 +66,24 @@ public class TemplateResolver {
      * templates and the List of {@link ControllerModel} containing the necessary data
      *
      * @param controllerModels List of {@link ControllerModel} which hold the data which will be used in the generation
-     * of the RestController .java files
+     *                         of the RestController .java files
      * @return List of names of the generated files
      */
     public List<String> createControllerFiles(List<ControllerModel> controllerModels, String targetPackagePath, String entitiesPackagePath, String repositoriesPackagePath, String targetPath) throws IOException {
         for (ControllerModel controllerModel : controllerModels) {
             VelocityContext velocityContext = new VelocityContext();
-            velocityContext.put("targetPackagePath" , targetPackagePath);
-            velocityContext.put("entitiesPackagePath" , entitiesPackagePath + ".*");
-            velocityContext.put("repositoriesPackagePath" , repositoriesPackagePath + ".*");
+            velocityContext.put("targetPackagePath", targetPackagePath);
+            velocityContext.put("entitiesPackagePath", entitiesPackagePath + ".*");
+            velocityContext.put("repositoriesPackagePath", repositoriesPackagePath + ".*");
             velocityContext.put("controller", controllerModel);
 
-            resolveTemplate(velocityContext, "controller_templates/controller-base.vm", controllerModel.entityName() + "ControllerBaseGen.java", targetPath);
-            resolveTemplate(velocityContext, "controller_templates/controller-impl.vm", controllerModel.entityName() + "ControllerImpl.java", targetPath);
+            resolveTemplate(velocityContext, "controller_templates/controller-base.vm",
+                    controllerModel.entityName() + "ControllerBaseGen.java", targetPath);
+            resolveTemplate(velocityContext, "controller_templates/controller-impl.vm",
+                    controllerModel.entityName() + "ControllerImpl.java", targetPath);
         }
-        return controllerModels.stream().flatMap(controllerModel -> Stream.of(controllerModel.entityName() + "ControllerBaseGen.java", controllerModel.entityName() + "ControllerEntity.java")).toList();
+        return controllerModels.stream().flatMap(controllerModel -> Stream.of(controllerModel.entityName() +
+                "ControllerBaseGen.java", controllerModel.entityName() + "ControllerEntity.java")).toList();
     }
 
     /**
@@ -87,24 +91,29 @@ public class TemplateResolver {
      * the List of {@link EntityModel} containing the necessary data
      *
      * @param entityModels List of {@link EntityModel} which hold the data which will be used in the generation
-     * of the JPA Entities .java files
+     *                     of the JPA Entities .java files
      * @return List of names of the generated files
      */
     public List<String> createEntityFiles(List<EntityModel> entityModels, List<AssociationsModel> associationsModels, String targetPackagePath, String targetPath) throws IOException {
         for (EntityModel entityModel : entityModels) {
             VelocityContext velocityContext = new VelocityContext();
-            velocityContext.put("targetPackagePath" , targetPackagePath);
+            velocityContext.put("targetPackagePath", targetPackagePath);
             velocityContext.put("entity", entityModel);
 
-            List<AssociationsModel> filteredMTOAssociationsForEntity = associationsModels.stream().filter(associationsModel -> Objects.equals(associationsModel.fkEntity(), entityModel.getEntityName())).toList();
-            List<AssociationsModel> filteredOTMAssociationsForEntity = associationsModels.stream().filter(associationsModel -> Objects.equals(associationsModel.referencedEntity(), entityModel.getEntityName())).toList();
+            List<AssociationsModel> filteredMTOAssociationsForEntity = associationsModels.stream()
+                    .filter(associationsModel -> Objects.equals(associationsModel.fkEntity(), entityModel.getEntityName())).toList();
+            List<AssociationsModel> filteredOTMAssociationsForEntity = associationsModels.stream()
+                    .filter(associationsModel -> Objects.equals(associationsModel.referencedEntity(), entityModel.getEntityName())).toList();
             velocityContext.put("mtoAssociations", filteredMTOAssociationsForEntity);
             velocityContext.put("otmAssociations", filteredOTMAssociationsForEntity);
 
-            resolveTemplate(velocityContext, "entity_templates/entity-base.vm", entityModel.entityName() + "BaseGen.java", targetPath);
-            resolveTemplate(velocityContext, "entity_templates/entity-impl.vm", entityModel.entityName() + "Impl.java", targetPath);
+            resolveTemplate(velocityContext, "entity_templates/entity-base.vm",
+                    entityModel.entityName() + "BaseGen.java", targetPath);
+            resolveTemplate(velocityContext, "entity_templates/entity-impl.vm",
+                    entityModel.entityName() + "Impl.java", targetPath);
         }
-        return entityModels.stream().flatMap(entityModel -> Stream.of(entityModel.entityName() + "BaseGen.java", entityModel.entityName() + "Impl.java")).toList();
+        return entityModels.stream().flatMap(entityModel -> Stream.of(entityModel.entityName() + "BaseGen.java",
+                entityModel.entityName() + "Impl.java")).toList();
     }
 
     /**
@@ -112,20 +121,23 @@ public class TemplateResolver {
      * templates and the List of {@link RepositoryModel} containing the necessary data
      *
      * @param repositoryModels List of {@link RepositoryModel} which hold the data which will be used in the generation
-     * of the JPA Repositories .java files
+     *                         of the JPA Repositories .java files
      * @return List of names of the generated files
      */
     public List<String> createRepositoryFiles(List<RepositoryModel> repositoryModels, String targetPackagePath, String entitiesPackagePath, String targetPath) throws IOException {
         for (RepositoryModel repositoryModel : repositoryModels) {
             VelocityContext velocityContext = new VelocityContext();
-            velocityContext.put("targetPackagePath" , targetPackagePath);
-            velocityContext.put("entitiesPackagePath" , entitiesPackagePath + ".*");
+            velocityContext.put("targetPackagePath", targetPackagePath);
+            velocityContext.put("entitiesPackagePath", entitiesPackagePath + ".*");
             velocityContext.put("repository", repositoryModel);
 
-            resolveTemplate(velocityContext, "repository_templates/repository-base.vm", repositoryModel.repositoryName() + "RepositoryBaseGen.java", targetPath);
-            resolveTemplate(velocityContext, "repository_templates/repository-impl.vm", repositoryModel.repositoryName() + "RepositoryImpl.java", targetPath);
+            resolveTemplate(velocityContext, "repository_templates/repository-base.vm",
+                    repositoryModel.repositoryName() + "RepositoryBaseGen.java", targetPath);
+            resolveTemplate(velocityContext, "repository_templates/repository-impl.vm",
+                    repositoryModel.repositoryName() + "RepositoryImpl.java", targetPath);
         }
-        return repositoryModels.stream().flatMap(repositoryModel -> Stream.of(repositoryModel.repositoryName() + "RepositoryBaseGen.java", repositoryModel.repositoryName() + "RepositoryImpl.java")).toList();
+        return repositoryModels.stream().flatMap(repositoryModel -> Stream.of(repositoryModel.repositoryName() +
+                "RepositoryBaseGen.java", repositoryModel.repositoryName() + "RepositoryImpl.java")).toList();
     }
 
     /**
@@ -139,7 +151,8 @@ public class TemplateResolver {
         VelocityContext velocityContext = new VelocityContext();
         velocityContext.put("artifactId", artifactId);
 
-        resolveTemplate(velocityContext, "standard_files/application-properties.vm", "application.properties", targetPath);
+        resolveTemplate(velocityContext, "standard_files/application-properties.vm",
+                "application.properties", targetPath);
 
         return Collections.singletonList("application.properties");
     }
