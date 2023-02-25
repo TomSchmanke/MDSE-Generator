@@ -34,7 +34,7 @@ import java.util.stream.Stream;
  * @version 1.0 initial creation
  *
  * @author Jonas Knebel
- * @version 1.1 added support to save images between versions
+ * @version 1.1 added support to save binary files between versions
  */
 public class UserCodeResolver {
 
@@ -61,7 +61,7 @@ public class UserCodeResolver {
         String path = String.valueOf(folder);
         try (Stream<Path> paths = Files.walk(Paths.get(path))) {
             paths.filter(Files::isRegularFile).map(Path::toFile).forEach(file -> {
-                if (!file.toString().endsWith("BaseGen.java") && !file.toString().endsWith(".jar")) {
+                if (!file.toString().endsWith("BaseGen.java") && !file.toString().endsWith(".jar") && !file.toString().contains("\\.idea\\") && !file.toString().contains("\\target\\")) {
                     filePaths.add(file);
                 }
             });
@@ -82,13 +82,14 @@ public class UserCodeResolver {
      * @throws JsonProcessingException if the {link UserFileWrapper} object cant be transformed toa JSON string by the {@link ObjectMapper}
      */
     public String readContentOfFilesAsString(List<File> fileList) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
         UserFileWrapper userFileWrapper = fileList.stream().map(file -> {
             UserFile userFile = new UserFile();
             userFile.setFilename(String.valueOf(file));
             try {
                 //////// encode file as Base64 and set content of UserFile  ////////
                 if (isBinaryFile(file.toString())) {
-                    userFile.setContent(Collections.singletonList(encodeImageToBase64(file)));
+                    userFile.setContent(Collections.singletonList(encodeFileToBase64(file)));
                 } else {
                     userFile.setContent(Files.readAllLines(file.toPath()));
                 }
@@ -97,8 +98,6 @@ public class UserCodeResolver {
             }
             return userFile;
         }).collect(Collectors.collectingAndThen(Collectors.toList(), UserFileWrapper::new));
-
-        ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(userFileWrapper);
     }
 
@@ -130,19 +129,25 @@ public class UserCodeResolver {
     /**
      * This method writes the content of the {@link UserFileWrapper} object to all files, which might have been modified or added by the user.
      *
-     * @param userFileWrapper wrapper object which contains a list of {@link UserFile} objects
      * @param folder          of the newly generated project
      * @throws IOException Signals that an I/O exception of some sort has occurred. This class is the general class of exceptions produced by failed or interrupted I/O operations.
      */
-    public void writeUserContentInNewProject(UserFileWrapper userFileWrapper, File folder) throws IOException {
+    public void writeUserContentInNewProject(File folder) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserFileWrapper userFileWrapper = objectMapper.readValue(this.getFile(), UserFileWrapper.class);
         if (!userFileWrapper.getFiles().isEmpty()) {
             userFileWrapper = this.updateNamesOfImplFiles(userFileWrapper, folder);
         }
 
         for (UserFile file : userFileWrapper.getFiles()) {
             Path path = Paths.get(file.getFilename());
-            if (Files.notExists(path)) {
-                Files.createFile(path);
+            try {
+                if (Files.notExists(path)) {
+                    Files.createFile(path);
+                }
+            } catch (IOException e) {
+                logger.error("An error occurred while creating the file {}: {}", file, e.getMessage());
+                throw e;
             }
 
             if (isBinaryFile(file.getFilename())) {
@@ -183,9 +188,9 @@ public class UserCodeResolver {
      * @throws IOException if an I/O error occurs reading from the stream OutOfMemoryError – if an array of the required
      *                     size cannot be allocated, for example the file is larger that 2GB.
      */
-    private static String encodeImageToBase64(File file) throws IOException {
-        byte[] imageBytes = Files.readAllBytes(Paths.get(file.getPath()));
-        return Base64.getEncoder().encodeToString(imageBytes);
+    private static String encodeFileToBase64(File file) throws IOException {
+        byte[] fileBytes = Files.readAllBytes(Paths.get(file.getPath()));
+        return Base64.getEncoder().encodeToString(fileBytes);
     }
 
     /**
@@ -244,10 +249,10 @@ public class UserCodeResolver {
         String newPath = elementValueChange.getRightValue().toString();
         String[] oldPathArray = oldPath.split("\\\\");
         String[] newPathArray = newPath.split("\\\\");
-        int fileTypeStart = oldPathArray[oldPathArray.length - 1].indexOf(".");
-        String oldConstructorName = oldPathArray[oldPathArray.length - 1].substring(0, fileTypeStart);
-        String newConstructorName = newPathArray[oldPathArray.length - 1].substring(0, fileTypeStart);
-
+        int oldFileTypeStart = oldPathArray[oldPathArray.length - 1].indexOf(".");
+        String oldConstructorName = oldPathArray[oldPathArray.length - 1].substring(0, oldFileTypeStart);
+        int newFileTypeStart = newPathArray[newPathArray.length - 1].indexOf(".");;
+        String newConstructorName = newPathArray[newPathArray.length - 1].substring(0, newFileTypeStart);
         //////// Find and update the relevant file with the new project  ////////
         for (UserFile file : userFileWrapper.getFiles()) {
             if (file.getFilename() == elementValueChange.getLeftValue()) {
@@ -259,7 +264,22 @@ public class UserCodeResolver {
                         line = this.getNewPackageName(oldPathArray);
                         file.getContent().set(i, line);
                     }
-                    if (line.contains("class ") || line.contains(oldConstructorName)) {
+                    if (line.contains("class ")) {
+                        line.replace(oldConstructorName, newConstructorName);
+                        String baseClass= "";
+                        String[] words = line.split("\\s+");
+                        for(String word : words){
+                            if(word.contains("BaseGen")){
+                                baseClass = word;
+                            break;
+                            }
+                        }
+                        String tempName = newConstructorName;
+                        String newBaseGenClassName = tempName.replace("Impl", "BaseGen");
+                        line.replace(baseClass, newBaseGenClassName);
+                        file.getContent().set(i, line);
+                    }
+                    if(line.contains(oldConstructorName)) {
                         file.getContent().set(i, line.replace(oldConstructorName, newConstructorName));
                     }
                 }
