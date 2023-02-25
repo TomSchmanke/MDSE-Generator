@@ -207,6 +207,7 @@ public class UserCodeResolver {
         //////// Get all elementValueChanges that are of Type ListChanges and update the userFile objects based on them ////////
         for (Change change : diff.getChanges()) {
             if (change instanceof ListChange listChange) {
+            System.out.println(change);
                 logger.info("The following structural changes have been found:");
                 for (ContainerElementChange element : listChange.getChanges()) {
                     if (element instanceof ElementValueChange elementValueChange) {
